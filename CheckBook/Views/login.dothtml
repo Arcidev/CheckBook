@@ -1,0 +1,29 @@
+@viewModel CheckBook.ViewModels.LoginViewModel, CheckBook
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Style/Bootstrap/bootstrap.min.css">
+</head>
+<body>
+    <div class="page">
+        <div class="login-form">
+            <div class="form-group">
+                <dot:Literal Text="Email:"/>
+                <dot:TextBox class="login-input" Text="{value: Email}" />
+            </div>
+            <div class="form-group">
+                <dot:Literal Text="Password:"/>
+                <dot:TextBox class="login-input" Text="{value: Password}" Type="Password" />
+            </div>
+            <div class="form-group">
+                <dot:Button Click="{command: Login()}" Text="Login" class="button login-button-left" />
+                <dot:Button Click="{command: Register()}" Text="Register" class="button login-button-right" />
+            </div>
+        </div>
+    </div>
+</body>
+</html>

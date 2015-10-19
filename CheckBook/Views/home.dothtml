@@ -1,0 +1,172 @@
+﻿@viewModel CheckBook.ViewModels.HomeViewModel, CheckBook
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Style/Bootstrap/bootstrap.min.css">
+</head>
+<body>
+    <div Visible="{value: GroupPopupVisible}">
+        <div class="white-content">
+            <div class="form-group">
+                <dot:Literal Text="Name:"/>
+                <dot:TextBox class="popup-input" Text="{value: GroupName}" />
+            </div>
+            <div class="form-group">
+                <dot:Repeater DataSource="{value: Users}">
+                    <ItemTemplate>
+                        <dot:CheckBox Text="{value: FullName}" CheckedItems="{value: _parent.SelectedUsers}" CheckedValue="{value: Id}" />
+                        <br />
+                    </ItemTemplate>
+                </dot:Repeater>
+            </div>
+            <div class="form-group">
+                <dot:Button Click="{command: ManageGroup()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowGroupPopup()}" Text="Close" class="button-120 popup-button-right"></dot:Button>
+            </div>
+        </div>
+        <div class="black-overlay"></div>
+    </div>
+    <div Visible="{value: PaymentPopupVisible}">
+        <div class="white-content">
+            <div class="form-group">
+                <dot:Literal Text="Price:"/>
+                <dot:TextBox class="popup-input" Text="{value: Payment}" />
+            </div>
+            <div class="form-group">
+                <dot:Literal Text="Pay to:"/>
+                <dot:ComboBox class="group-select popup-input" DataSource="{value: Users}"
+                          SelectedValue="{value: UserToPayId}"
+                          ValueMember="Id"
+                          DisplayMember="FullName" />
+            </div>
+            <div class="form-group">
+                <dot:Literal Text="Group to Pay:"/>
+                <dot:ComboBox class="group-select popup-input" DataSource="{value: Groups}"
+                          SelectedValue="{value: PaymentGroupId}"
+                          ValueMember="Id"
+                          DisplayMember="Name"
+                          SelectionChanged="{command: OnPaymentGroupChanged()}" />
+            </div>
+            <div class="form-group">
+                <dot:Literal Text="Exclude Users:"/>
+                <br />
+                <dot:Repeater DataSource="{value: PaymentGroupUsers}">
+                    <ItemTemplate>
+                        <dot:CheckBox Text="{value: FullName}" CheckedItems="{value: _parent.ExcludeUsers}" CheckedValue="{value: Id}" />
+                        <br />
+                    </ItemTemplate>
+                </dot:Repeater>
+            </div>
+            <div class="form-group">
+                <dot:Button Text="Create" Click="{command: CreatePayment()}" class="button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowPaymentPopup()}" Text="Close" class="button-120 popup-button-right"></dot:Button>
+            </div>
+        </div>
+        <div class="black-overlay"></div>
+    </div>
+    <div Visible="{value: PayDebtVisible}">
+        <div class="white-content">
+            <div class="form-group">
+                <dot:Literal Text="Value:"/>
+                <dot:TextBox class="popup-input" Text="{value: DebtValue}" />
+            </div>
+            <div class="form-group">
+                <dot:Button Click="{command: RemovePayment()}" Text="OK" class="button-120 popup-button-left" />
+                <dot:Button Click="{command: HidePayDebtPopup()}" Text="Close" class="button-120 popup-button-right"></dot:Button>
+            </div>
+        </div>
+        <div class="black-overlay"></div>
+    </div>
+    <div class="page">
+        <div class="form-group">
+            <dot:Button Text="Add New" Click="{command: ShowPaymentPopup()}" class="button-120 button-left" />
+            <dot:Button Text="Create Group" class="button-120 button-left" Click="{command: ShowGroupPopup()}" />
+            <dot:Button Text="Manage Group" class="button-120 button-left" Click="{command: ManageGroupPopup()}" />
+            <dot:Button Click="{command: SignOut()}" Text="Sign Out" class="button-right action-button" />
+        </div>
+        <div class="form-group home-grid group-grid">
+            <dot:ComboBox class="group-select" DataSource="{value: Groups}"
+                          SelectedValue="{value: SelectedGroupId}"
+                          ValueMember="Id"
+                          DisplayMember="Name"
+                          SelectionChanged="{command: OnGroupChanged()}" />
+
+            <dot:GridView DataSource="{value: GroupUsers}">
+              <Columns>
+                <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />
+                <dot:GridViewTextColumn ValueBinding="{value: FullName}" HeaderText="Name" Width="150px" />
+                <dot:GridViewTemplateColumn HeaderText="Action" Width="60px">
+                    <ContentTemplate>
+                        <dot:Button Click="{command: _parent.RemoveUser(Id)}" Text="Remove" class="action-button" />
+                    </ContentTemplate>
+                </dot:GridViewTemplateColumn>
+              </Columns>
+            </dot:GridView>
+
+            <dot:DataPager DataSet="{value: GroupUsers}" class="pagination" RenderLinkForCurrentPage="true">
+              <FirstPageTemplate>
+                <button>First</button>
+              </FirstPageTemplate>
+              <LastPageTemplate>
+                <button>Last</button>
+              </LastPageTemplate>
+              <NextPageTemplate>Next</NextPageTemplate>
+              <PreviousPageTemplate>Previous</PreviousPageTemplate>
+            </dot:DataPager>
+        </div>
+        <div class="form-group home-grid">
+            <dot:Literal Text="Debtors:"/>
+            <dot:GridView DataSource="{value: Debtors}">
+              <Columns>
+                <dot:GridViewTextColumn ValueBinding="{value: UserId}" HeaderText="Id" Width="40px" />
+                <dot:GridViewTextColumn ValueBinding="{value: Name}" HeaderText="Name" Width="150px" />
+                <dot:GridViewTextColumn ValueBinding="{value: ValueText}" HeaderText="Value" Width="100px" />
+                <dot:GridViewTemplateColumn HeaderText="Action" Width="60px">
+                    <ContentTemplate>
+                        <dot:Button Click="{command: _parent.ShowPayDebtPopup(UserId)}" Text="Remove" class="action-button" />
+                    </ContentTemplate>
+                </dot:GridViewTemplateColumn>
+              </Columns>
+            </dot:GridView>
+
+            <dot:DataPager DataSet="{value: Debtors}" class="pagination" RenderLinkForCurrentPage="true">
+              <FirstPageTemplate>
+                <button>First</button>
+              </FirstPageTemplate>
+              <LastPageTemplate>
+                <button>Last</button>
+              </LastPageTemplate>
+              <NextPageTemplate>Next</NextPageTemplate>
+              <PreviousPageTemplate>Previous</PreviousPageTemplate>
+            </dot:DataPager>
+        </div>
+        <div class="form-group home-grid">
+            <dot:Literal Text="Payers:"/>
+            <dot:GridView DataSource="{value: Payers}">
+              <Columns>
+                <dot:GridViewTextColumn ValueBinding="{value: UserId}" HeaderText="Id" Width="40px" />
+                <dot:GridViewTextColumn ValueBinding="{value: Name}" HeaderText="Name" Width="150px" />
+                <dot:GridViewTextColumn ValueBinding="{value: ValueText}" HeaderText="Value" Width="100px" />
+              </Columns>
+            </dot:GridView>
+
+            <dot:DataPager DataSet="{value: Payers}" class="pagination" RenderLinkForCurrentPage="true">
+              <FirstPageTemplate>
+                <button>First</button>
+              </FirstPageTemplate>
+              <LastPageTemplate>
+                <button>Last</button>
+              </LastPageTemplate>
+              <NextPageTemplate>Next</NextPageTemplate>
+              <PreviousPageTemplate>Previous</PreviousPageTemplate>
+            </dot:DataPager>
+        </div>
+    </div>
+</body>
+</html>
+
+
