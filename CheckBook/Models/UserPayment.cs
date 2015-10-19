@@ -19,5 +19,7 @@ namespace CheckBook.Models
             UserId = user.Id;
             Value = payment.Value;
         }
+
+        public UserPayment() { }
     }
 }
