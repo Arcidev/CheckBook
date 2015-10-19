@@ -194,7 +194,7 @@ namespace CheckBook.ViewModels
 
         public void ShowPayDebtPopup(int userId)
         {
-            var debtor = Debtors.Items.FirstOrDefault(u => u.UserId == DebtorId);
+            var debtor = Debtors.Items.FirstOrDefault(u => u.UserId == userId);
             if (debtor == null)
                 return;
 
@@ -212,6 +212,8 @@ namespace CheckBook.ViewModels
                 Debtors.Items.Remove(debtor);
                 Debtors.TotalItemsCount--;
             }
+
+            HidePayDebtPopup();
         }
 
         private List<UserData> GetGroupUsers(int groupId)
