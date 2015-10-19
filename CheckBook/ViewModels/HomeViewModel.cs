@@ -59,23 +59,23 @@ namespace CheckBook.ViewModels
             Payers = new GridViewDataSet<UserPayment>() { PageSize = 10 };
             PaymentGroupUsers = new List<UserData>();
             ExcludeUsers = new List<int>();
-            Users = DataAccess.DbAccess.GetUsers();
             SelectedUsers = new List<int>();
+        }
+
+        public override Task PreRender()
+        {
+            Users = DataAccess.DbAccess.GetUsers();
             Groups = DataAccess.DbAccess.GetGroups();
-            
             if (Groups.Any())
             {
                 SelectedGroupId = Groups.First().Id;
                 OnGroupChanged();
             }
-        }
 
-        public override Task Load()
-        {
             UpdateDebtors();
             UpdatePayers();
 
-            return base.Load();
+            return base.PreRender();
         }
 
         public void SignOut()
