@@ -38,8 +38,8 @@ namespace DataAccess
                 db.Users.Add(new User()
                 {
                     Email = user.Email,
-                    Name = user.Name,
-                    Surname = user.Surname,
+                    FirstName = user.FirstName,
+                    LastName = user.LastName,
                     Password = user.Password
                 });
 
@@ -133,7 +133,7 @@ namespace DataAccess
             }
         }
 
-        public static void CreatePayment(int payerId, List<int> debtorIds, int value)
+        public static void CreatePayment(int payerId, List<int> debtorIds, decimal value)
         {
             using (var db = new AppContext())
             {
@@ -172,7 +172,7 @@ namespace DataAccess
             }
         }
 
-        public static void PayDebt(int payerId, int debtorId, int value)
+        public static void PayDebt(int payerId, int debtorId, decimal value)
         {
             using (var db = new AppContext())
             {
@@ -200,8 +200,8 @@ namespace DataAccess
             {
                 Id = user.Id,
                 Email = user.Email,
-                Name = user.Name,
-                Surname = user.Surname,
+                FirstName = user.FirstName,
+                LastName = user.LastName,
                 Password = user.Password
             };
         }

@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel.DataAnnotations;
-using System.ComponentModel.DataAnnotations.Schema;
 
 namespace DataAccess.Model
 {
@@ -9,15 +8,19 @@ namespace DataAccess.Model
         public int Id { get; set; }
 
         [Required]
-        public string Name { get; set; }
+        [StringLength(100)]
+        public string FirstName { get; set; }
 
         [Required]
-        public string Surname { get; set; }
+        [StringLength(100)]
+        public string LastName { get; set; }
 
         [Required]
+        [StringLength(100)]
         public string Email { get; set; }
 
         [Required]
+        [StringLength(100)]
         public string Password { get; set; }
     }
 }

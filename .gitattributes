@@ -1,6 +1,3 @@
-# Ignore external libraries from language statistics
-packages/* linguist-vendored
-
 # Lineendings
 *.sln        eol=crlf
 *.vcproj     eol=crlf

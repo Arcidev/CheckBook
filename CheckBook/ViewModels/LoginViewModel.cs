@@ -1,6 +1,5 @@
 using CheckBook.Helpers;
 using DotVVM.Framework.ViewModel;
-using System.Security.Claims;
 
 namespace CheckBook.ViewModels
 {

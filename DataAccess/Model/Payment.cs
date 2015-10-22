@@ -15,7 +15,7 @@ namespace DataAccess.Model
         [Column(Order = 2)]
         public int DebtorId { get; set; }
 
-        public int Value { get; set; }
+        public decimal Value { get; set; }
 
         public virtual User User { get; set; }
 

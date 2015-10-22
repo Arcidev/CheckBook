@@ -124,6 +124,10 @@
     <Compile Include="Migrations\201510171435251_update03.Designer.cs">
       <DependentUpon>201510171435251_update03.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510222155060_update04.cs" />
+    <Compile Include="Migrations\201510222155060_update04.Designer.cs">
+      <DependentUpon>201510222155060_update04.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Payment.cs" />
@@ -148,6 +152,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510171435251_update03.resx">
       <DependentUpon>201510171435251_update03.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510222155060_update04.resx">
+      <DependentUpon>201510222155060_update04.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

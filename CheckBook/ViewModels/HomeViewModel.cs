@@ -36,11 +36,11 @@ namespace CheckBook.ViewModels
 
         public int UserToPayId { get; set; }
 
-        public int Payment { get; set; }
+        public decimal Payment { get; set; }
 
         public int DebtorId { get; private set; }
 
-        public int DebtValue { get; set; }
+        public decimal DebtValue { get; set; }
 
         public bool GroupPopupVisible { get; private set; }
 
@@ -54,6 +54,7 @@ namespace CheckBook.ViewModels
 
         public HomeViewModel()
         {
+            SelectedGroupId = -1;
             GroupUsers = new GridViewDataSet<UserData>() { PageSize = 10 };
             Debtors = new GridViewDataSet<UserPayment>() { PageSize = 10 };
             Payers = new GridViewDataSet<UserPayment>() { PageSize = 10 };
@@ -68,7 +69,8 @@ namespace CheckBook.ViewModels
             Groups = DataAccess.DbAccess.GetGroups();
             if (Groups.Any())
             {
-                SelectedGroupId = Groups.First().Id;
+                if (SelectedGroupId == -1)
+                    SelectedGroupId = Groups.First().Id;
                 OnGroupChanged();
             }
 

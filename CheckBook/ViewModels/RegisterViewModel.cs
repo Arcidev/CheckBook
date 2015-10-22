@@ -10,12 +10,15 @@ namespace CheckBook.ViewModels
 	public class RegisterViewModel : DotvvmViewModelBase
 	{
         [Required]
-        public string Name { get; set; }
+        [StringLength(100)]
+        public string FirstName { get; set; }
 
         [Required]
-        public string Surname { get; set; }
+        [StringLength(100)]
+        public string LastName { get; set; }
 
         [Required]
+        [StringLength(100)]
         public string Email { get; set; }
 
         [Required]
@@ -29,8 +32,8 @@ namespace CheckBook.ViewModels
         {
             var user = new UserData()
             {
-                Name = Name,
-                Surname = Surname,
+                FirstName = FirstName,
+                LastName = LastName,
                 Email = Email,
                 Password = DataAccess.DbAccess.CreateHash(Password)
             };

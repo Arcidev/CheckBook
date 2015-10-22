@@ -11,13 +11,13 @@
 <body>
     <div class="page">
         <div class="login-form">
-            <div class="form-group" ValidationMessage.ValidatedValue="{value: Name}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
+            <div class="form-group" ValidationMessage.ValidatedValue="{value: FirstName}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
                 <dot:Literal Text="Name:"/>
-                <dot:TextBox class="login-input" Text="{value: Name}" />
+                <dot:TextBox class="login-input" Text="{value: FirstName}" />
             </div>
-            <div class="form-group" ValidationMessage.ValidatedValue="{value: Surname}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
+            <div class="form-group" ValidationMessage.ValidatedValue="{value: LastName}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
                 <dot:Literal Text="Surname:"/>
-                <dot:TextBox class="login-input" Text="{value: Surname}" />
+                <dot:TextBox class="login-input" Text="{value: LastName}" />
             </div>
             <div class="form-group" ValidationMessage.ValidatedValue="{value: Email}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
                 <dot:Literal Text="Email:"/>

@@ -7,6 +7,6 @@ namespace DataAccess.Data
 
         public int DebtorId { get; set; }
 
-        public int Value { get; set; }
+        public decimal Value { get; set; }
     }
 }

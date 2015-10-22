@@ -11,7 +11,7 @@ namespace CheckBook.Models
 
         public string ValueText { get { return string.Format("{0} CZK", Value); } }
 
-        public int Value { get; set; }
+        public decimal Value { get; set; }
 
         public UserPayment(UserData user, PaymentData payment)
         {
