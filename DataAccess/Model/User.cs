@@ -21,6 +21,10 @@ namespace DataAccess.Model
 
         [Required]
         [StringLength(100)]
-        public string Password { get; set; }
+        public string PasswordSalt { get; set; }
+
+        [Required]
+        [StringLength(100)]
+        public string PasswordHash { get; set; }
     }
 }

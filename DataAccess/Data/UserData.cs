@@ -11,6 +11,10 @@ namespace DataAccess.Data
 
         public string Email { get; set; }
 
+        public string PasswordSalt { get; set; }
+
+        public string PasswordHash { get; set; }
+
         public string Password { get; set; }
 
         public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }

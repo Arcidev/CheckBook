@@ -1,5 +1,4 @@
-﻿
-using DataAccess.Data;
+﻿using DataAccess.Data;
 
 namespace CheckBook.Models
 {
@@ -13,7 +12,7 @@ namespace CheckBook.Models
 
         public decimal Value { get; set; }
 
-        public UserPayment(UserData user, PaymentData payment)
+        public UserPayment(UserInfoData user, PaymentData payment)
         {
             Name = user.FullName;
             UserId = user.Id;

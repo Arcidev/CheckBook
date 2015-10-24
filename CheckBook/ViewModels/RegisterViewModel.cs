@@ -1,9 +1,9 @@
 ﻿using CheckBook.Helpers;
 using DataAccess.Data;
 using DataAccess.Enums;
+using DataAccess.Services;
 using DotVVM.Framework.ViewModel;
 using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
 
 namespace CheckBook.ViewModels
 {
@@ -35,14 +35,14 @@ namespace CheckBook.ViewModels
                 FirstName = FirstName,
                 LastName = LastName,
                 Email = Email,
-                Password = DataAccess.DbAccess.CreateHash(Password)
+                Password = Password
             };
 
-            var r = DataAccess.DbAccess.CreateUser(user);
+            var r = UserService.CreateUser(user);
             if (r != CreateUserResult.Success)
                 return;
 
-            var identity = LoginHelper.GetClaimsIdentity(Email, DataAccess.DbAccess.CreateHash(Password));
+            var identity = LoginHelper.GetClaimsIdentity(Email, Password);
             if (identity == null)
                 return;
 

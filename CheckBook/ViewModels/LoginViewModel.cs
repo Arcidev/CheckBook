@@ -11,7 +11,7 @@ namespace CheckBook.ViewModels
 
         public void Login()
         {
-            var identity = LoginHelper.GetClaimsIdentity(Email, DataAccess.DbAccess.CreateHash(Password));
+            var identity = LoginHelper.GetClaimsIdentity(Email, Password);
             if (identity == null)
                 return;
 

@@ -1,4 +1,5 @@
 ﻿using CheckBook.Models;
+using DataAccess.Services;
 using System.Security.Claims;
 
 namespace CheckBook.Helpers
@@ -7,11 +8,11 @@ namespace CheckBook.Helpers
     {
         public static ClaimsIdentity GetClaimsIdentity(string email, string password)
         {
-            var user = DataAccess.DbAccess.GetUser(email);
+            var user = UserService.GetUser(email);
             if (user == null)
                 return null;
 
-            if (user.Password != password)
+            if (!DataAccess.Security.PasswordHelper.VerifyHashedPassword(user.PasswordHash, user.PasswordSalt, password))
                 return null;
 
             var claimsIdentity = new ClaimsIdentity(new UserIdentity(user.FullName));

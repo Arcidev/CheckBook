@@ -5,16 +5,16 @@ using System.Linq;
 using System.Collections.Generic;
 using DotVVM.Framework.Controls;
 using Microsoft.AspNet.Identity;
-using System;
 using System.Threading.Tasks;
 using CheckBook.Models;
+using DataAccess.Services;
 
 namespace CheckBook.ViewModels
 {
     [Authorize]
 	public class HomeViewModel : DotvvmViewModelBase
 	{
-        public GridViewDataSet<UserData> GroupUsers { get; private set; }
+        public GridViewDataSet<UserInfoData> GroupUsers { get; private set; }
 
         public GridViewDataSet<UserPayment> Debtors { get; private set; }
 
@@ -22,9 +22,9 @@ namespace CheckBook.ViewModels
 
         public List<GroupData> Groups { get; set; }
 
-        public List<UserData> Users { get; private set; }
+        public List<UserInfoData> Users { get; private set; }
 
-        public List<UserData> PaymentGroupUsers { get; private set; }
+        public List<UserInfoData> PaymentGroupUsers { get; private set; }
 
         public List<int> SelectedUsers { get; set; }
 
@@ -55,18 +55,18 @@ namespace CheckBook.ViewModels
         public HomeViewModel()
         {
             SelectedGroupId = -1;
-            GroupUsers = new GridViewDataSet<UserData>() { PageSize = 10 };
+            GroupUsers = new GridViewDataSet<UserInfoData>() { PageSize = 10 };
             Debtors = new GridViewDataSet<UserPayment>() { PageSize = 10 };
             Payers = new GridViewDataSet<UserPayment>() { PageSize = 10 };
-            PaymentGroupUsers = new List<UserData>();
+            PaymentGroupUsers = new List<UserInfoData>();
             ExcludeUsers = new List<int>();
             SelectedUsers = new List<int>();
         }
 
         public override Task PreRender()
         {
-            Users = DataAccess.DbAccess.GetUsers();
-            Groups = DataAccess.DbAccess.GetGroups();
+            Users = UserService.GetUsersInfo();
+            Groups = GroupService.GetGroups();
             if (Groups.Any())
             {
                 if (SelectedGroupId == -1)
@@ -119,7 +119,7 @@ namespace CheckBook.ViewModels
             GroupData group = null;
             if (IsExistingGroup)
             {
-                group = DataAccess.DbAccess.UpdateGroup(SelectedGroupId, GroupName, SelectedUsers);
+                group = GroupService.UpdateGroup(SelectedGroupId, GroupName, SelectedUsers);
                 var groupInGrid = Groups.FirstOrDefault(x => x.Id == SelectedGroupId);
                 if (group == null || groupInGrid == null)
                 {
@@ -132,7 +132,7 @@ namespace CheckBook.ViewModels
             }
             else
             {
-                group = DataAccess.DbAccess.CreateGroup(GroupName, SelectedUsers);
+                group = GroupService.CreateGroup(GroupName, SelectedUsers);
                 if (!Groups.Any())
                 {
                     SelectedGroupId = group.Id;
@@ -160,7 +160,7 @@ namespace CheckBook.ViewModels
 
         public void RemoveUser(int userId)
         {
-            DataAccess.DbAccess.RemoveUserFromGroup(userId, SelectedGroupId);
+            GroupService.RemoveUserFromGroup(userId, SelectedGroupId);
             var user = GroupUsers.Items.FirstOrDefault(u => u.Id == userId);
             if (user != null)
             {
@@ -183,7 +183,7 @@ namespace CheckBook.ViewModels
 
         public void CreatePayment()
         {
-            DataAccess.DbAccess.CreatePayment(UserToPayId, PaymentGroupUsers.Select(x => x.Id).Where(x => !ExcludeUsers.Contains(x)).ToList(), Payment);
+            PaymentService.CreatePayment(UserToPayId, PaymentGroupUsers.Select(x => x.Id).Where(x => !ExcludeUsers.Contains(x)).ToList(), Payment);
             PaymentPopupVisible = false;
             UpdateDebtors();
         }
@@ -207,7 +207,7 @@ namespace CheckBook.ViewModels
 
         public void RemovePayment()
         {
-            DataAccess.DbAccess.PayDebt(GetUserId(), DebtorId, DebtValue);
+            PaymentService.PayDebt(GetUserId(), DebtorId, DebtValue);
             var debtor = Debtors.Items.FirstOrDefault(u => u.UserId == DebtorId);
             if (debtor != null)
             {
@@ -218,15 +218,15 @@ namespace CheckBook.ViewModels
             HidePayDebtPopup();
         }
 
-        private List<UserData> GetGroupUsers(int groupId)
+        private List<UserInfoData> GetGroupUsers(int groupId)
         {
-            var userIds = DataAccess.DbAccess.GetGroupUserIds(groupId);
+            var userIds = GroupService.GetGroupUserIds(groupId);
             return Users.Where(x => userIds.Contains(x.Id)).ToList();
         }
 
         private void UpdateDebtors()
         {
-            var payments = DataAccess.DbAccess.GetDebtors(GetUserId());
+            var payments = PaymentService.GetDebtors(GetUserId());
             var users = Users.Join(payments, x => x.Id, y => y.DebtorId, (x, y) => new UserPayment(x, y)).ToList();
             Debtors.Items = users;
             Debtors.PageIndex = 0;
@@ -235,7 +235,7 @@ namespace CheckBook.ViewModels
 
         private void UpdatePayers()
         {
-            var payments = DataAccess.DbAccess.GetPayers(GetUserId());
+            var payments = PaymentService.GetPayers(GetUserId());
             var users = Users.Join(payments, x => x.Id, y => y.UserId, (x, y) => new UserPayment(x, y)).ToList();
             Payers.Items = users;
             Payers.PageIndex = 0;
