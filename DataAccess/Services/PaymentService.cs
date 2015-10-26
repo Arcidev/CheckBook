@@ -8,22 +8,27 @@ namespace DataAccess.Services
 {
     public static class PaymentService
     {
-        public static void CreatePayment(int payerId, List<int> debtorIds, decimal value)
+        public static void CreatePayment(int payerId, List<UserPaymentData> debtors, decimal value)
         {
             using (var db = new AppContext())
             {
+                var debtorIds = debtors.Select(y => y.UserId);
                 var duplicateDebtors = db.Payments.Where(x => x.UserId == payerId && debtorIds.Contains(x.DebtorId)).ToList();
                 foreach (var duplicateDebtor in duplicateDebtors)
-                    duplicateDebtor.Value += value;
+                    duplicateDebtor.Value += debtors.First(x => x.UserId == duplicateDebtor.UserId).Value + value;
 
                 var duplicateIds = duplicateDebtors.Select(x => x.DebtorId);
                 foreach (var debtorId in debtorIds.Where(x => !duplicateIds.Contains(x)))
                 {
+                    var val = debtors.First(x => x.UserId == debtorId).Value + value;
+                    if (val == 0)
+                        continue;
+
                     db.Payments.Add(new Payment()
                     {
                         UserId = payerId,
                         DebtorId = debtorId,
-                        Value = value
+                        Value = val
                     });
                 }
 

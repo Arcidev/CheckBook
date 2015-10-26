@@ -107,6 +107,7 @@
     <Compile Include="Data\UserInfoData.cs" />
     <Compile Include="Context\AppContext.cs" />
     <Compile Include="Data\UserData.cs" />
+    <Compile Include="Data\UserPaymentData.cs" />
     <Compile Include="Enums\CreateUserResult.cs" />
     <Compile Include="Migrations\201510151343210_InitialCreate.cs" />
     <Compile Include="Migrations\201510151343210_InitialCreate.Designer.cs">

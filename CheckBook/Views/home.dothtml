@@ -33,8 +33,8 @@
     <div Visible="{value: PaymentPopupVisible}">
         <div class="white-content">
             <div class="form-group">
-                <dot:Literal Text="Price:"/>
-                <dot:TextBox class="popup-input" Text="{value: Payment}" />
+                <dot:Literal Text="Shared Price:"/>
+                <dot:TextBox class="popup-input" Text="{value: SharedPayment}" />
             </div>
             <div class="form-group">
                 <dot:Literal Text="Pay to:"/>
@@ -52,11 +52,12 @@
                           SelectionChanged="{command: OnPaymentGroupChanged()}" />
             </div>
             <div class="form-group">
-                <dot:Literal Text="Exclude Users:"/>
+                <dot:Literal Text="Users:"/>
                 <br />
                 <dot:Repeater DataSource="{value: PaymentGroupUsers}">
                     <ItemTemplate>
-                        <dot:CheckBox Text="{value: FullName}" CheckedItems="{value: _parent.ExcludeUsers}" CheckedValue="{value: Id}" />
+                        <dot:Literal Text="{value: Name}"/>
+                        <dot:TextBox class="popup-input" Text="{value: Value}" />
                         <br />
                     </ItemTemplate>
                 </dot:Repeater>

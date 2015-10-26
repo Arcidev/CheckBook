@@ -42,6 +42,15 @@ namespace DataAccess.Services
             }
         }
 
+        public static List<UserPaymentData> GetGroupUsersForPayment(int groupId)
+        {
+            using (var db = new AppContext())
+            {
+                var groupUsers = db.UsersGroups.Where(x => x.GroupId == groupId).Select(x => x.User);
+                return groupUsers.Select(ToUserPaymentData).ToList();
+            }
+        }
+
         public static void RemoveUserFromGroup(int userId, int groupId)
         {
             using (var db = new AppContext())
@@ -79,6 +88,16 @@ namespace DataAccess.Services
         private static GroupData ToGroupData(Group group)
         {
             return new GroupData() { Id = group.Id, Name = group.Name };
+        }
+
+        private static UserPaymentData ToUserPaymentData(User user)
+        {
+            return new UserPaymentData()
+            {
+                UserId = user.Id,
+                Name = string.Format("{0} {1}", user.FirstName, user.LastName),
+                Value = 0
+            };
         }
     }
 }

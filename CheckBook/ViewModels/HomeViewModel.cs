@@ -6,7 +6,6 @@ using System.Collections.Generic;
 using DotVVM.Framework.Controls;
 using Microsoft.AspNet.Identity;
 using System.Threading.Tasks;
-using CheckBook.Models;
 using DataAccess.Services;
 
 namespace CheckBook.ViewModels
@@ -16,19 +15,17 @@ namespace CheckBook.ViewModels
 	{
         public GridViewDataSet<UserInfoData> GroupUsers { get; private set; }
 
-        public GridViewDataSet<UserPayment> Debtors { get; private set; }
+        public GridViewDataSet<UserPaymentData> Debtors { get; private set; }
 
-        public GridViewDataSet<UserPayment> Payers { get; private set; }
+        public GridViewDataSet<UserPaymentData> Payers { get; private set; }
 
         public List<GroupData> Groups { get; set; }
 
         public List<UserInfoData> Users { get; private set; }
 
-        public List<UserInfoData> PaymentGroupUsers { get; private set; }
+        public List<UserPaymentData> PaymentGroupUsers { get; private set; }
 
         public List<int> SelectedUsers { get; set; }
-
-        public List<int> ExcludeUsers { get; set; }
 
         public int SelectedGroupId { get; set; }
 
@@ -36,7 +33,7 @@ namespace CheckBook.ViewModels
 
         public int UserToPayId { get; set; }
 
-        public decimal Payment { get; set; }
+        public decimal SharedPayment { get; set; }
 
         public int DebtorId { get; private set; }
 
@@ -56,10 +53,9 @@ namespace CheckBook.ViewModels
         {
             SelectedGroupId = -1;
             GroupUsers = new GridViewDataSet<UserInfoData>() { PageSize = 10 };
-            Debtors = new GridViewDataSet<UserPayment>() { PageSize = 10 };
-            Payers = new GridViewDataSet<UserPayment>() { PageSize = 10 };
-            PaymentGroupUsers = new List<UserInfoData>();
-            ExcludeUsers = new List<int>();
+            Debtors = new GridViewDataSet<UserPaymentData>() { PageSize = 10 };
+            Payers = new GridViewDataSet<UserPaymentData>() { PageSize = 10 };
+            PaymentGroupUsers = new List<UserPaymentData>();
             SelectedUsers = new List<int>();
         }
 
@@ -104,9 +100,6 @@ namespace CheckBook.ViewModels
             PaymentPopupVisible = !PaymentPopupVisible;
             if (PaymentPopupVisible)
             {
-                if (ExcludeUsers.Any())
-                    ExcludeUsers.Clear();
-
                 PaymentGroupId = Groups.First().Id;
                 OnPaymentGroupChanged(SelectedGroupId);
 
@@ -155,7 +148,7 @@ namespace CheckBook.ViewModels
 
         public void OnPaymentGroupChanged(int? groupId = null)
         {
-            PaymentGroupUsers = GetGroupUsers(groupId ?? PaymentGroupId);
+            PaymentGroupUsers = GroupService.GetGroupUsersForPayment(groupId ?? PaymentGroupId);
         }
 
         public void RemoveUser(int userId)
@@ -183,7 +176,7 @@ namespace CheckBook.ViewModels
 
         public void CreatePayment()
         {
-            PaymentService.CreatePayment(UserToPayId, PaymentGroupUsers.Select(x => x.Id).Where(x => !ExcludeUsers.Contains(x)).ToList(), Payment);
+            PaymentService.CreatePayment(UserToPayId, PaymentGroupUsers, SharedPayment);
             PaymentPopupVisible = false;
             UpdateDebtors();
         }
@@ -227,7 +220,7 @@ namespace CheckBook.ViewModels
         private void UpdateDebtors()
         {
             var payments = PaymentService.GetDebtors(GetUserId());
-            var users = Users.Join(payments, x => x.Id, y => y.DebtorId, (x, y) => new UserPayment(x, y)).ToList();
+            var users = Users.Join(payments, x => x.Id, y => y.DebtorId, (x, y) => new UserPaymentData(x, y)).ToList();
             Debtors.Items = users;
             Debtors.PageIndex = 0;
             Debtors.TotalItemsCount = users.Count;
@@ -236,7 +229,7 @@ namespace CheckBook.ViewModels
         private void UpdatePayers()
         {
             var payments = PaymentService.GetPayers(GetUserId());
-            var users = Users.Join(payments, x => x.Id, y => y.UserId, (x, y) => new UserPayment(x, y)).ToList();
+            var users = Users.Join(payments, x => x.Id, y => y.UserId, (x, y) => new UserPaymentData(x, y)).ToList();
             Payers.Items = users;
             Payers.PageIndex = 0;
             Payers.TotalItemsCount = users.Count;
