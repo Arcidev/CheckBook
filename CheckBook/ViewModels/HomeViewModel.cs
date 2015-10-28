@@ -1,51 +1,29 @@
-﻿using DotVVM.Framework.ViewModel;
-using DotVVM.Framework.Runtime.Filters;
+﻿using DotVVM.Framework.Runtime.Filters;
 using DataAccess.Data;
 using System.Linq;
 using System.Collections.Generic;
 using DotVVM.Framework.Controls;
-using Microsoft.AspNet.Identity;
 using System.Threading.Tasks;
 using DataAccess.Services;
 
 namespace CheckBook.ViewModels
 {
     [Authorize]
-	public class HomeViewModel : DotvvmViewModelBase
-	{
+	public class HomeViewModel : HeaderViewModel
+    {
         public GridViewDataSet<UserInfoData> GroupUsers { get; private set; }
-
-        public GridViewDataSet<UserPaymentData> Debtors { get; private set; }
-
-        public GridViewDataSet<UserPaymentData> Payers { get; private set; }
 
         public List<GroupData> Groups { get; set; }
 
         public List<UserInfoData> Users { get; private set; }
 
-        public List<UserPaymentData> PaymentGroupUsers { get; private set; }
-
         public List<int> SelectedUsers { get; set; }
 
         public int SelectedGroupId { get; set; }
 
-        public int PaymentGroupId { get; set; }
-
-        public int UserToPayId { get; set; }
-
-        public decimal SharedPayment { get; set; }
-
-        public int DebtorId { get; private set; }
-
-        public decimal DebtValue { get; set; }
-
         public bool GroupPopupVisible { get; private set; }
 
-        public bool PaymentPopupVisible { get; private set; }
-
         public bool IsExistingGroup { get; private set; }
-
-        public bool PayDebtVisible { get; private set; }
 
         public string GroupName { get; set; }
 
@@ -53,9 +31,6 @@ namespace CheckBook.ViewModels
         {
             SelectedGroupId = -1;
             GroupUsers = new GridViewDataSet<UserInfoData>() { PageSize = 10 };
-            Debtors = new GridViewDataSet<UserPaymentData>() { PageSize = 10 };
-            Payers = new GridViewDataSet<UserPaymentData>() { PageSize = 10 };
-            PaymentGroupUsers = new List<UserPaymentData>();
             SelectedUsers = new List<int>();
         }
 
@@ -70,16 +45,7 @@ namespace CheckBook.ViewModels
                 OnGroupChanged();
             }
 
-            UpdateDebtors();
-            UpdatePayers();
-
             return base.PreRender();
-        }
-
-        public void SignOut()
-        {
-            Context.OwinContext.Authentication.SignOut();
-            Context.Redirect("Login", null);
         }
 
         public void ShowGroupPopup()
@@ -90,21 +56,6 @@ namespace CheckBook.ViewModels
             if (SelectedUsers.Any())
                 SelectedUsers.Clear();
             GroupPopupVisible = !GroupPopupVisible;
-        }
-
-        public void ShowPaymentPopup()
-        {
-            if (!PaymentPopupVisible && !Groups.Any())
-                return;
-
-            PaymentPopupVisible = !PaymentPopupVisible;
-            if (PaymentPopupVisible)
-            {
-                PaymentGroupId = Groups.First().Id;
-                OnPaymentGroupChanged(SelectedGroupId);
-
-                UserToPayId = GetUserId();
-            }
         }
 
         public void ManageGroup()
@@ -146,11 +97,6 @@ namespace CheckBook.ViewModels
             GroupUsers.TotalItemsCount = groupUsers.Count;
         }
 
-        public void OnPaymentGroupChanged(int? groupId = null)
-        {
-            PaymentGroupUsers = GroupService.GetGroupUsersForPayment(groupId ?? PaymentGroupId);
-        }
-
         public void RemoveUser(int userId)
         {
             GroupService.RemoveUserFromGroup(userId, SelectedGroupId);
@@ -174,70 +120,10 @@ namespace CheckBook.ViewModels
             GroupPopupVisible = true;
         }
 
-        public void CreatePayment()
-        {
-            PaymentService.CreatePayment(UserToPayId, PaymentGroupUsers, SharedPayment);
-            PaymentPopupVisible = false;
-            UpdateDebtors();
-        }
-
-        public void HidePayDebtPopup()
-        {
-            PayDebtVisible = false;
-            DebtorId = -1;
-        }
-
-        public void ShowPayDebtPopup(int userId)
-        {
-            var debtor = Debtors.Items.FirstOrDefault(u => u.UserId == userId);
-            if (debtor == null)
-                return;
-
-            DebtorId = userId;
-            PayDebtVisible = true;
-            DebtValue = debtor.Value;
-        }
-
-        public void RemovePayment()
-        {
-            PaymentService.PayDebt(GetUserId(), DebtorId, DebtValue);
-            var debtor = Debtors.Items.FirstOrDefault(u => u.UserId == DebtorId);
-            if (debtor != null)
-            {
-                Debtors.Items.Remove(debtor);
-                Debtors.TotalItemsCount--;
-            }
-
-            HidePayDebtPopup();
-        }
-
         private List<UserInfoData> GetGroupUsers(int groupId)
         {
             var userIds = GroupService.GetGroupUserIds(groupId);
             return Users.Where(x => userIds.Contains(x.Id)).ToList();
-        }
-
-        private void UpdateDebtors()
-        {
-            var payments = PaymentService.GetDebtors(GetUserId());
-            var users = Users.Join(payments, x => x.Id, y => y.DebtorId, (x, y) => new UserPaymentData(x, y)).ToList();
-            Debtors.Items = users;
-            Debtors.PageIndex = 0;
-            Debtors.TotalItemsCount = users.Count;
-        }
-
-        private void UpdatePayers()
-        {
-            var payments = PaymentService.GetPayers(GetUserId());
-            var users = Users.Join(payments, x => x.Id, y => y.UserId, (x, y) => new UserPaymentData(x, y)).ToList();
-            Payers.Items = users;
-            Payers.PageIndex = 0;
-            Payers.TotalItemsCount = users.Count;
-        }
-
-        private int GetUserId()
-        {
-            return int.Parse(Context.OwinContext.Authentication.User.Identity.GetUserId());
         }
     }
 }

@@ -1,0 +1,23 @@
+﻿@viewModel CheckBook.ViewModels.HeaderViewModel, CheckBook
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Style/Bootstrap/bootstrap.min.css" />
+</head>
+<body>
+    <div class="header">
+        <dot:Button Click="{command: RedirectHome()}" Text="Home" class="header-item action-button" />
+        <dot:Button Click="{command: RedirectPayment()}" Text="Payment" class="header-item action-button" />
+        <dot:Button Click="{command: RedirectManager()}" Text="Manager" class="header-item action-button" />
+        <dot:Button Click="{command: SignOut()}" Text="Sign Out" class="header-item button-right action-button" />
+    </div>
+    <dot:ContentPlaceHolder ID="PageContent">
+    </dot:ContentPlaceHolder>
+</body>
+</html>
+
+

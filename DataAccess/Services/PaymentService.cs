@@ -15,7 +15,7 @@ namespace DataAccess.Services
                 var debtorIds = debtors.Select(y => y.UserId);
                 var duplicateDebtors = db.Payments.Where(x => x.UserId == payerId && debtorIds.Contains(x.DebtorId)).ToList();
                 foreach (var duplicateDebtor in duplicateDebtors)
-                    duplicateDebtor.Value += debtors.First(x => x.UserId == duplicateDebtor.UserId).Value + value;
+                    duplicateDebtor.Value += debtors.First(x => x.UserId == duplicateDebtor.DebtorId).Value + value;
 
                 var duplicateIds = duplicateDebtors.Select(x => x.DebtorId);
                 foreach (var debtorId in debtorIds.Where(x => !duplicateIds.Contains(x)))
@@ -36,19 +36,21 @@ namespace DataAccess.Services
             }
         }
 
-        public static List<PaymentData> GetDebtors(int payerId)
+        public static List<UserPaymentData> GetDebtors(int payerId)
         {
             using (var db = new AppContext())
             {
-                return db.Payments.Where(x => x.UserId == payerId).Select(ToPaymentData).ToList();
+                var payments = db.Payments.Where(x => x.UserId == payerId).ToList();
+                return payments.Select(x => ToUserPaymentData(x, true)).ToList();
             }
         }
 
-        public static List<PaymentData> GetPayers(int debtorId)
+        public static List<UserPaymentData> GetPayers(int debtorId)
         {
             using (var db = new AppContext())
             {
-                return db.Payments.Where(x => x.DebtorId == debtorId).Select(ToPaymentData).ToList();
+                var payments = db.Payments.Where(x => x.DebtorId == debtorId).ToList();
+                return payments.Select(x => ToUserPaymentData(x, false)).ToList();
             }
         }
 
@@ -69,9 +71,15 @@ namespace DataAccess.Services
             }
         }
 
-        private static PaymentData ToPaymentData(Payment payment)
+        private static UserPaymentData ToUserPaymentData(Payment payment, bool debtor)
         {
-            return new PaymentData() { DebtorId = payment.DebtorId, UserId = payment.UserId, Value = payment.Value };
+            var user = debtor ? payment.Debtor : payment.User;
+            return new UserPaymentData()
+            {
+                Name = string.Format("{0} {1}", user.FirstName, user.LastName),
+                Value = payment.Value,
+                UserId = user.Id
+            };
         }
     }
 }

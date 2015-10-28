@@ -70,7 +70,7 @@
 .home-grid {
   padding-left: 25px;
 }
-.group-grid {
+.first-grid {
   padding-top: 25px;
 }
 .action-button {
@@ -91,4 +91,16 @@
 .popup-input {
   float: right;
   width: 250px;
+}
+.header {
+  background-color: black;
+  color: white;
+  height: 50px;
+  width: 100%;
+}
+.header-item {
+  margin-left: 10px;
+  font-size: 20px;
+  height: 100%;
+  vertical-align: middle;
 }
