@@ -1,0 +1,62 @@
+﻿@viewModel CheckBook.ViewModels.ManagerViewModel, CheckBook
+@masterPage Views/header.dotmaster
+
+<dot:Content ContentPlaceHolderID="PageContent">
+    <div Visible="{value: GroupPopupVisible}">
+        <div class="white-content">
+            <div class="form-group">
+                <dot:Literal Text="Name:"/>
+                <dot:TextBox class="popup-input" Text="{value: GroupName}" />
+            </div>
+            <div class="form-group">
+                <dot:Repeater DataSource="{value: Users}">
+                    <ItemTemplate>
+                        <dot:CheckBox Text="{value: FullName}" CheckedItems="{value: _parent.SelectedUsers}" CheckedValue="{value: Id}" />
+                        <br />
+                    </ItemTemplate>
+                </dot:Repeater>
+            </div>
+            <div class="form-group">
+                <dot:Button Click="{command: ManageGroup()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowGroupPopup()}" Text="Close" class="button-120 popup-button-right"></dot:Button>
+            </div>
+        </div>
+        <div class="black-overlay"></div>
+    </div>
+    <div class="page">
+        <div class="form-group">
+            <dot:Button Text="Create Group" class="button-120 button-left" Click="{command: ShowGroupPopup()}" />
+            <dot:Button Text="Manage Group" class="button-120 button-left" Click="{command: ManageGroupPopup()}" />
+        </div>
+        <div class="form-group home-grid first-grid">
+            <dot:ComboBox class="group-select" DataSource="{value: Groups}"
+                          SelectedValue="{value: SelectedGroupId}"
+                          ValueMember="Id"
+                          DisplayMember="Name"
+                          SelectionChanged="{command: OnGroupChanged()}" />
+
+            <dot:GridView DataSource="{value: GroupUsers}">
+              <Columns>
+                <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />
+                <dot:GridViewTextColumn ValueBinding="{value: FullName}" HeaderText="Name" Width="150px" />
+                <dot:GridViewTemplateColumn HeaderText="Action" Width="60px">
+                    <ContentTemplate>
+                        <dot:Button Click="{command: _parent.RemoveUser(Id)}" Text="Remove" class="action-button" />
+                    </ContentTemplate>
+                </dot:GridViewTemplateColumn>
+              </Columns>
+            </dot:GridView>
+
+            <dot:DataPager DataSet="{value: GroupUsers}" class="pagination" RenderLinkForCurrentPage="true">
+              <FirstPageTemplate>
+                <button>First</button>
+              </FirstPageTemplate>
+              <LastPageTemplate>
+                <button>Last</button>
+              </LastPageTemplate>
+              <NextPageTemplate>Next</NextPageTemplate>
+              <PreviousPageTemplate>Previous</PreviousPageTemplate>
+            </dot:DataPager>
+        </div>
+    </div>
+</dot:Content>

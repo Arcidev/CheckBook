@@ -104,11 +104,13 @@
   <ItemGroup>
     <Compile Include="Data\GroupData.cs" />
     <Compile Include="Data\PaymentData.cs" />
+    <Compile Include="Data\PaymentHistoryData.cs" />
     <Compile Include="Data\UserInfoData.cs" />
     <Compile Include="Context\AppContext.cs" />
     <Compile Include="Data\UserData.cs" />
     <Compile Include="Data\UserPaymentData.cs" />
     <Compile Include="Enums\CreateUserResult.cs" />
+    <Compile Include="Enums\PaymentHistoryType.cs" />
     <Compile Include="Migrations\201510151343210_InitialCreate.cs" />
     <Compile Include="Migrations\201510151343210_InitialCreate.Designer.cs">
       <DependentUpon>201510151343210_InitialCreate.cs</DependentUpon>
@@ -133,9 +135,18 @@
     <Compile Include="Migrations\201510241756248_update05.Designer.cs">
       <DependentUpon>201510241756248_update05.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201510291432248_update06.cs" />
+    <Compile Include="Migrations\201510291432248_update06.Designer.cs">
+      <DependentUpon>201510291432248_update06.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201510291435519_update07.cs" />
+    <Compile Include="Migrations\201510291435519_update07.Designer.cs">
+      <DependentUpon>201510291435519_update07.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\Payment.cs" />
+    <Compile Include="Model\PaymentHistory.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserGroups.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -168,6 +179,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510241756248_update05.resx">
       <DependentUpon>201510241756248_update05.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510291432248_update06.resx">
+      <DependentUpon>201510291432248_update06.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201510291435519_update07.resx">
+      <DependentUpon>201510291435519_update07.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

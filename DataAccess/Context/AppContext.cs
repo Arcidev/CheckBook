@@ -13,6 +13,8 @@ namespace DataAccess.Context
 
         public DbSet<Payment> Payments { get; set; }
 
+        public DbSet<PaymentHistory> PaymentHistories { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Payment>()
@@ -25,6 +27,18 @@ namespace DataAccess.Context
                         .HasRequired(p => p.Debtor)
                         .WithMany()
                         .HasForeignKey(p => p.DebtorId)
+                        .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PaymentHistory>()
+                        .HasRequired(p => p.Debtor)
+                        .WithMany()
+                        .HasForeignKey(p => p.DebtorId)
+                        .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<PaymentHistory>()
+                        .HasRequired(p => p.Payer)
+                        .WithMany()
+                        .HasForeignKey(p => p.PayerId)
                         .WillCascadeOnDelete(false);
         }
     }

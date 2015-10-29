@@ -28,6 +28,7 @@ namespace CheckBook
             dotvvmConfiguration.RouteTable.Add("Home", "Home", "Views/home.dothtml", null);
             dotvvmConfiguration.RouteTable.Add("Register", "Register", "Views/register.dothtml", null);
             dotvvmConfiguration.RouteTable.Add("Payment", "Payment", "Views/payment.dothtml", null);
+            dotvvmConfiguration.RouteTable.Add("Manager", "Manager", "Views/manager.dothtml", null);
 
             // use static files
             app.UseStaticFiles(new StaticFileOptions()

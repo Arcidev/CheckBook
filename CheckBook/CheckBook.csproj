@@ -131,6 +131,7 @@
     <Compile Include="ViewModels\HeaderViewModel.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
+    <Compile Include="ViewModels\ManagerViewModel.cs" />
     <Compile Include="ViewModels\PaymentViewModel.cs" />
     <Compile Include="ViewModels\RegisterViewModel.cs" />
   </ItemGroup>
@@ -161,6 +162,7 @@
     <Content Include="Views\register.dothtml" />
     <Content Include="Views\header.dotmaster" />
     <Content Include="Views\payment.dothtml" />
+    <Content Include="Views\manager.dothtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

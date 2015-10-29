@@ -85,12 +85,12 @@ namespace DataAccess.Services
             }
         }
 
-        private static GroupData ToGroupData(Group group)
+        public static GroupData ToGroupData(Group group)
         {
             return new GroupData() { Id = group.Id, Name = group.Name };
         }
 
-        private static UserPaymentData ToUserPaymentData(User user)
+        public static UserPaymentData ToUserPaymentData(User user)
         {
             return new UserPaymentData()
             {

@@ -57,7 +57,7 @@ namespace DataAccess.Services
             }
         }
 
-        private static UserData ToUserData(User user)
+        public static UserData ToUserData(User user)
         {
             return new UserData()
             {
@@ -70,7 +70,7 @@ namespace DataAccess.Services
             };
         }
 
-        private static UserInfoData ToUserInfoData(User user)
+        public static UserInfoData ToUserInfoData(User user)
         {
             return new UserInfoData()
             {

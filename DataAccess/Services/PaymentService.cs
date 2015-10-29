@@ -1,6 +1,8 @@
 ﻿using DataAccess.Context;
 using DataAccess.Data;
+using DataAccess.Enums;
 using DataAccess.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -15,7 +17,18 @@ namespace DataAccess.Services
                 var debtorIds = debtors.Select(y => y.UserId);
                 var duplicateDebtors = db.Payments.Where(x => x.UserId == payerId && debtorIds.Contains(x.DebtorId)).ToList();
                 foreach (var duplicateDebtor in duplicateDebtors)
+                {
                     duplicateDebtor.Value += debtors.First(x => x.UserId == duplicateDebtor.DebtorId).Value + value;
+
+                    db.PaymentHistories.Add(new PaymentHistory()
+                    {
+                        PayerId = payerId,
+                        DebtorId = duplicateDebtor.DebtorId,
+                        Value = value,
+                        Date = DateTime.Now,
+                        Type = PaymentHistoryType.Debt
+                    });
+                }
 
                 var duplicateIds = duplicateDebtors.Select(x => x.DebtorId);
                 foreach (var debtorId in debtorIds.Where(x => !duplicateIds.Contains(x)))
@@ -29,6 +42,15 @@ namespace DataAccess.Services
                         UserId = payerId,
                         DebtorId = debtorId,
                         Value = val
+                    });
+
+                    db.PaymentHistories.Add(new PaymentHistory()
+                    {
+                        PayerId = payerId,
+                        DebtorId = debtorId,
+                        Value = value,
+                        Date = DateTime.Now,
+                        Type = PaymentHistoryType.Debt
                     });
                 }
 
@@ -67,11 +89,29 @@ namespace DataAccess.Services
                 else
                     payment.Value -= value;
 
+                db.PaymentHistories.Add(new PaymentHistory()
+                {
+                    PayerId = payerId,
+                    DebtorId = debtorId,
+                    Value = value,
+                    Date = DateTime.Now,
+                    Type = PaymentHistoryType.Payment
+                });
+
                 db.SaveChanges();
             }
         }
 
-        private static UserPaymentData ToUserPaymentData(Payment payment, bool debtor)
+        public static List<PaymentHistoryData> GetPaymentHistory(int userId)
+        {
+            using (var db = new AppContext())
+            {
+                var paymentHistory = db.PaymentHistories.Where(x => x.DebtorId == userId || x.PayerId == userId).ToList();
+                return paymentHistory.Select(x => ToPaymentHistoryData(x, userId)).ToList();
+            }
+        }
+
+        public static UserPaymentData ToUserPaymentData(Payment payment, bool debtor)
         {
             var user = debtor ? payment.Debtor : payment.User;
             return new UserPaymentData()
@@ -79,6 +119,22 @@ namespace DataAccess.Services
                 Name = string.Format("{0} {1}", user.FirstName, user.LastName),
                 Value = payment.Value,
                 UserId = user.Id
+            };
+        }
+
+        public static PaymentHistoryData ToPaymentHistoryData(PaymentHistory history, int userId)
+        {
+            return new PaymentHistoryData()
+            {
+                Id = history.Id,
+                PayerId = history.PayerId,
+                DebtorId = history.DebtorId,
+                UserId = userId,
+                Value = history.Value,
+                Date = history.Date,
+                Type = history.Type,
+                Debtor = UserService.ToUserInfoData(history.Debtor),
+                Payer = UserService.ToUserInfoData(history.Payer)
             };
         }
     }
