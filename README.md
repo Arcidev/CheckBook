@@ -5,5 +5,7 @@
 
 ## Default Data
 You can use default user created by migration seed that is assigned to an administration role
+
 Email: admin@admin.com
+  
 Password: Pa$$w0rd
