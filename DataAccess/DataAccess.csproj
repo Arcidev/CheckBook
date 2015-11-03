@@ -35,8 +35,8 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotVVM.Framework, Version=0.8.6.0, Culture=neutral, PublicKeyToken=23f3607db32275da, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotVVM.0.8.6.0-pre\lib\net451\DotVVM.Framework.dll</HintPath>
+    <Reference Include="DotVVM.Framework, Version=0.8.6.5, Culture=neutral, PublicKeyToken=23f3607db32275da, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotVVM.0.8.6.5-pre\lib\net451\DotVVM.Framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -111,6 +111,7 @@
     <Compile Include="Data\UserPaymentData.cs" />
     <Compile Include="Enums\CreateUserResult.cs" />
     <Compile Include="Enums\PaymentHistoryType.cs" />
+    <Compile Include="Enums\UserRoles.cs" />
     <Compile Include="Migrations\201510151343210_InitialCreate.cs" />
     <Compile Include="Migrations\201510151343210_InitialCreate.Designer.cs">
       <DependentUpon>201510151343210_InitialCreate.cs</DependentUpon>
@@ -142,6 +143,10 @@
     <Compile Include="Migrations\201510291435519_update07.cs" />
     <Compile Include="Migrations\201510291435519_update07.Designer.cs">
       <DependentUpon>201510291435519_update07.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201511031216470_update08.cs" />
+    <Compile Include="Migrations\201511031216470_update08.Designer.cs">
+      <DependentUpon>201511031216470_update08.cs</DependentUpon>
     </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Group.cs" />
@@ -185,6 +190,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201510291435519_update07.resx">
       <DependentUpon>201510291435519_update07.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201511031216470_update08.resx">
+      <DependentUpon>201511031216470_update08.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>

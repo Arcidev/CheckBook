@@ -18,9 +18,6 @@ namespace DataAccess.Services
 
         public static GroupData CreateGroup(string name, List<int> userIds)
         {
-            if (name == null)
-                name = "";
-
             using (var db = new AppContext())
             {
                 var group = db.Groups.Add(new Group() { Name = name });

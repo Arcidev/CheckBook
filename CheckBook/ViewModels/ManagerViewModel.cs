@@ -4,9 +4,12 @@ using DotVVM.Framework.Controls;
 using DataAccess.Data;
 using System.Threading.Tasks;
 using DataAccess.Services;
+using DataAccess.Enums;
+using DotVVM.Framework.Runtime.Filters;
 
 namespace CheckBook.ViewModels
 {
+    [Authorize("Admin")]
 	public class ManagerViewModel : HeaderViewModel
 	{
         public GridViewDataSet<UserInfoData> GroupUsers { get; private set; }
@@ -17,19 +20,32 @@ namespace CheckBook.ViewModels
 
         public List<int> SelectedUsers { get; set; }
 
+        public UserData User { get; set; }
+
+        public string Password { get; set; }
+
+        public string PasswordAgain { get; set; }
+
+        public string GroupName { get; set; }
+
+        public string ErrorMessage { get; set; }
+
         public int SelectedGroupId { get; set; }
 
         public bool GroupPopupVisible { get; private set; }
 
+        public bool UserPopupVisible { get; private set; }
+
         public bool IsExistingGroup { get; private set; }
 
-        public string GroupName { get; set; }
+        public bool HasAdminRole { get; set; }
 
         public ManagerViewModel()
         {
             SelectedGroupId = -1;
             GroupUsers = new GridViewDataSet<UserInfoData>() { PageSize = 20 };
             SelectedUsers = new List<int>();
+            User = new UserData();
         }
 
         public override Task PreRender()
@@ -48,9 +64,10 @@ namespace CheckBook.ViewModels
 
         public void ShowGroupPopup()
         {
+            ErrorMessage = "";
             IsExistingGroup = false;
-            if (GroupName == null || GroupName.Any())
-                GroupName = "";
+            if (GroupName.Any())
+                GroupName = null;
             if (SelectedUsers.Any())
                 SelectedUsers.Clear();
             GroupPopupVisible = !GroupPopupVisible;
@@ -58,6 +75,12 @@ namespace CheckBook.ViewModels
 
         public void ManageGroup()
         {
+            if (string.IsNullOrWhiteSpace(GroupName))
+            {
+                ErrorMessage = "Group name must contain some value";
+                return;
+            }
+
             GroupData group = null;
             if (IsExistingGroup)
             {
@@ -108,14 +131,51 @@ namespace CheckBook.ViewModels
 
         public void ManageGroupPopup()
         {
-            var group = Groups.FirstOrDefault(x => x.Id == SelectedGroupId);
-            if (group == null)
-                return;
-
-            GroupName = group.Name;
+            ErrorMessage = "";
+            GroupName = Groups.First(x => x.Id == SelectedGroupId).Name;
             SelectedUsers = GroupUsers.Items.Select(x => x.Id).ToList();
             IsExistingGroup = true;
             GroupPopupVisible = true;
+        }
+
+        public void ShowUserPopup()
+        {
+            UserPopupVisible = !UserPopupVisible;
+            if (UserPopupVisible)
+            {
+                ErrorMessage = null;
+                User.FirstName = null;
+                User.LastName = null;
+                User.Email = null;
+                Password = null;
+                PasswordAgain = null;
+                HasAdminRole = false;
+            }
+        }
+
+        public void CreateUser()
+        {
+            if (Password != PasswordAgain)
+            {
+                ErrorMessage = "Password and Password Again must be the same and must contain some value";
+                return;
+            }
+
+            User.Password = Password;
+            User.UserRole = HasAdminRole ? UserRoles.Admin : UserRoles.User;
+            if (!User.HasValidData)
+            {
+                ErrorMessage = "All fields must contain some value";
+                return;
+            }
+
+            if (UserService.CreateUser(User) != CreateUserResult.Success)
+            {
+                ErrorMessage = "User with this email adress already exists";
+                return;
+            }
+            
+            ShowUserPopup();
         }
 
         private List<UserInfoData> GetGroupUsers(int groupId)

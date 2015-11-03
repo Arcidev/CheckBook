@@ -1,9 +1,9 @@
 namespace DataAccess.Migrations
 {
-    using System;
-    using System.Data.Entity;
+    using Security;
+    using Enums;
+    using Model;
     using System.Data.Entity.Migrations;
-    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<DataAccess.Context.AppContext>
     {
@@ -15,18 +15,21 @@ namespace DataAccess.Migrations
 
         protected override void Seed(DataAccess.Context.AppContext context)
         {
-            //  This method will be called after migrating to the latest version.
+            context.Groups.AddOrUpdate(
+                new Group { Name = "Test group" },
+                new Group { Name = "Test group 2" });
 
-            //  You can use the DbSet<T>.AddOrUpdate() helper extension method 
-            //  to avoid creating duplicate seed data. E.g.
-            //
-            //    context.People.AddOrUpdate(
-            //      p => p.FullName,
-            //      new Person { FullName = "Andrew Peters" },
-            //      new Person { FullName = "Brice Lambson" },
-            //      new Person { FullName = "Rowan Miller" }
-            //    );
-            //
+            var password = PasswordHelper.CreateHash("Pa$$w0rd");
+            context.Users.AddOrUpdate(
+                new User
+                {
+                    FirstName = "Admin",
+                    LastName = "Admin",
+                    Email = "admin@admin.com",
+                    UserRole = UserRoles.Admin,
+                    PasswordHash = password.PasswordHash,
+                    PasswordSalt = password.PasswordSalt
+                });
         }
     }
 }

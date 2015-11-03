@@ -19,6 +19,11 @@
                 <dot:Literal Text="Password:"/>
                 <dot:TextBox class="login-input" Text="{value: Password}" Type="Password" />
             </div>
+            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
+                <dot:Literal Text="Error:"/>
+                <br />
+                <dot:Literal Text="{value: ErrorMessage}"/>
+            </div>
             <div class="form-group">
                 <dot:Button Click="{command: Login()}" Text="Login" class="button login-button-left" />
                 <dot:Button Click="{command: Register()}" Text="Register" class="button login-button-right" />

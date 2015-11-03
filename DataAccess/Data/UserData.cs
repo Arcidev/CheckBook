@@ -1,4 +1,5 @@
-﻿
+﻿using DataAccess.Enums;
+
 namespace DataAccess.Data
 {
     public class UserData
@@ -16,6 +17,8 @@ namespace DataAccess.Data
         public string PasswordHash { get; set; }
 
         public string Password { get; set; }
+
+        public UserRoles UserRole { get; set; }
 
         public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
 
@@ -37,6 +40,11 @@ namespace DataAccess.Data
                     return false;
                 }
             }
+        }
+
+        public UserData()
+        {
+            UserRole = UserRoles.User;
         }
     }
 }

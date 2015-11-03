@@ -1,13 +1,15 @@
 ﻿using DataAccess.Data;
 using DataAccess.Services;
 using DotVVM.Framework.Controls;
+using DotVVM.Framework.Runtime.Filters;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace CheckBook.ViewModels
 {
-	public class PaymentViewModel : HeaderViewModel
+    [Authorize]
+    public class PaymentViewModel : HeaderViewModel
 	{
         public GridViewDataSet<UserPaymentData> Debtors { get; private set; }
 
@@ -18,6 +20,8 @@ namespace CheckBook.ViewModels
         public List<GroupData> Groups { get; set; }
 
         public List<UserInfoData> Users { get; private set; }
+
+        public string ErrorMessage { get; set; }
 
         public int UserToPayId { get; set; }
 
@@ -56,7 +60,10 @@ namespace CheckBook.ViewModels
         public void ShowPaymentPopup()
         {
             if (!PaymentPopupVisible && !Groups.Any())
+            {
+                ErrorMessage = "No group found in the system";
                 return;
+            }
 
             PaymentPopupVisible = !PaymentPopupVisible;
             if (PaymentPopupVisible)
@@ -83,13 +90,9 @@ namespace CheckBook.ViewModels
 
         public void ShowPayDebtPopup(int userId)
         {
-            var debtor = Debtors.Items.FirstOrDefault(u => u.UserId == userId);
-            if (debtor == null)
-                return;
-
             DebtorId = userId;
             PayDebtVisible = true;
-            DebtValue = debtor.Value;
+            DebtValue = Debtors.Items.First(u => u.UserId == userId).Value;
         }
 
         public void RemovePayment()

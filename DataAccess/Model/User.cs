@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using DataAccess.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Model
 {
@@ -26,5 +27,7 @@ namespace DataAccess.Model
         [Required]
         [StringLength(100)]
         public string PasswordHash { get; set; }
+
+        public UserRoles UserRole { get; set; }
     }
 }

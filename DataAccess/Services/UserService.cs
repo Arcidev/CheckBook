@@ -14,6 +14,7 @@ namespace DataAccess.Services
         {
             using (var db = new AppContext())
             {
+                email = email.Trim().ToLower();
                 var user = db.Users.FirstOrDefault(x => x.Email == email);
                 if (user == null)
                     return null;
@@ -24,12 +25,10 @@ namespace DataAccess.Services
 
         public static CreateUserResult CreateUser(UserData user)
         {
-            if (!user.HasValidData)
-                return CreateUserResult.CannotCreate;
-
             using (var db = new AppContext())
             {
-                var dbUser = db.Users.FirstOrDefault(x => x.Email == user.Email);
+                var email = user.Email.Trim().ToLower();
+                var dbUser = db.Users.FirstOrDefault(x => x.Email == email);
                 if (dbUser != null)
                     return CreateUserResult.UserAlreadyExists;
 
@@ -37,11 +36,12 @@ namespace DataAccess.Services
 
                 db.Users.Add(new User()
                 {
-                    Email = user.Email,
+                    Email = email,
                     FirstName = user.FirstName,
                     LastName = user.LastName,
                     PasswordSalt = passwordData.PasswordSalt,
-                    PasswordHash = passwordData.PasswordHash
+                    PasswordHash = passwordData.PasswordHash,
+                    UserRole = user.UserRole
                 });
 
                 db.SaveChanges();
@@ -66,7 +66,8 @@ namespace DataAccess.Services
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 PasswordHash = user.PasswordHash,
-                PasswordSalt = user.PasswordSalt
+                PasswordSalt = user.PasswordSalt,
+                UserRole = user.UserRole
             };
         }
 
