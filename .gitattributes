@@ -1,3 +1,7 @@
+# Ignore external libraries from statistics
+CheckBook/Style/bootstrap/* linguist-vendored
+CheckBook/Style/MsModernButtons/* linguist-vendored
+
 # Lineendings
 *.sln        eol=crlf
 *.vcproj     eol=crlf
