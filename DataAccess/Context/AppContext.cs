@@ -11,34 +11,28 @@ namespace DataAccess.Context
 
         public DbSet<UserGroups> UsersGroups { get; set; }
 
-        public DbSet<Payment> Payments { get; set; }
+        public DbSet<PaymentGroup> PaymentGroups { get; set; }
 
-        public DbSet<PaymentHistory> PaymentHistories { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Payment>()
-                        .HasRequired(p => p.User)
+                        .HasRequired(p => p.Debtor)
                         .WithMany()
-                        .HasForeignKey(p => p.UserId)
+                        .HasForeignKey(p => p.DebtorId)
                         .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Payment>()
-                        .HasRequired(p => p.Debtor)
-                        .WithMany()
-                        .HasForeignKey(p => p.DebtorId)
-                        .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<PaymentHistory>()
-                        .HasRequired(p => p.Debtor)
-                        .WithMany()
-                        .HasForeignKey(p => p.DebtorId)
-                        .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<PaymentHistory>()
                         .HasRequired(p => p.Payer)
                         .WithMany()
                         .HasForeignKey(p => p.PayerId)
+                        .WillCascadeOnDelete(false);
+
+            modelBuilder.Entity<Payment>()
+                        .HasRequired(p => p.PaymentGroup)
+                        .WithMany()
+                        .HasForeignKey(p => p.PaymentGroupId)
                         .WillCascadeOnDelete(false);
         }
     }

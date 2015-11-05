@@ -66,7 +66,7 @@ namespace CheckBook.ViewModels
         {
             ErrorMessage = "";
             IsExistingGroup = false;
-            if (GroupName.Any())
+            if (GroupName != null)
                 GroupName = null;
             if (SelectedUsers.Any())
                 SelectedUsers.Clear();

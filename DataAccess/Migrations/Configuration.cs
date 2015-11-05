@@ -4,12 +4,13 @@ namespace DataAccess.Migrations
     using Enums;
     using Model;
     using System.Data.Entity.Migrations;
+    using System.Linq;
 
     internal sealed class Configuration : DbMigrationsConfiguration<DataAccess.Context.AppContext>
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = false;
+            AutomaticMigrationsEnabled = true;
             ContextKey = "DataAccess.Context.AppContext";
         }
 
@@ -20,16 +21,19 @@ namespace DataAccess.Migrations
                 new Group { Name = "Test group 2" });
 
             var password = PasswordHelper.CreateHash("Pa$$w0rd");
-            context.Users.AddOrUpdate(
-                new User
-                {
-                    FirstName = "Admin",
-                    LastName = "Admin",
-                    Email = "admin@admin.com",
-                    UserRole = UserRoles.Admin,
-                    PasswordHash = password.PasswordHash,
-                    PasswordSalt = password.PasswordSalt
-                });
+            if (!context.Users.Any(x => x.Email == "admin@admin.com"))
+            {
+                context.Users.Add(
+                    new User
+                    {
+                        FirstName = "Admin",
+                        LastName = "Admin",
+                        Email = "admin@admin.com",
+                        UserRole = UserRoles.Admin,
+                        PasswordHash = password.PasswordHash,
+                        PasswordSalt = password.PasswordSalt
+                    });
+            }
         }
     }
 }

@@ -103,8 +103,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Data\GroupData.cs" />
+    <Compile Include="Data\PaymentGroupData.cs" />
     <Compile Include="Data\PaymentData.cs" />
-    <Compile Include="Data\PaymentHistoryData.cs" />
     <Compile Include="Data\UserInfoData.cs" />
     <Compile Include="Context\AppContext.cs" />
     <Compile Include="Data\UserData.cs" />
@@ -112,46 +112,10 @@
     <Compile Include="Enums\CreateUserResult.cs" />
     <Compile Include="Enums\PaymentHistoryType.cs" />
     <Compile Include="Enums\UserRoles.cs" />
-    <Compile Include="Migrations\201510151343210_InitialCreate.cs" />
-    <Compile Include="Migrations\201510151343210_InitialCreate.Designer.cs">
-      <DependentUpon>201510151343210_InitialCreate.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510151548023_update01.cs" />
-    <Compile Include="Migrations\201510151548023_update01.Designer.cs">
-      <DependentUpon>201510151548023_update01.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510171417293_update02.cs" />
-    <Compile Include="Migrations\201510171417293_update02.Designer.cs">
-      <DependentUpon>201510171417293_update02.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510171435251_update03.cs" />
-    <Compile Include="Migrations\201510171435251_update03.Designer.cs">
-      <DependentUpon>201510171435251_update03.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510222155060_update04.cs" />
-    <Compile Include="Migrations\201510222155060_update04.Designer.cs">
-      <DependentUpon>201510222155060_update04.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510241756248_update05.cs" />
-    <Compile Include="Migrations\201510241756248_update05.Designer.cs">
-      <DependentUpon>201510241756248_update05.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510291432248_update06.cs" />
-    <Compile Include="Migrations\201510291432248_update06.Designer.cs">
-      <DependentUpon>201510291432248_update06.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201510291435519_update07.cs" />
-    <Compile Include="Migrations\201510291435519_update07.Designer.cs">
-      <DependentUpon>201510291435519_update07.cs</DependentUpon>
-    </Compile>
-    <Compile Include="Migrations\201511031216470_update08.cs" />
-    <Compile Include="Migrations\201511031216470_update08.Designer.cs">
-      <DependentUpon>201511031216470_update08.cs</DependentUpon>
-    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Group.cs" />
+    <Compile Include="Model\PaymentGroup.cs" />
     <Compile Include="Model\Payment.cs" />
-    <Compile Include="Model\PaymentHistory.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Model\UserGroups.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -165,35 +129,6 @@
     <None Include="App.config" />
     <None Include="dotvvm.json" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="Migrations\201510151343210_InitialCreate.resx">
-      <DependentUpon>201510151343210_InitialCreate.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510151548023_update01.resx">
-      <DependentUpon>201510151548023_update01.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510171417293_update02.resx">
-      <DependentUpon>201510171417293_update02.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510171435251_update03.resx">
-      <DependentUpon>201510171435251_update03.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510222155060_update04.resx">
-      <DependentUpon>201510222155060_update04.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510241756248_update05.resx">
-      <DependentUpon>201510241756248_update05.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510291432248_update06.resx">
-      <DependentUpon>201510291432248_update06.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201510291435519_update07.resx">
-      <DependentUpon>201510291435519_update07.cs</DependentUpon>
-    </EmbeddedResource>
-    <EmbeddedResource Include="Migrations\201511031216470_update08.resx">
-      <DependentUpon>201511031216470_update08.cs</DependentUpon>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />

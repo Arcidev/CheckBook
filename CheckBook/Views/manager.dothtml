@@ -4,11 +4,6 @@
 <dot:Content ContentPlaceHolderID="PageContent">
     <div Visible="{value: GroupPopupVisible}">
         <div class="white-content">
-            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
-                <dot:Literal Text="Error:"/>
-                <br />
-                <dot:Literal Text="{value: ErrorMessage}"/>
-            </div>
             <div class="form-group">
                 <dot:Literal Text="Name:"/>
                 <dot:TextBox class="popup-input" Text="{value: GroupName}" />
@@ -21,20 +16,20 @@
                     </ItemTemplate>
                 </dot:Repeater>
             </div>
+            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
+                <dot:Literal Text="Error:"/>
+                <br />
+                <dot:Literal Text="{value: ErrorMessage}"/>
+            </div>
             <div class="form-group">
-                <dot:Button Click="{command: ManageGroup()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="button-120 popup-button-left" />
-                <dot:Button Click="{command: ShowGroupPopup()}" Text="Close" class="button-120 popup-button-right"></dot:Button>
+                <dot:Button Click="{command: ManageGroup()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="m-btn blue button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowGroupPopup()}" Text="Close" class="m-btn red button-120 popup-button-right"></dot:Button>
             </div>
         </div>
         <div class="black-overlay"></div>
     </div>
     <div Visible="{value: UserPopupVisible}">
         <div class="white-content">
-            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
-                <dot:Literal Text="Error:"/>
-                <br />
-                <dot:Literal Text="{value: ErrorMessage}"/>
-            </div>
             <div class="form-group">
                 <dot:Literal Text="Name:"/>
                 <dot:TextBox class="login-input" Text="{value: User.FirstName}" />
@@ -59,18 +54,24 @@
                 <dot:Literal Text="Is Admin:"/>
                 <dot:CheckBox class="input-right" Checked="{value: HasAdminRole}" />
             </div>
+            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
+                <dot:Literal Text="Error:"/>
+                <br />
+                <dot:Literal Text="{value: ErrorMessage}"/>
+            </div>
             <div class="form-group">
-                <dot:Button Click="{command: CreateUser()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="button-120 popup-button-left" />
-                <dot:Button Click="{command: ShowUserPopup()}" Text="Close" class="button-120 popup-button-right"></dot:Button>
+                <dot:Button Click="{command: CreateUser()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="m-btn blue button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowUserPopup()}" Text="Close" class="m-btn red button-120 popup-button-right"></dot:Button>
             </div>
         </div>
         <div class="black-overlay"></div>
     </div>
     <div class="page">
         <div class="form-group">
-            <dot:Button Text="Create Group" class="button-120 button-left" Click="{command: ShowGroupPopup()}" />
-            <dot:Button Text="Manage Group" class="button-120 button-left" Click="{command: ManageGroupPopup()}" />
-            <dot:Button Text="Add User" class="button-120 button-left" Click="{command: ShowUserPopup()}" />
+            <dot:Button Text="Create Group" class="m-btn black button-120 button-left" Click="{command: ShowGroupPopup()}" />
+            <dot:Button Text="Manage Group" class="m-btn black button-120 button-left" Click="{command: ManageGroupPopup()}" />
+            <dot:Button Text="Add User" class="m-btn black button-120 button-left" Click="{command: ShowUserPopup()}" />
+            <br />
         </div>
         <div class="form-group home-grid first-grid">
             <dot:ComboBox class="group-select" DataSource="{value: Groups}"
@@ -78,7 +79,7 @@
                           ValueMember="Id"
                           DisplayMember="Name"
                           SelectionChanged="{command: OnGroupChanged()}" />
-
+            <br />
             <dot:GridView DataSource="{value: GroupUsers}">
               <Columns>
                 <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />

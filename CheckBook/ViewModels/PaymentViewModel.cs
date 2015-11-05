@@ -23,6 +23,8 @@ namespace CheckBook.ViewModels
 
         public string ErrorMessage { get; set; }
 
+        public string PaymentDescription { get; set; }
+
         public int UserToPayId { get; set; }
 
         public int DebtorId { get; private set; }
@@ -51,8 +53,7 @@ namespace CheckBook.ViewModels
             Users = UserService.GetUsersInfo();
             Groups = GroupService.GetGroups();
 
-            UpdateDebtors();
-            UpdatePayers();
+            PaymentService.LoadDebtorsAndPayers(GetUserId(), Payers, Debtors);
 
             return base.PreRender();
         }
@@ -65,6 +66,7 @@ namespace CheckBook.ViewModels
                 return;
             }
 
+            ErrorMessage = null;
             PaymentPopupVisible = !PaymentPopupVisible;
             if (PaymentPopupVisible)
             {
@@ -77,9 +79,15 @@ namespace CheckBook.ViewModels
 
         public void CreatePayment()
         {
-            PaymentService.CreatePayment(UserToPayId, PaymentGroupUsers, SharedPayment);
+            if (string.IsNullOrWhiteSpace(PaymentDescription))
+            {
+                ErrorMessage = "You have to provide a description";
+                return;
+            }
+
+            PaymentService.CreatePayment(UserToPayId, PaymentDescription, PaymentGroupUsers, SharedPayment);
             PaymentPopupVisible = false;
-            UpdateDebtors();
+            PaymentService.LoadDebtorsAndPayers(GetUserId(), Payers, Debtors);
         }
 
         public void HidePayDebtPopup()
@@ -98,12 +106,7 @@ namespace CheckBook.ViewModels
         public void RemovePayment()
         {
             PaymentService.PayDebt(GetUserId(), DebtorId, DebtValue);
-            var debtor = Debtors.Items.FirstOrDefault(u => u.UserId == DebtorId);
-            if (debtor != null)
-            {
-                Debtors.Items.Remove(debtor);
-                Debtors.TotalItemsCount--;
-            }
+            PaymentService.LoadDebtorsAndPayers(GetUserId(), Payers, Debtors);
 
             HidePayDebtPopup();
         }
@@ -111,22 +114,6 @@ namespace CheckBook.ViewModels
         public void OnPaymentGroupChanged()
         {
             PaymentGroupUsers = GroupService.GetGroupUsersForPayment(PaymentGroupId);
-        }
-
-        private void UpdateDebtors()
-        {
-            var payments = PaymentService.GetDebtors(GetUserId());
-            Debtors.Items = payments;
-            Debtors.PageIndex = 0;
-            Debtors.TotalItemsCount = payments.Count;
-        }
-
-        private void UpdatePayers()
-        {
-            var payments = PaymentService.GetPayers(GetUserId());
-            Payers.Items = payments;
-            Payers.PageIndex = 0;
-            Payers.TotalItemsCount = payments.Count;
         }
     }
 }

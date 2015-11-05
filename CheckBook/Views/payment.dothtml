@@ -5,6 +5,10 @@
     <div Visible="{value: PaymentPopupVisible}">
         <div class="white-content">
             <div class="form-group">
+                <dot:Literal Text="Description:"/>
+                <dot:TextBox class="popup-input" Text="{value: PaymentDescription}" />
+            </div>
+            <div class="form-group">
                 <dot:Literal Text="Shared Price:"/>
                 <dot:TextBox class="popup-input" Text="{value: SharedPayment}" />
             </div>
@@ -28,15 +32,21 @@
                 <br />
                 <dot:Repeater DataSource="{value: PaymentGroupUsers}">
                     <ItemTemplate>
-                        <dot:Literal Text="{value: Name}"/>
-                        <dot:TextBox class="popup-input" Text="{value: Value}" />
-                        <br />
+                        <div class="form-group">
+                            <dot:Literal Text="{value: Name}"/>
+                            <dot:TextBox class="popup-input" Text="{value: Value}" />
+                        </div>
                     </ItemTemplate>
                 </dot:Repeater>
             </div>
+            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
+                <dot:Literal Text="Error:"/>
+                <br />
+                <dot:Literal Text="{value: ErrorMessage}"/>
+            </div>
             <div class="form-group">
-                <dot:Button Text="Create" Click="{command: CreatePayment()}" class="button-120 popup-button-left" />
-                <dot:Button Click="{command: ShowPaymentPopup()}" Text="Close" class="button-120 popup-button-right"></dot:Button>
+                <dot:Button Text="Create" Click="{command: CreatePayment()}" class="m-btn blue button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowPaymentPopup()}" Text="Close" class="m-btn red button-120 popup-button-right"></dot:Button>
             </div>
         </div>
         <div class="black-overlay"></div>
@@ -48,18 +58,20 @@
                 <dot:TextBox class="popup-input" Text="{value: DebtValue}" />
             </div>
             <div class="form-group">
-                <dot:Button Click="{command: RemovePayment()}" Text="OK" class="button-120 popup-button-left" />
-                <dot:Button Click="{command: HidePayDebtPopup()}" Text="Close" class="button-120 popup-button-right"></dot:Button>
+                <dot:Button Click="{command: RemovePayment()}" Text="OK" class="m-btn blue button-120 popup-button-left" />
+                <dot:Button Click="{command: HidePayDebtPopup()}" Text="Close" class="m-btn red button-120 popup-button-right"></dot:Button>
             </div>
         </div>
         <div class="black-overlay"></div>
     </div>
     <div class="page">
         <div class="form-group">
-            <dot:Button Text="Add New" Click="{command: ShowPaymentPopup()}" class="button-120 button-left" />
+            <dot:Button Text="Add New" Click="{command: ShowPaymentPopup()}" class="m-btn black button-120 button-left" />
+            <br />
         </div>
         <div class="form-group home-grid first-grid">
             <dot:Literal Text="Debtors:"/>
+            <br />
             <dot:GridView DataSource="{value: Debtors}">
               <Columns>
                 <dot:GridViewTextColumn ValueBinding="{value: UserId}" HeaderText="Id" Width="40px" />
@@ -86,6 +98,7 @@
         </div>
         <div class="form-group home-grid">
             <dot:Literal Text="Payers:"/>
+            <br />
             <dot:GridView DataSource="{value: Payers}">
               <Columns>
                 <dot:GridViewTextColumn ValueBinding="{value: UserId}" HeaderText="Id" Width="40px" />

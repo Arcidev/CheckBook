@@ -11,13 +11,6 @@ namespace DataAccess.Data
 
         public decimal Value { get; set; }
 
-        public UserPaymentData(UserInfoData user, PaymentData payment)
-        {
-            Name = user.FullName;
-            UserId = user.Id;
-            Value = payment.Value;
-        }
-
         public UserPaymentData() { }
     }
 }

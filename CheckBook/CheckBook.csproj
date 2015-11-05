@@ -147,6 +147,18 @@
     <Content Include="Style\Default.min.css">
       <DependentUpon>Default.css</DependentUpon>
     </Content>
+    <Content Include="Style\MsModernButtons\bootstrap-responsive.min.css" />
+    <Content Include="Style\MsModernButtons\bootstrap.min.css" />
+    <Content Include="Style\MsModernButtons\m-buttons.css" />
+    <Content Include="Style\MsModernButtons\m-buttons.min.css" />
+    <Content Include="Style\MsModernButtons\m-forms.css" />
+    <Content Include="Style\MsModernButtons\m-forms.min.css" />
+    <Content Include="Style\MsModernButtons\m-icons.css" />
+    <Content Include="Style\MsModernButtons\m-icons.min.css" />
+    <Content Include="Style\MsModernButtons\m-normalize.css" />
+    <Content Include="Style\MsModernButtons\m-normalize.min.css" />
+    <Content Include="Style\MsModernButtons\m-styles.min.css" />
+    <Content Include="Style\MsModernButtons\styles.css" />
     <Content Include="Web.config" />
     <Content Include="Views\login.dothtml" />
     <Content Include="packages.config" />

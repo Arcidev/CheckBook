@@ -32,7 +32,7 @@
                 <dot:TextBox Type="Password" class="login-input" Text="{value: PasswordAgain}" />
             </div>
             <div class="form-group">
-                <dot:Button Click="{command: Register()}" Text="Register" class="button register-button" />
+                <dot:Button Click="{command: Register()}" Text="Register" class="button-small register-button" />
             </div>
         </div>
     </div>

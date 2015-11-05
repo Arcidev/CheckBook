@@ -6,7 +6,6 @@
         <div class="form-group home-grid first-grid">
             <dot:GridView DataSource="{value: PaymentHistory}">
               <Columns>
-                <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />
                 <dot:GridViewTextColumn ValueBinding="{value: DateString}" HeaderText="Date" Width="150px" />
                 <dot:GridViewTextColumn ValueBinding="{value: Action}" HeaderText="Action" />
               </Columns>

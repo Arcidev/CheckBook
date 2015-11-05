@@ -11,7 +11,7 @@
   float: right;
   width: 180px;
 }
-.button {
+.button-small {
   width: 40%;
 }
 .button-120 {
@@ -68,7 +68,7 @@
   transform: translate(-50%, 0);
   -webkit-transform: translate(-50%, 0);
   width: 500px;
-  max-height: 50%;
+  max-height: 70%;
 }
 .home-grid {
   padding-left: 25px;
