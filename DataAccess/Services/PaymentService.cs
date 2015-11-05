@@ -44,24 +44,6 @@ namespace DataAccess.Services
             }
         }
 
-        public static IQueryable<UserPaymentData> GetDebtors(int payerId)
-        {
-            using (var db = new AppContext())
-            {
-                var payments = db.Payments.Where(x => x.PayerId == payerId && x.DebtorId != payerId).GroupBy(x => x.DebtorId).ToList();
-                return payments.Select(x => ToUserPaymentData(x, true)).Where(x => x.Value > 0).ToList().AsQueryable();
-            }
-        }
-
-        public static IQueryable<UserPaymentData> GetPayers(int debtorId)
-        {
-            using (var db = new AppContext())
-            {
-                var payments = db.Payments.Where(x => x.DebtorId == debtorId && x.PayerId != debtorId).GroupBy(x => x.PayerId).ToList();
-                return payments.Select(x => ToUserPaymentData(x, false)).Where(x => x.Value > 0).ToList().AsQueryable();
-            }
-        }
-
         // TODO: Simplify this shit
         public static void LoadDebtorsAndPayers(int userId, GridViewDataSet<UserPaymentData> payersDataSet, GridViewDataSet<UserPaymentData> debtorsDataSet)
         {
@@ -171,18 +153,6 @@ namespace DataAccess.Services
 
                 gridView.LoadFromQueryable(paymentHistory);
             }
-        }
-
-        public static UserPaymentData ToUserPaymentData(IGrouping<int, Payment> paymentGroup, bool debtor)
-        {
-            var paymentHistory = paymentGroup.First();
-            var user = debtor ? paymentHistory.Debtor : paymentHistory.Payer;
-            return new UserPaymentData()
-            {
-                Name = string.Format("{0} {1}", user.FirstName, user.LastName),
-                Value = paymentGroup.Where(x => x.Type == PaymentHistoryType.Debt).Sum(x => x.Value) - paymentGroup.Where(x => x.Type == PaymentHistoryType.Payment).Sum(x => x.Value),
-                UserId = paymentGroup.Key
-            };
         }
     }
 }
