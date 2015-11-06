@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-
+﻿
 namespace DataAccess.Data
 {
     public class PaymentGroupData
@@ -9,8 +7,10 @@ namespace DataAccess.Data
 
         public string Description { get; set; }
 
-        public IEnumerable<PaymentData> Payments { get; set; }
+        public string PayerName { get; set; }
 
-        public decimal Value { get { return Payments.Sum(x => x.Value); } }
+        public decimal Value { get; set; }
+
+        public string ValueText { get { return string.Format("{0} CZK", Value); } }
     }
 }

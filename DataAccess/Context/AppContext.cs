@@ -30,8 +30,8 @@ namespace DataAccess.Context
                         .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Payment>()
-                        .HasRequired(p => p.PaymentGroup)
-                        .WithMany()
+                        .HasOptional(p => p.PaymentGroup)
+                        .WithMany(p => p.Payments)
                         .HasForeignKey(p => p.PaymentGroupId)
                         .WillCascadeOnDelete(false);
         }

@@ -1,33 +1,20 @@
-﻿using DataAccess.Enums;
-
+﻿
 namespace DataAccess.Data
 {
-    public class UserData
+    public class UserData : UserInfoData
     {
-        public int Id { get; set; }
-
-        public string FirstName { get; set; }
-
-        public string LastName { get; set; }
-
-        public string Email { get; set; }
-
         public string PasswordSalt { get; set; }
 
         public string PasswordHash { get; set; }
 
         public string Password { get; set; }
 
-        public UserRoles UserRole { get; set; }
-
-        public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
-
         public bool HasValidData
         {
             get
             {
                 if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) ||
-                    string.IsNullOrWhiteSpace(Password) || string.IsNullOrWhiteSpace(Email))
+                    string.IsNullOrWhiteSpace(Email) || (string.IsNullOrWhiteSpace(Password) && Id == 0))
                     return false;
 
                 try
@@ -40,11 +27,6 @@ namespace DataAccess.Data
                     return false;
                 }
             }
-        }
-
-        public UserData()
-        {
-            UserRole = UserRoles.User;
         }
     }
 }

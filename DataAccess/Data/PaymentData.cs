@@ -30,7 +30,7 @@ namespace DataAccess.Data
             get
             {
                 if (PayerId == DebtorId)
-                    return string.Format("You gave payed {0} CZK for Yourself", Value);
+                    return string.Format("You have payed {0} CZK for Yourself", Value);
 
                 if (PayerId == UserId)
                     return Type == PaymentHistoryType.Debt ?

@@ -14,6 +14,8 @@ namespace CheckBook.ViewModels
 	{
         public GridViewDataSet<UserInfoData> GroupUsers { get; private set; }
 
+        public GridViewDataSet<UserInfoData> UserInfoes { get; private set; }
+
         public List<GroupData> Groups { get; set; }
 
         public List<UserInfoData> Users { get; private set; }
@@ -40,18 +42,21 @@ namespace CheckBook.ViewModels
 
         public bool HasAdminRole { get; set; }
 
-        public ManagerViewModel()
+        public ManagerViewModel() : base("Manager")
         {
             SelectedGroupId = -1;
             GroupUsers = new GridViewDataSet<UserInfoData>() { PageSize = 20 };
+            UserInfoes = new GridViewDataSet<UserInfoData>() { PageSize = 20 };
             SelectedUsers = new List<int>();
             User = new UserData();
         }
 
         public override Task PreRender()
         {
-            Users = UserService.GetUsersInfo();
+            Users = UserService.GetUserInfoes();
             Groups = GroupService.GetGroups();
+            UserInfoes.LoadFromQueryable(Users.AsQueryable());
+
             if (Groups.Any())
             {
                 if (SelectedGroupId == -1)
@@ -112,10 +117,7 @@ namespace CheckBook.ViewModels
 
         public void OnGroupChanged()
         {
-            var groupUsers = GetGroupUsers(SelectedGroupId);
-            GroupUsers.Items = groupUsers;
-            GroupUsers.PageIndex = 0;
-            GroupUsers.TotalItemsCount = groupUsers.Count;
+            GroupUsers.LoadFromQueryable(GetGroupUsers(SelectedGroupId));
         }
 
         public void RemoveUser(int userId)
@@ -138,22 +140,24 @@ namespace CheckBook.ViewModels
             GroupPopupVisible = true;
         }
 
-        public void ShowUserPopup()
+        public void ShowUserPopup(int? userId = null)
         {
             UserPopupVisible = !UserPopupVisible;
             if (UserPopupVisible)
             {
+                UserInfoData userInfo = userId != null ? Users.First(x => x.Id == userId) : null;
                 ErrorMessage = null;
-                User.FirstName = null;
-                User.LastName = null;
-                User.Email = null;
+                User.Id = userInfo != null ? userInfo.Id : 0;
+                User.FirstName = userInfo != null ? userInfo.FirstName : null;
+                User.LastName = userInfo != null ? userInfo.LastName : null;
+                User.Email = userInfo != null ? userInfo.Email : null;
                 Password = null;
                 PasswordAgain = null;
-                HasAdminRole = false;
+                HasAdminRole = userInfo != null ? userInfo.UserRole == UserRoles.Admin : false;
             }
         }
 
-        public void CreateUser()
+        public void ManageUser()
         {
             if (Password != PasswordAgain)
             {
@@ -169,7 +173,9 @@ namespace CheckBook.ViewModels
                 return;
             }
 
-            if (UserService.CreateUser(User) != CreateUserResult.Success)
+            if (User.Id != 0)
+                UserService.UpdateUser(User);
+            else if (UserService.CreateUser(User) != CreateUserResult.Success)
             {
                 ErrorMessage = "User with this email adress already exists";
                 return;
@@ -178,10 +184,10 @@ namespace CheckBook.ViewModels
             ShowUserPopup();
         }
 
-        private List<UserInfoData> GetGroupUsers(int groupId)
+        private IQueryable<UserInfoData> GetGroupUsers(int groupId)
         {
             var userIds = GroupService.GetGroupUserIds(groupId);
-            return Users.Where(x => userIds.Contains(x.Id)).ToList();
+            return Users.Where(x => userIds.Contains(x.Id)).AsQueryable();
         }
     }
 }

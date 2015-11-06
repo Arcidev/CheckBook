@@ -1,7 +1,5 @@
 ﻿using DotVVM.Framework.Runtime.Filters;
 using DataAccess.Data;
-using System.Linq;
-using System.Collections.Generic;
 using DotVVM.Framework.Controls;
 using System.Threading.Tasks;
 using DataAccess.Services;
@@ -11,16 +9,20 @@ namespace CheckBook.ViewModels
     [Authorize]
 	public class HomeViewModel : HeaderViewModel
     {
-        public GridViewDataSet<PaymentData> PaymentHistory { get; set; }
+        public GridViewDataSet<PaymentData> Payments { get; set; }
 
-        public HomeViewModel()
+        public GridViewDataSet<PaymentGroupData> PaymentGroups { get; set; }
+
+        public HomeViewModel() : base("Home")
         {
-            PaymentHistory = new GridViewDataSet<PaymentData>() { PageSize = 20 };
+            Payments = new GridViewDataSet<PaymentData>() { PageSize = 20 };
+            PaymentGroups = new GridViewDataSet<PaymentGroupData>() { PageSize = 20 };
         }
 
         public override Task PreRender()
         {
-            PaymentService.LoadPaymentHistory(GetUserId(), PaymentHistory);
+            PaymentService.LoadPaymentHistory(GetUserId(), Payments);
+            PaymentService.LoadPaymentGroups(GetUserId(), PaymentGroups);
 
             return base.PreRender();
         }

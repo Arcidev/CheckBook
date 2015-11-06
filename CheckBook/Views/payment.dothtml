@@ -58,20 +58,19 @@
                 <dot:TextBox class="popup-input" Text="{value: DebtValue}" />
             </div>
             <div class="form-group">
-                <dot:Button Click="{command: RemovePayment()}" Text="OK" class="m-btn blue button-120 popup-button-left" />
-                <dot:Button Click="{command: HidePayDebtPopup()}" Text="Close" class="m-btn red button-120 popup-button-right"></dot:Button>
+                <dot:Button Click="{command: RemovePayment()}" Text="OK" class="m-btn black button-120 popup-button-left" />
+                <dot:Button Click="{command: HidePayDebtPopup()}" Text="Close" class="m-btn button-120 popup-button-right"></dot:Button>
             </div>
         </div>
         <div class="black-overlay"></div>
     </div>
     <div class="page">
-        <div class="form-group">
+        <div class="form-group block-group">
             <dot:Button Text="Add New" Click="{command: ShowPaymentPopup()}" class="m-btn black button-120 button-left" />
-            <br />
         </div>
-        <div class="form-group home-grid first-grid">
+        <br />
+        <div class="form-group block-grid">
             <dot:Literal Text="Debtors:"/>
-            <br />
             <dot:GridView DataSource="{value: Debtors}">
               <Columns>
                 <dot:GridViewTextColumn ValueBinding="{value: UserId}" HeaderText="Id" Width="40px" />
@@ -96,9 +95,8 @@
               <PreviousPageTemplate>Previous</PreviousPageTemplate>
             </dot:DataPager>
         </div>
-        <div class="form-group home-grid">
+        <div class="form-group block-grid">
             <dot:Literal Text="Payers:"/>
-            <br />
             <dot:GridView DataSource="{value: Payers}">
               <Columns>
                 <dot:GridViewTextColumn ValueBinding="{value: UserId}" HeaderText="Id" Width="40px" />

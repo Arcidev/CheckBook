@@ -17,7 +17,7 @@ namespace DataAccess.Model
         public int DebtorId { get; set; }
 
         [ForeignKey("PaymentGroup")]
-        public int PaymentGroupId { get; set; }
+        public int? PaymentGroupId { get; set; }
 
         public decimal Value { get; set; }
 

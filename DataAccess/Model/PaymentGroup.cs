@@ -12,6 +12,6 @@ namespace DataAccess.Model
         [StringLength(100)]
         public string Description { get; set; }
 
-        public virtual ICollection<Payment> PaymentHistory { get; set; }
+        public virtual ICollection<Payment> Payments { get; set; }
     }
 }

@@ -10,6 +10,13 @@ namespace CheckBook.ViewModels
 	{
         public bool IsAdmin { get; set; }
 
+        public string ActivePage { get; private set; }
+
+        public HeaderViewModel(string activePage)
+        {
+            ActivePage = activePage;
+        }
+
         public override Task PreRender()
         {
             IsAdmin = Context.OwinContext.Authentication.User.IsInRole("Admin");

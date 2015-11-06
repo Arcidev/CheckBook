@@ -49,7 +49,28 @@ namespace DataAccess.Services
             }
         }
 
-        public static List<UserInfoData> GetUsersInfo()
+        public static void UpdateUser(UserData user)
+        {
+            using (var db = new AppContext())
+            {
+                var userEntity = db.Users.First(x => x.Id == user.Id);
+                userEntity.FirstName = user.FirstName;
+                userEntity.LastName = user.LastName;
+                userEntity.Email = user.Email;
+                userEntity.UserRole = user.UserRole;
+
+                if (!string.IsNullOrWhiteSpace(user.Password))
+                {
+                    var passwordData = PasswordHelper.CreateHash(user.Password);
+                    userEntity.PasswordSalt = passwordData.PasswordSalt;
+                    userEntity.PasswordHash = passwordData.PasswordHash;
+                }
+
+                db.SaveChanges();
+            }
+        }
+
+        public static List<UserInfoData> GetUserInfoes()
         {
             using (var db = new AppContext())
             {
@@ -78,7 +99,8 @@ namespace DataAccess.Services
                 Id = user.Id,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName
+                LastName = user.LastName,
+                UserRole = user.UserRole
             };
         }
     }

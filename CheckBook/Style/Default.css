@@ -70,11 +70,18 @@
   width: 500px;
   max-height: 70%;
 }
-.home-grid {
-  padding-left: 25px;
+.block-group {
+  display: inline-block;
 }
-.first-grid {
+.block-padded {
   padding-top: 25px;
+}
+.block-grid {
+  padding-left: 25px;
+  width: 50%;
+  display: table;
+  float: left;
+  min-width: 500px;
 }
 .action-button {
   background-color: Transparent;
@@ -103,7 +110,35 @@
 }
 .header-item {
   margin-left: 10px;
-  font-size: 20px;
+  font-size: 16px;
   height: 100%;
   vertical-align: middle;
+}
+.header-item-active {
+  font-size: 20px;
+}
+/*overrides*/
+.pagination > .active > a {
+  background-color: #555555;
+  border-color: #555555;
+  color: white;
+}
+.pagination > .active > a:hover,
+.pagination > .active > a:focus {
+  background-color: #222222;
+  border-color: #222222;
+}
+.pagination > li > a {
+  color: #222222;
+}
+.pagination > li > a:hover,
+.pagination > li > a:focus {
+  color: black;
+}
+.pagination > .disabled > a,
+.pagination > .disabled > a:focus {
+  color: #777;
+}
+.pagination > .disabled > a > button {
+  cursor: not-allowed;
 }

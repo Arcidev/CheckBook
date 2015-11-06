@@ -10,7 +10,5 @@ namespace DataAccess.Data
         public string ValueText { get { return string.Format("{0} CZK", Value); } }
 
         public decimal Value { get; set; }
-
-        public UserPaymentData() { }
     }
 }

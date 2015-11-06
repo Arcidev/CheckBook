@@ -1,4 +1,5 @@
-﻿
+﻿using DataAccess.Enums;
+
 namespace DataAccess.Data
 {
     public class UserInfoData
@@ -11,6 +12,13 @@ namespace DataAccess.Data
 
         public string Email { get; set; }
 
+        public UserRoles UserRole { get; set; }
+
         public string FullName { get { return string.Format("{0} {1}", FirstName, LastName); } }
+
+        public UserInfoData()
+        {
+            UserRole = UserRoles.User;
+        }
     }
 }

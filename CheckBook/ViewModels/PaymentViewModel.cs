@@ -39,7 +39,7 @@ namespace CheckBook.ViewModels
 
         public bool PayDebtVisible { get; private set; }
 
-        public PaymentViewModel()
+        public PaymentViewModel() : base("Payment")
         {
             Debtors = new GridViewDataSet<UserPaymentData>() { PageSize = 10 };
             Payers = new GridViewDataSet<UserPaymentData>() { PageSize = 10 };
@@ -50,7 +50,7 @@ namespace CheckBook.ViewModels
 
         public override Task PreRender()
         {
-            Users = UserService.GetUsersInfo();
+            Users = UserService.GetUserInfoes();
             Groups = GroupService.GetGroups();
 
             PaymentService.LoadDebtorsAndPayers(GetUserId(), Payers, Debtors);

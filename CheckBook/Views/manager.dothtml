@@ -22,8 +22,8 @@
                 <dot:Literal Text="{value: ErrorMessage}"/>
             </div>
             <div class="form-group">
-                <dot:Button Click="{command: ManageGroup()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="m-btn blue button-120 popup-button-left" />
-                <dot:Button Click="{command: ShowGroupPopup()}" Text="Close" class="m-btn red button-120 popup-button-right"></dot:Button>
+                <dot:Button Click="{command: ManageGroup()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="m-btn black button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowGroupPopup()}" Text="Close" class="m-btn button-120 popup-button-right"></dot:Button>
             </div>
         </div>
         <div class="black-overlay"></div>
@@ -60,26 +60,26 @@
                 <dot:Literal Text="{value: ErrorMessage}"/>
             </div>
             <div class="form-group">
-                <dot:Button Click="{command: CreateUser()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="m-btn blue button-120 popup-button-left" />
-                <dot:Button Click="{command: ShowUserPopup()}" Text="Close" class="m-btn red button-120 popup-button-right"></dot:Button>
+                <dot:Button Click="{command: ManageUser()}" Text="{value: User.Id != 0 ? 'Update' : 'Create'}" class="m-btn black button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowUserPopup()}" Text="Close" class="m-btn button-120 popup-button-right"></dot:Button>
             </div>
         </div>
         <div class="black-overlay"></div>
     </div>
     <div class="page">
-        <div class="form-group">
+        <div class="form-group block-group">
             <dot:Button Text="Create Group" class="m-btn black button-120 button-left" Click="{command: ShowGroupPopup()}" />
             <dot:Button Text="Manage Group" class="m-btn black button-120 button-left" Click="{command: ManageGroupPopup()}" />
             <dot:Button Text="Add User" class="m-btn black button-120 button-left" Click="{command: ShowUserPopup()}" />
-            <br />
         </div>
-        <div class="form-group home-grid first-grid">
+        <br />
+        <div class="form-group block-grid">
             <dot:ComboBox class="group-select" DataSource="{value: Groups}"
                           SelectedValue="{value: SelectedGroupId}"
                           ValueMember="Id"
                           DisplayMember="Name"
                           SelectionChanged="{command: OnGroupChanged()}" />
-            <br />
+
             <dot:GridView DataSource="{value: GroupUsers}">
               <Columns>
                 <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />
@@ -93,6 +93,32 @@
             </dot:GridView>
 
             <dot:DataPager DataSet="{value: GroupUsers}" class="pagination" RenderLinkForCurrentPage="true">
+              <FirstPageTemplate>
+                <button>First</button>
+              </FirstPageTemplate>
+              <LastPageTemplate>
+                <button>Last</button>
+              </LastPageTemplate>
+              <NextPageTemplate>Next</NextPageTemplate>
+              <PreviousPageTemplate>Previous</PreviousPageTemplate>
+            </dot:DataPager>
+        </div>
+        <div class="form-group block-grid">
+            <dot:Literal Text="Users:"/>
+            <dot:GridView DataSource="{value: UserInfoes}">
+              <Columns>
+                <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />
+                <dot:GridViewTextColumn ValueBinding="{value: FullName}" HeaderText="Name" Width="150px" />
+                <dot:GridViewTextColumn ValueBinding="{value: Email}" HeaderText="Email" Width="200px" />
+                <dot:GridViewTemplateColumn HeaderText="Action" Width="60px">
+                <ContentTemplate>
+                    <dot:Button Click="{command: _parent.ShowUserPopup(Id)}" Text="Manage" class="action-button" />
+                </ContentTemplate>
+                </dot:GridViewTemplateColumn>
+              </Columns>
+            </dot:GridView>
+
+            <dot:DataPager DataSet="{value: UserInfoes}" class="pagination" RenderLinkForCurrentPage="true">
               <FirstPageTemplate>
                 <button>First</button>
               </FirstPageTemplate>

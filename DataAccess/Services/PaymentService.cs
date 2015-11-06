@@ -154,5 +154,22 @@ namespace DataAccess.Services
                 gridView.LoadFromQueryable(paymentHistory);
             }
         }
+
+        public static void LoadPaymentGroups(int userId, GridViewDataSet<PaymentGroupData> gridView)
+        {
+            using (var db = new AppContext())
+            {
+                var paymentGroups = db.PaymentGroups.Where(x => x.Payments.Any(y => y.PayerId == userId))
+                    .Select(x => new PaymentGroupData()
+                    {
+                        Id = x.Id,
+                        Description = x.Description,
+                        Value = x.Payments.Sum(y => y.Value),
+                        PayerName = x.Payments.FirstOrDefault().Payer.FirstName + " " + x.Payments.FirstOrDefault().Payer.LastName
+                    }).OrderBy(x => x.Id);
+
+                gridView.LoadFromQueryable(paymentGroups);
+            }
+        }
     }
 }

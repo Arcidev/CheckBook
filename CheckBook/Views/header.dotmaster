@@ -6,15 +6,16 @@
 <head>
     <meta charset="utf-8" />
     <link rel="stylesheet" type="text/css" href="~/Style/MSModernButtons/m-buttons.css" />
-    <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css" />
     <link rel="stylesheet" type="text/css" href="~/Style/Bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css" />
 </head>
 <body>
     <div class="header">
-        <dot:Button Click="{command: RedirectHome()}" Text="Home" class="header-item action-button" />
-        <dot:Button Click="{command: RedirectPayment()}" Text="Payment" class="header-item action-button" />
-        <dot:Button Visible="{value: IsAdmin}" Click="{command: RedirectManager()}" Text="Manager" class="header-item action-button" />
-        <dot:Button Click="{command: SignOut()}" Text="Sign Out" class="header-item button-right action-button" />
+        <dot:Button Click="{command: RedirectHome()}" Text="Home" class="{value: ActivePage == 'Home' ? 'header-item header-item-active action-button' : 'header-item action-button'}" />
+        <dot:Button Click="{command: RedirectPayment()}" Text="Payment" class="{value: ActivePage == 'Payment' ? 'header-item header-item-active action-button' : 'header-item action-button'}" />
+        <dot:Button Visible="{value: IsAdmin}" Click="{command: RedirectManager()}" Text="Manager" class="{value: ActivePage == 'Manager' ? 'header-item header-item-active action-button' : 'header-item action-button'}" />
+        <dot:Button Click="{command: SignOut()}" Text="Sign Out" class="header-item header-item-active button-right action-button" />
+        <dot:Button Text="Settings" class="header-item button-right action-button" />
     </div>
     <dot:ContentPlaceHolder ID="PageContent">
     </dot:ContentPlaceHolder>
