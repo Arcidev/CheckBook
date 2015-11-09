@@ -45,8 +45,8 @@
                 <dot:Literal Text="{value: ErrorMessage}"/>
             </div>
             <div class="form-group">
-                <dot:Button Text="Create" Click="{command: CreatePayment()}" class="m-btn blue button-120 popup-button-left" />
-                <dot:Button Click="{command: ShowPaymentPopup()}" Text="Close" class="m-btn red button-120 popup-button-right"></dot:Button>
+                <dot:Button Text="Create" Click="{command: CreatePayment()}" class="m-btn black button-120 popup-button-left" />
+                <dot:Button Click="{command: ShowPaymentPopup()}" Text="Close" class="m-btn button-120 popup-button-right"></dot:Button>
             </div>
         </div>
         <div class="black-overlay"></div>

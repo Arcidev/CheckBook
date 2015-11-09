@@ -67,13 +67,12 @@
         <div class="black-overlay"></div>
     </div>
     <div class="page">
-        <div class="form-group block-group">
-            <dot:Button Text="Create Group" class="m-btn black button-120 button-left" Click="{command: ShowGroupPopup()}" />
-            <dot:Button Text="Manage Group" class="m-btn black button-120 button-left" Click="{command: ManageGroupPopup()}" />
-            <dot:Button Text="Add User" class="m-btn black button-120 button-left" Click="{command: ShowUserPopup()}" />
-        </div>
-        <br />
         <div class="form-group block-grid">
+            <div class="form-group block-group">
+                <dot:Button Text="Create Group" class="m-btn black button-120 button-left" Click="{command: ShowGroupPopup()}" />
+                <dot:Button Text="Manage Group" class="m-btn black button-120 button-left" Click="{command: ManageGroupPopup()}" />
+            </div>
+            <br />
             <dot:ComboBox class="group-select" DataSource="{value: Groups}"
                           SelectedValue="{value: SelectedGroupId}"
                           ValueMember="Id"
@@ -104,6 +103,10 @@
             </dot:DataPager>
         </div>
         <div class="form-group block-grid">
+            <div class="form-group block-group">
+                <dot:Button Text="Add User" class="m-btn black button-120 button-left" Click="{command: ShowUserPopup()}" />
+            </div>
+            <br />
             <dot:Literal Text="Users:"/>
             <dot:GridView DataSource="{value: UserInfoes}">
               <Columns>
