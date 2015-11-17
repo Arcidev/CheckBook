@@ -49,15 +49,18 @@ namespace DataAccess.Services
             }
         }
 
-        public static void UpdateUser(UserData user)
+        public static void UpdateUser(UserData user, bool managerUpdate)
         {
             using (var db = new AppContext())
             {
                 var userEntity = db.Users.First(x => x.Id == user.Id);
                 userEntity.FirstName = user.FirstName;
                 userEntity.LastName = user.LastName;
-                userEntity.Email = user.Email;
-                userEntity.UserRole = user.UserRole;
+                if (managerUpdate)
+                {
+                    userEntity.Email = user.Email;
+                    userEntity.UserRole = user.UserRole;
+                }
 
                 if (!string.IsNullOrWhiteSpace(user.Password))
                 {
@@ -75,6 +78,14 @@ namespace DataAccess.Services
             using (var db = new AppContext())
             {
                 return db.Users.Select(ToUserInfoData).ToList();
+            }
+        }
+
+        public static UserInfoData GetUserInfo(int id)
+        {
+            using (var db = new AppContext())
+            {
+                return ToUserInfoData(db.Users.First(x => x.Id == id));
             }
         }
 

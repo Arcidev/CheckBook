@@ -133,7 +133,7 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\ManagerViewModel.cs" />
     <Compile Include="ViewModels\PaymentViewModel.cs" />
-    <Compile Include="ViewModels\RegisterViewModel.cs" />
+    <Compile Include="ViewModels\SettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
@@ -161,7 +161,7 @@
     <Content Include="Style\bootstrap\bootstrap-theme.css.map" />
     <Content Include="Style\bootstrap\bootstrap.css.map" />
     <Content Include="Views\home.dothtml" />
-    <Content Include="Views\register.dothtml" />
+    <Content Include="Views\settings.dothtml" />
     <Content Include="Views\header.dotmaster" />
     <Content Include="Views\payment.dothtml" />
     <Content Include="Views\manager.dothtml" />

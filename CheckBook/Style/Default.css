@@ -41,6 +41,9 @@
 .validation-box {
   color: red;
 }
+.status-box {
+  color: blue;
+}
 .group-select {
   min-width: 100px;
   height: 25px;
@@ -116,6 +119,10 @@
 }
 .header-item-active {
   font-size: 20px;
+}
+.settings-form {
+  width: 300px;
+  margin-left: 20px;
 }
 /*overrides*/
 .pagination > .active > a {

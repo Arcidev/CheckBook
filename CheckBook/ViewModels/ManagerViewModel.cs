@@ -174,7 +174,7 @@ namespace CheckBook.ViewModels
             }
 
             if (User.Id != 0)
-                UserService.UpdateUser(User);
+                UserService.UpdateUser(User, true);
             else if (UserService.CreateUser(User) != CreateUserResult.Success)
             {
                 ErrorMessage = "User with this email adress already exists";

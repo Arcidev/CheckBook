@@ -1,0 +1,57 @@
+﻿@viewModel CheckBook.ViewModels.SettingsViewModel, CheckBook
+@masterPage Views/header.dotmaster
+
+<dot:Content ContentPlaceHolderID="PageContent">
+    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript">
+        var alertTimeout;
+        $(function() {
+            dotvvm.events.afterPostback.subscribe(function () {
+                if (alertTimeout) {
+                    window.clearTimeout(alertTimeout);
+                }
+
+                var statusBox = $(".status-box");
+                if (statusBox.is(":hidden")) {
+                    statusBox.slideDown();
+                }
+
+                alertTimeout = window.setTimeout(function () {
+                    $(".status-box").slideUp();
+                }, 5000);
+        })});
+    </script>
+
+    <div class="page">
+        <div class="settings-form">
+            <div class="form-group">
+                <dot:Literal Text="Email:" />
+                <dot:TextBox class="login-input" Text="{value: Email}" Enabled="false" />
+            </div>
+            <div class="form-group" ValidationMessage.ValidatedValue="{value: FirstName}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
+                <dot:Literal Text="Name:" />
+                <dot:TextBox class="login-input" Text="{value: FirstName}" />
+            </div>
+            <div class="form-group" ValidationMessage.ValidatedValue="{value: LastName}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
+                <dot:Literal Text="Surname:" />
+                <dot:TextBox class="login-input" Text="{value: LastName}" />
+            </div>
+            <div class="form-group" ValidationMessage.ValidatedValue="{value: Password}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
+                <dot:Literal Text="Password:" />
+                <dot:TextBox Type="Password" class="login-input" Text="{value: Password}" />
+            </div>
+            <div class="form-group" ValidationMessage.ValidatedValue="{value: PasswordAgain}" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="validation-error">
+                <dot:Literal Text="Password Again:" />
+                <dot:TextBox Type="Password" class="login-input" Text="{value: PasswordAgain}" />
+            </div>
+            <div class="form-group status-box" Visible="{value: false}">
+                <dot:Literal Text="Successfully updated" />
+            </div>
+            <div class="form-group">
+                <dot:Button Click="{command: UpdateSettings()}" Text="Update" class="m-btn black button-small register-button" />
+            </div>
+        </div>
+    </div>
+</dot:Content>
+
+

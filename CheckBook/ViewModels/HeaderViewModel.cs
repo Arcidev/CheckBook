@@ -48,6 +48,11 @@ namespace CheckBook.ViewModels
         {
             Context.Redirect("Manager");
         }
+
+        public void RedirectSettings()
+        {
+            Context.Redirect("Settings");
+        }
     }
 }
 
