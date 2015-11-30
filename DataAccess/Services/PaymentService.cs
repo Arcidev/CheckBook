@@ -11,6 +11,13 @@ namespace DataAccess.Services
 {
     public static class PaymentService
     {
+        /// <summary>
+        /// Creates new payment
+        /// </summary>
+        /// <param name="payerId">The one who payed</param>
+        /// <param name="description">Information about the payment</param>
+        /// <param name="debtors">People for whom the payer has paid</param>
+        /// <param name="value">Optional value that is added to all debtors</param>
         public static void CreatePayment(int payerId, string description, List<UserPaymentData> debtors, decimal value)
         {
             // Nothing to create
@@ -21,7 +28,6 @@ namespace DataAccess.Services
             {
                 var paymentGroup = new PaymentGroup() { Description = description };
                 db.PaymentGroups.Add(paymentGroup);
-                db.SaveChanges();
 
                 foreach (var debtor in debtors)
                 {
@@ -35,7 +41,7 @@ namespace DataAccess.Services
                             Value = val,
                             Date = DateTime.Now,
                             Type = PaymentHistoryType.Debt,
-                            PaymentGroupId = paymentGroup.Id
+                            PaymentGroup = paymentGroup
                         });
                     }
                 }
@@ -44,9 +50,19 @@ namespace DataAccess.Services
             }
         }
 
-        // TODO: Simplify this shit
+        
+        /// <summary>
+        /// Loads debtor and payers related to specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="payersDataSet">Payers will be added here</param>
+        /// <param name="debtorsDataSet">Debtors will be added here</param>
         public static void LoadDebtorsAndPayers(int userId, GridViewDataSet<UserPaymentData> payersDataSet, GridViewDataSet<UserPaymentData> debtorsDataSet)
         {
+            // Nowhere to load
+            if (payersDataSet == null || debtorsDataSet == null)
+                return;
+
             using (var db = new AppContext())
             {
                 var debtors = db.Payments.Where(x => x.PayerId == userId && x.DebtorId != userId).GroupBy(x => x.DebtorId).ToList()
@@ -104,6 +120,12 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Pays debt
+        /// </summary>
+        /// <param name="payerId">Original payer</param>
+        /// <param name="debtorId">The one who is paying back</param>
+        /// <param name="value">Value to pay</param>
         public static void PayDebt(int payerId, int debtorId, decimal value)
         {
             using (var db = new AppContext())
@@ -121,6 +143,11 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Loads history of all payments for specified user
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="gridView">History will be added here</param>
         public static void LoadPaymentHistory(int userId, GridViewDataSet<PaymentData> gridView)
         {
             using (var db = new AppContext())
@@ -155,11 +182,16 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Loads all user payments/debts as a group payment
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="gridView">Payments will be loaded here as a group</param>
         public static void LoadPaymentGroups(int userId, GridViewDataSet<PaymentGroupData> gridView)
         {
             using (var db = new AppContext())
             {
-                var paymentGroups = db.PaymentGroups.Where(x => x.Payments.Any(y => y.PayerId == userId))
+                var paymentGroups = db.PaymentGroups.Where(x => x.Payments.Any(y => y.PayerId == userId || y.DebtorId == userId))
                     .Select(x => new PaymentGroupData()
                     {
                         Id = x.Id,

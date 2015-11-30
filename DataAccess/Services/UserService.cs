@@ -10,6 +10,11 @@ namespace DataAccess.Services
 {
     public static class UserService
     {
+        /// <summary>
+        /// Gets existing user by mail
+        /// </summary>
+        /// <param name="email"></param>
+        /// <returns>Existing user</returns>
         public static UserData GetUser(string email)
         {
             using (var db = new AppContext())
@@ -23,6 +28,11 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Creates new user if not exist
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>Create result... Either success or duplicate user</returns>
         public static CreateUserResult CreateUser(UserData user)
         {
             using (var db = new AppContext())
@@ -49,6 +59,11 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Updates existing user
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="managerUpdate">If true allows more option to update from user param</param>
         public static void UpdateUser(UserData user, bool managerUpdate)
         {
             using (var db = new AppContext())
@@ -73,6 +88,10 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Gets basic user info of all users
+        /// </summary>
+        /// <returns>List of basic user info of all users</returns>
         public static List<UserInfoData> GetUserInfoes()
         {
             using (var db = new AppContext())
@@ -81,6 +100,11 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Gets basic user info
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns>Basic user info</returns>
         public static UserInfoData GetUserInfo(int id)
         {
             using (var db = new AppContext())
@@ -89,6 +113,11 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Converts User entity into UserData
+        /// </summary>
+        /// <param name="user">User for conversion</param>
+        /// <returns>Converted user</returns>
         public static UserData ToUserData(User user)
         {
             return new UserData()
@@ -103,6 +132,11 @@ namespace DataAccess.Services
             };
         }
 
+        /// <summary>
+        /// Converts User entity into UserInfoData
+        /// </summary>
+        /// <param name="user">User for conversion</param>
+        /// <returns>Converted user</returns>
         public static UserInfoData ToUserInfoData(User user)
         {
             return new UserInfoData()

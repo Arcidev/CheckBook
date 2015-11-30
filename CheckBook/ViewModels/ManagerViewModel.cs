@@ -98,20 +98,16 @@ namespace CheckBook.ViewModels
                 }
 
                 Groups.Remove(groupInGrid);
-                OnGroupChanged();
             }
             else
             {
                 group = GroupService.CreateGroup(GroupName, SelectedUsers);
-                if (!Groups.Any())
-                {
-                    SelectedGroupId = group.Id;
-                    OnGroupChanged();
-                }
+                SelectedGroupId = group.Id;
             }
 
             Groups.Add(group);
             Groups.OrderBy(x => x.Name);
+            OnGroupChanged();
             GroupPopupVisible = false;
         }
 

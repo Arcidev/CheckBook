@@ -8,6 +8,10 @@ namespace DataAccess.Services
 {
     public static class GroupService
     {
+        /// <summary>
+        /// Gets all groups
+        /// </summary>
+        /// <returns>List of all groups</returns>
         public static List<GroupData> GetGroups()
         {
             using (var db = new AppContext())
@@ -16,21 +20,31 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Creates new group
+        /// </summary>
+        /// <param name="name">Group name</param>
+        /// <param name="userIds">Users</param>
+        /// <returns>Newly created group</returns>
         public static GroupData CreateGroup(string name, List<int> userIds)
         {
             using (var db = new AppContext())
             {
                 var group = db.Groups.Add(new Group() { Name = name });
-                db.SaveChanges(); // generates id
 
                 foreach (var userId in userIds.Distinct())
-                    db.UsersGroups.Add(new UserGroups() { UserId = userId, GroupId = group.Id });
+                    db.UsersGroups.Add(new UserGroups() { UserId = userId, Group = group });
 
                 db.SaveChanges();
                 return ToGroupData(group);
             }
         }
 
+        /// <summary>
+        /// Gets group users id
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns>List of ids of group users</returns>
         public static List<int> GetGroupUserIds(int groupId)
         {
             using (var db = new AppContext())
@@ -39,6 +53,11 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Gets group users packed in UserPaymentData class
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <returns>List of group users</returns>
         public static List<UserPaymentData> GetGroupUsersForPayment(int groupId)
         {
             using (var db = new AppContext())
@@ -48,6 +67,11 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Removes user from group
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
         public static void RemoveUserFromGroup(int userId, int groupId)
         {
             using (var db = new AppContext())
@@ -61,6 +85,13 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Updates existing group
+        /// </summary>
+        /// <param name="groupId"></param>
+        /// <param name="name">New group name</param>
+        /// <param name="userIds">New users for group</param>
+        /// <returns></returns>
         public static GroupData UpdateGroup(int groupId, string name, List<int> userIds)
         {
             if (name == null)
@@ -82,11 +113,21 @@ namespace DataAccess.Services
             }
         }
 
+        /// <summary>
+        /// Converts Group entity into GroupData
+        /// </summary>
+        /// <param name="group">Group for conversion</param>
+        /// <returns>Converted group</returns>
         public static GroupData ToGroupData(Group group)
         {
             return new GroupData() { Id = group.Id, Name = group.Name };
         }
 
+        /// <summary>
+        /// Converts User entity into UserPaymentData
+        /// </summary>
+        /// <param name="user">User for conversion</param>
+        /// <returns>Converted user</returns>
         public static UserPaymentData ToUserPaymentData(User user)
         {
             return new UserPaymentData()
