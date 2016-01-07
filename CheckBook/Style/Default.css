@@ -3,9 +3,9 @@
   width: 100%;
 }
 .login-form {
-  margin: auto;
+  margin: 10% auto 0;
   color: gray;
-  width: 300px;
+  width: 450px;
 }
 .login-input {
   float: right;
@@ -40,6 +40,9 @@
 }
 .validation-box {
   color: red;
+}
+.validation-textbox-error {
+  border: 1px red solid !important;
 }
 .status-box {
   color: blue;
@@ -148,4 +151,15 @@
 }
 .pagination > .disabled > a > button {
   cursor: not-allowed;
+}
+.row {
+  margin-top: 10px;
+}
+.right {
+  text-align: right;
+}
+@media screen and (max-width: 460px) {
+  .login-form {
+    width: 300px;
+  }
 }

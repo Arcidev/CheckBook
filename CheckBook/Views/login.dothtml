@@ -5,28 +5,38 @@
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="utf-8" />
-    <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css">
     <link rel="stylesheet" type="text/css" href="~/Style/Bootstrap/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Style/MsModernButtons/m-buttons.min.css">
+    <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css">
 </head>
 <body>
     <div class="page">
-        <div class="login-form">
-            <div class="form-group">
-                <dot:Literal Text="Email:"/>
-                <dot:TextBox class="login-input" Text="{value: Email}" />
+        <div class="login-form form-group">
+		<h1> Check Book</h1>
+            <div class="row">
+                <div class="col-xs-4">
+                    <dot:Literal Text="Email:" />
+                </div>
+                <div class="col-xs-8">
+                    <dot:TextBox class="{value: 'form-control' + ' ' + (!IsEmailValid ? 'validation-textbox-error' : '') }" Text="{value: Email}" />
+                </div>
             </div>
-            <div class="form-group">
-                <dot:Literal Text="Password:"/>
-                <dot:TextBox class="login-input" Text="{value: Password}" Type="Password" />
+            <div class="row">
+                <div class="col-xs-4">
+                    <dot:Literal Text="Password:" />
+                </div>
+                <div class="col-xs-8">
+                    <dot:TextBox class="{value: 'form-control' + ' ' + (!IsPasswordValid ? 'validation-textbox-error' : '') }" Text="{value: Password}" Type="Password" />
+                </div>
             </div>
-            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
-                <dot:Literal Text="Error:"/>
-                <br />
-                <dot:Literal Text="{value: ErrorMessage}"/>
-            </div>
-            <div class="form-group">
-                <dot:Button Click="{command: Login()}" Text="Login" class="button-small login-button-left" />
-                <dot:Button Click="{command: Register()}" Text="Register" class="button-small login-button-right" />
+
+            <div class="row">
+                <div class="col-xs-7 validation-box">
+					{{value: ErrorMessage}}
+                </div>
+                <div class="col-xs-5 right">
+                    <dot:Button Click="{command: Login()}" Text="Login" class="m-btn blue" />
+                </div>
             </div>
         </div>
     </div>

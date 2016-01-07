@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Content Include="Style\dollar-exchange.png" />
     <Content Include="Style\bootstrap\bootstrap-theme.css" />
     <Content Include="Style\bootstrap\bootstrap-theme.min.css" />
     <Content Include="Style\bootstrap\bootstrap.css" />
@@ -197,7 +198,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>8628</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:60311/</IISUrl>
+          <IISUrl>http://localhost:60319/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>

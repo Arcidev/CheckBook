@@ -9,20 +9,25 @@ namespace CheckBook.ViewModels
 
         public string Password { get; set; }
 
+        [Bind(Direction.ServerToClient)]
+        public bool IsEmailValid { get; set; } = true;
+
+        [Bind(Direction.ServerToClient)]
+        public bool IsPasswordValid { get; set; } = true;
+
         public string ErrorMessage { get; set; }
 
         public void Login()
         {
-            if (string.IsNullOrWhiteSpace(Email) || string.IsNullOrWhiteSpace(Password))
+            if (!Validate())
             {
-                ErrorMessage = "All fields must contain some value";
                 return;
             }
 
             var identity = LoginHelper.GetClaimsIdentity(Email, Password);
             if (identity == null)
             {
-                ErrorMessage = "Invalid Email or Password";
+                ErrorMessage = "The credentials are incorrect.";
                 return;
             }
 
@@ -30,9 +35,18 @@ namespace CheckBook.ViewModels
             Context.Redirect("Home");
         }
 
-        public void Register()
+        public bool Validate()
         {
-            Context.Redirect("Register");
+            var valid = true;
+            if (string.IsNullOrWhiteSpace(Email))
+            {
+                IsEmailValid = valid = false;
+            }
+            if (string.IsNullOrWhiteSpace(Password))
+            {
+                IsPasswordValid = valid = false;
+            }
+            return valid;
         }
     }
 }
