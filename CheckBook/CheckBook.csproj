@@ -137,6 +137,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="LICENSE.txt" />
+    <Content Include="Style\default.svg" />
     <Content Include="Style\dollar-exchange.png" />
     <Content Include="Style\bootstrap\bootstrap-theme.css" />
     <Content Include="Style\bootstrap\bootstrap-theme.min.css" />
