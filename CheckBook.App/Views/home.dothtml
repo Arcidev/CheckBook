@@ -1,47 +1,28 @@
-﻿@viewModel CheckBook.ViewModels.HomeViewModel, CheckBook
-@masterPage Views/header.dotmaster
+﻿@viewModel CheckBook.App.ViewModels.HomeViewModel, CheckBook.App
+@masterPage Views/app.dotmaster
 
 <dot:Content ContentPlaceHolderID="PageContent">
-    <div class="page">
-        <div class="form-group block-grid block-padded">
-            <dot:GridView DataSource="{value: Payments}">
-              <Columns>
-                <dot:GridViewTextColumn ValueBinding="{value: DateString}" HeaderText="Date" Width="150px" />
-                <dot:GridViewTextColumn ValueBinding="{value: Action}" HeaderText="Action" />
-              </Columns>
-            </dot:GridView>
 
-            <dot:DataPager DataSet="{value: Payments}" class="pagination" RenderLinkForCurrentPage="true">
-              <FirstPageTemplate>
-                <button>First</button>
-              </FirstPageTemplate>
-              <LastPageTemplate>
-                <button>Last</button>
-              </LastPageTemplate>
-              <NextPageTemplate>Next</NextPageTemplate>
-              <PreviousPageTemplate>Previous</PreviousPageTemplate>
-            </dot:DataPager>
-        </div>
-        <div class="form-group block-grid block-padded">
-            <dot:GridView DataSource="{value: PaymentGroups}">
-              <Columns>
-                <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />
-                <dot:GridViewTextColumn ValueBinding="{value: PayerName}" HeaderText="Payer Name" Width="150px" />
-                <dot:GridViewTextColumn ValueBinding="{value: ValueText}" HeaderText="Value" Width="100px" />
-                <dot:GridViewTextColumn ValueBinding="{value: Description}" HeaderText="Description" />
-              </Columns>
-            </dot:GridView>
+    <div class="tile-list">
+        
+        <dot:Repeater DataSource="{value: Groups}">
+            <div class="thumbnail">
+                <dot:RouteLink RouteName="group" Param-Id="{value: Id}">
+                    <img src="{value: ImageUrl}" alt="{value: Name}" />
+                </dot:RouteLink>
 
-            <dot:DataPager DataSet="{value: PaymentGroups}" class="pagination" RenderLinkForCurrentPage="true">
-              <FirstPageTemplate>
-                <button>First</button>
-              </FirstPageTemplate>
-              <LastPageTemplate>
-                <button>Last</button>
-              </LastPageTemplate>
-              <NextPageTemplate>Next</NextPageTemplate>
-              <PreviousPageTemplate>Previous</PreviousPageTemplate>
-            </dot:DataPager>
-        </div>
+                <div class="caption">
+                    <h3>{{value: Name}}</h3>
+                    <p>Transactions: {{value: TotalTransactions}}</p>
+                    <p>Total spendings: <dot:Literal Text="{value: TotalSpending}" FormatString="n0" /> {{value: Currency}}</p>
+
+                    <div class="text-right">
+                        <dot:RouteLink RouteName="group" Param-Id="{value: Id}" Text="View Payments" class="btn btn-primary" />
+                    </div>
+                </div>
+            </div>
+        </dot:Repeater>
+
     </div>
+
 </dot:Content>

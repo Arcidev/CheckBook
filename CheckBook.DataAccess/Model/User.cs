@@ -1,4 +1,6 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using CheckBook.DataAccess.Enums;
 
 namespace CheckBook.DataAccess.Model
@@ -33,5 +35,16 @@ namespace CheckBook.DataAccess.Model
         public string PasswordHash { get; set; }
 
         public UserRole UserRole { get; set; }
+
+        public virtual ICollection<UserGroup> UserGroups { get; private set; }
+
+        public virtual ICollection<Payment> Payments { get; private set; }
+        
+
+        public User()
+        {
+            UserGroups = new List<UserGroup>();
+            Payments = new List<Payment>();
+        }
     }
 }

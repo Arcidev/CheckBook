@@ -1,4 +1,5 @@
-﻿using DotVVM.Framework.Runtime.Filters;
+﻿using System.Collections.Generic;
+using DotVVM.Framework.Runtime.Filters;
 using DotVVM.Framework.Controls;
 using System.Threading.Tasks;
 using CheckBook.DataAccess.Data;
@@ -7,22 +8,20 @@ using CheckBook.DataAccess.Services;
 namespace CheckBook.App.ViewModels
 {
     [Authorize]
-	public class HomeViewModel : HeaderViewModel
+	public class HomeViewModel : AppViewModelBase
     {
-        public GridViewDataSet<PaymentData> Payments { get; set; }
 
-        public GridViewDataSet<PaymentGroupData> PaymentGroups { get; set; }
+        /// <summary>
+        /// Gets the list of groups the current user is assigned in.
+        /// </summary>
+        public List<GroupData> Groups { get; set; }
 
-        public HomeViewModel() : base("Home")
-        {
-            Payments = new GridViewDataSet<PaymentData>() { PageSize = 20 };
-            PaymentGroups = new GridViewDataSet<PaymentGroupData>() { PageSize = 20 };
-        }
+        
 
         public override Task PreRender()
         {
-            PaymentService.LoadPaymentHistory(GetUserId(), Payments);
-            PaymentService.LoadPaymentGroups(GetUserId(), PaymentGroups);
+            var userId = GetUserId();
+            Groups = GroupService.GetGroupsByUser(userId);
 
             return base.PreRender();
         }

@@ -1,16 +1,23 @@
 ﻿
+using System;
+using System.ComponentModel.DataAnnotations;
+
 namespace CheckBook.DataAccess.Data
 {
     public class PaymentGroupData
     {
         public int Id { get; set; }
 
+        [Required(ErrorMessage = "The Date field is required!")]
+        public DateTime CreatedDate { get; set; }
+
+        [Required(ErrorMessage = "The Description field is required!")]
         public string Description { get; set; }
 
-        public string PayerName { get; set; }
+        public decimal TotalAmount { get; set; }
 
-        public decimal Value { get; set; }
+        public string Currency { get; set; }
 
-        public string ValueText { get { return string.Format("{0} CZK", Value); } }
+        public int GroupId { get; set; }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using CheckBook.DataAccess.Context;
 using CheckBook.DataAccess.Data;
 using CheckBook.DataAccess.Enums;
@@ -11,195 +12,196 @@ namespace CheckBook.DataAccess.Services
 {
     public static class PaymentService
     {
+        
         /// <summary>
-        /// Creates new payment
+        /// Loads all payment groups in the specified group.
         /// </summary>
-        /// <param name="payerId">The one who payed</param>
-        /// <param name="description">Information about the payment</param>
-        /// <param name="debtors">People for whom the payer has paid</param>
-        /// <param name="value">Optional value that is added to all debtors</param>
-        public static void CreatePayment(int payerId, string description, List<UserPaymentData> debtors, decimal value)
+        public static void LoadPaymentGroups(int groupId, GridViewDataSet<PaymentGroupData> dataSet)
         {
-            // Nothing to create
-            if (!debtors.Any(x => x.Value > 0) && value <= 0)
-                return;
-
             using (var db = new AppContext())
             {
-                var paymentGroup = new PaymentGroup() { Description = description, CreatedDate = DateTime.Now };
-                db.PaymentGroups.Add(paymentGroup);
+                var paymentGroups = db.PaymentGroups
+                    .Where(pg => pg.GroupId == groupId)
+                    .Select(ToPaymentGroupData);
 
-                foreach (var debtor in debtors)
-                {
-                    var val = debtor.Value + value;
-                    if (val > 0)
+                dataSet.LoadFromQueryable(paymentGroups);
+            }
+        }
+
+        /// <summary>
+        /// Gets the payment group by ID.
+        /// </summary>
+        public static PaymentGroupData GetPaymentGroup(int paymentGroupId)
+        {
+            using (var db = new AppContext())
+            {
+                return db.PaymentGroups
+                    .Where(pg => pg.Id == paymentGroupId)
+                    .Select(ToPaymentGroupData)
+                    .Single();
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of all users in the specified group with paid amounts from the specified payment group.
+        /// </summary>
+        public static List<PaymentData> GetPayers(int groupId, int paymentGroupId)
+        {
+            using (var db = new AppContext())
+            {
+                return db.Users
+                    .Where(u => u.UserGroups.Any(ug => ug.GroupId == groupId))
+                    .Select(u => new
                     {
-                        db.Payments.Add(new Payment()
+                        User = u,
+                        Payment = u.Payments.FirstOrDefault(p => p.PaymentGroupId == paymentGroupId && p.Type == PaymentType.Payment && p.Amount >= 0)
+                    })
+                    .Select(u => new PaymentData()
+                    {
+                        Id = u.Payment.Id,
+                        Name = u.User.FirstName + " " + u.User.LastName,
+                        Amount = u.Payment.Amount,
+                        UserId = u.User.Id
+                    })
+                    .OrderBy(u => u.Name)
+                    .ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets a list of all users in the specified group with debt amounts from the specified payment group.
+        /// </summary>
+        public static List<PaymentData> GetDebtors(int groupId, int paymentGroupId)
+        {
+            using (var db = new AppContext())
+            {
+                return db.Users
+                    .Where(u => u.UserGroups.Any(ug => ug.GroupId == groupId))
+                    .Select(u => new
+                    {
+                        User = u,
+                        Payment = u.Payments.FirstOrDefault(p => p.PaymentGroupId == paymentGroupId && p.Type == PaymentType.Payment && p.Amount < 0)
+                    })
+                    .Select(u => new PaymentData()
+                    {
+                        Id = u.Payment.Id,
+                        Name = u.User.FirstName + " " + u.User.LastName,
+                        Amount = -u.Payment.Amount,
+                        UserId = u.User.Id
+                    })
+                    .OrderBy(u => u.Name)
+                    .ToList();
+            }
+        }
+
+        public static void SavePaymentGroup(PaymentGroupData data, List<PaymentData> payers, List<PaymentData> debtors)
+        {
+            using (var db = new AppContext())
+            {
+                // get or create the payment group
+                var paymentGroup = db.PaymentGroups.Find(data.Id);
+                if (paymentGroup == null)
+                {
+                    paymentGroup = new PaymentGroup()
+                    {
+                        GroupId = data.GroupId
+                    };
+                    db.PaymentGroups.Add(paymentGroup);
+                }
+                paymentGroup.CreatedDate = data.CreatedDate;
+                paymentGroup.Description = data.Description;
+
+                // delete all current payments
+                foreach (var payment in paymentGroup.Payments.ToList())
+                {
+                    db.Payments.Remove(payment);
+                }
+
+                // generate new payments
+                var involvedUsers = new HashSet<int>();
+                foreach (var payer in payers.Where(p => p.Amount != null && p.Amount != 0))
+                {
+                    paymentGroup.Payments.Add(new Payment()
+                    {
+                        Amount = payer.Amount.Value,
+                        UserId = payer.UserId,
+                        Type = PaymentType.Payment
+                    });
+                    involvedUsers.Add(payer.UserId);
+                }
+                foreach (var debtor in debtors.Where(p => p.Amount != null && p.Amount != 0))
+                {
+                    paymentGroup.Payments.Add(new Payment()
+                    {
+                        Amount = -debtor.Amount.Value,
+                        UserId = debtor.UserId,
+                        Type = PaymentType.Payment
+                    });
+                    involvedUsers.Add(debtor.UserId);
+                }
+
+                // calculate rounding
+                var difference = (payers.Sum(p => p.Amount) ?? 0) - (debtors.Sum(p => p.Amount) ?? 0);
+                if (difference != 0 && involvedUsers.Any())
+                {
+                    foreach (var user in involvedUsers)
+                    {
+                        paymentGroup.Payments.Add(new Payment()
                         {
-                            PayerId = payerId,
-                            DebtorId = debtor.UserId,
-                            Amount = val,
-                            Type = PaymentType.Debt,
-                            PaymentGroup = paymentGroup
+                            Amount = -difference / involvedUsers.Count,
+                            UserId = user,
+                            Type = PaymentType.AutoGeneratedRounding
                         });
                     }
                 }
 
-                db.SaveChanges();
-            }
-        }
-
-        
-        /// <summary>
-        /// Loads debtor and payers related to specified user
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="payersDataSet">Payers will be added here</param>
-        /// <param name="debtorsDataSet">Debtors will be added here</param>
-        public static void LoadDebtorsAndPayers(int userId, GridViewDataSet<UserPaymentData> payersDataSet, GridViewDataSet<UserPaymentData> debtorsDataSet)
-        {
-            // Nowhere to load
-            if (payersDataSet == null || debtorsDataSet == null)
-                return;
-
-            using (var db = new AppContext())
-            {
-                var debtors = db.Payments.Where(x => x.PayerId == userId && x.DebtorId != userId).GroupBy(x => x.DebtorId).ToList()
-                    .Select(x => new { Payment = x.First(), Value = x.Where(y => y.Type == PaymentType.Debt).Sum(y => y.Amount) - x.Where(y => y.Type == PaymentType.Rounding).Sum(y => y.Amount) }).ToList();
-
-                var payers = db.Payments.Where(x => x.DebtorId == userId && x.PayerId != userId).GroupBy(x => x.PayerId).ToList()
-                    .Select(x => new { Payment = x.First(), Value = x.Where(y => y.Type == PaymentType.Debt).Sum(y => y.Amount) - x.Where(y => y.Type == PaymentType.Rounding).Sum(y => y.Amount) }).ToList();
-
-                var debtorsSet = new List<UserPaymentData>();
-                var payersSet = new List<UserPaymentData>();
-
-                foreach (var debtor in debtors)
+                if (involvedUsers.Count < 2)
                 {
-                    var payer = payers.FirstOrDefault(x => x.Payment.PayerId == debtor.Payment.DebtorId);
-                    if (payer == null)
-                        continue;
-
-                    var user = debtor.Payment.Debtor;
-                    var userPayment = new UserPaymentData()
-                    {
-                        Name = string.Format("{0} {1}", user.FirstName, user.LastName),
-                        UserId = user.Id,
-                        Value = debtor.Value - payer.Value
-                    };
-
-                    if (userPayment.Value > 0)
-                    {
-                        debtorsSet.Add(userPayment);
-                    }
-                    else
-                    {
-                        userPayment.Value *= -1;
-                        payersSet.Add(userPayment);
-                    }
+                    // no data was entered
+                    throw new Exception("You have to fill the amount for at least two users!");
                 }
 
-                var debtorIds = debtors.Select(x => x.Payment.DebtorId);
-                var payerIds = payers.Select(x => x.Payment.PayerId);
-                debtorsSet.AddRange(debtors.Where(x => !payerIds.Contains(x.Payment.DebtorId)).Select(x => new UserPaymentData()
-                {
-                    Name = string.Format("{0} {1}", x.Payment.Debtor.FirstName, x.Payment.Debtor.LastName),
-                    UserId = x.Payment.DebtorId,
-                    Value = x.Value
-                }));
-
-                payersSet.AddRange(payers.Where(x => !debtorIds.Contains(x.Payment.PayerId)).Select(x => new UserPaymentData()
-                {
-                    Name = string.Format("{0} {1}", x.Payment.Payer.FirstName, x.Payment.Payer.LastName),
-                    UserId = x.Payment.PayerId,
-                    Value = x.Value
-                }));
-
-                payersDataSet.LoadFromQueryable(payersSet.AsQueryable());
-                debtorsDataSet.LoadFromQueryable(debtorsSet.AsQueryable());
-            }
-        }
-
-        /// <summary>
-        /// Pays debt
-        /// </summary>
-        /// <param name="payerId">Original payer</param>
-        /// <param name="debtorId">The one who is paying back</param>
-        /// <param name="value">Amount to pay</param>
-        public static void PayDebt(int payerId, int debtorId, decimal value)
-        {
-            using (var db = new AppContext())
-            {
-                db.Payments.Add(new Payment()
-                {
-                    PayerId = payerId,
-                    DebtorId = debtorId,
-                    Amount = value,
-                    Type = PaymentType.Rounding
-                });
-
                 db.SaveChanges();
             }
         }
 
-        /// <summary>
-        /// Loads history of all payments for specified user
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="gridView">History will be added here</param>
-        public static void LoadPaymentHistory(int userId, GridViewDataSet<PaymentData> gridView)
+        public static void DeletePaymentGroup(PaymentGroupData data, List<PaymentData> payers, List<PaymentData> debtors)
         {
             using (var db = new AppContext())
             {
-                var paymentHistory = db.Payments.Where(x => x.DebtorId == userId || x.PayerId == userId).OrderByDescending(x => x.PaymentGroup.CreatedDate)
-                    .Select(x => new PaymentData()
-                    {
-                        Id = x.Id,
-                        PayerId = x.PayerId,
-                        DebtorId = x.DebtorId,
-                        UserId = userId,
-                        Value = x.Amount,
-                        Date = x.PaymentGroup.CreatedDate,
-                        Type = x.Type,
-                        Debtor = new UserInfoData()
-                        {
-                            Id = x.Debtor.Id,
-                            Email = x.Debtor.Email,
-                            FirstName = x.Debtor.FirstName,
-                            LastName = x.Debtor.LastName
-                        },
-                        Payer = new UserInfoData()
-                        {
-                            Id = x.Payer.Id,
-                            Email = x.Payer.Email,
-                            FirstName = x.Payer.FirstName,
-                            LastName = x.Payer.LastName
-                        }
-                    });
-
-                gridView.LoadFromQueryable(paymentHistory);
+                // get or create the payment group
+                var paymentGroup = db.PaymentGroups.Find(data.Id);
+                db.PaymentGroups.Remove(paymentGroup);
+                db.SaveChanges();
             }
         }
 
-        /// <summary>
-        /// Loads all user payments/debts as a group payment
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="gridView">Payments will be loaded here as a group</param>
-        public static void LoadPaymentGroups(int userId, GridViewDataSet<PaymentGroupData> gridView)
+
+        private static Expression<Func<PaymentGroup, PaymentGroupData>> ToPaymentGroupData
+        {
+            get
+            {
+                return pg => new PaymentGroupData()
+                {
+                    Id = pg.Id,
+                    Description = pg.Description,
+                    TotalAmount = pg.Payments.Where(p => p.Amount > 0).Sum(p => (decimal?)p.Amount) ?? 0,
+                    CreatedDate = pg.CreatedDate,
+                    Currency = pg.Group.Currency,
+                    GroupId = pg.GroupId
+                };
+            }
+        }
+
+        public static bool IsPaymentGroupEditable(int userId, int paymentGroupId)
         {
             using (var db = new AppContext())
             {
-                var paymentGroups = db.PaymentGroups.Where(x => x.Payments.Any(y => y.PayerId == userId || y.DebtorId == userId))
-                    .Select(x => new PaymentGroupData()
-                    {
-                        Id = x.Id,
-                        Description = x.Description,
-                        Value = x.Payments.Sum(y => y.Amount),
-                        PayerName = x.Payments.FirstOrDefault().Payer.FirstName + " " + x.Payments.FirstOrDefault().Payer.LastName
-                    }).OrderBy(x => x.Id);
-
-                gridView.LoadFromQueryable(paymentGroups);
+                var user = db.Users.Find(userId);
+                return user.UserRole == UserRole.Admin 
+                    || db.PaymentGroups.Any(pg => pg.Id == paymentGroupId && pg.Group.UserGroups.Any(ug => ug.UserId == userId));
             }
         }
+
     }
 }

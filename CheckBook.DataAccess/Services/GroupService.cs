@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using CheckBook.DataAccess.Context;
 using CheckBook.DataAccess.Data;
 using CheckBook.DataAccess.Model;
@@ -9,16 +11,40 @@ namespace CheckBook.DataAccess.Services
     public static class GroupService
     {
         /// <summary>
-        /// Gets all groups
+        /// Gets all groups.
         /// </summary>
-        /// <returns>List of all groups</returns>
         public static List<GroupData> GetGroups()
         {
             using (var db = new AppContext())
             {
-                return db.Groups.OrderBy(x => x.Name).Select(ToGroupData).ToList();
+                return db.Groups
+                    .OrderBy(x => x.Name)
+                    .Select(ToGroupData).ToList();
             }
         }
+
+        /// <summary>
+        /// Gets all groups for the specified user.
+        /// </summary>
+        public static List<GroupData> GetGroupsByUser(int userId)
+        {
+            using (var db = new AppContext())
+            {
+                return db.Groups
+                    .Where(g => g.UserGroups.Any(ug => ug.UserId == userId))
+                    .OrderBy(x => x.Name)
+                    .Select(ToGroupData).ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets the group by ID.
+        /// </summary>
+        public static GroupData GetGroup(int groupId, int userId)
+        {
+            return GetGroupsByUser(userId).Single(g => g.Id == groupId);
+        }
+
 
         /// <summary>
         /// Creates new group
@@ -36,7 +62,7 @@ namespace CheckBook.DataAccess.Services
                     db.UserGroups.Add(new UserGroup() { UserId = userId, Group = group });
 
                 db.SaveChanges();
-                return ToGroupData(group);
+                return ToGroupData.Compile()(group);
             }
         }
 
@@ -109,19 +135,30 @@ namespace CheckBook.DataAccess.Services
                     db.UserGroups.Add(new UserGroup() { UserId = userId, GroupId = group.Id });
 
                 db.SaveChanges();
-                return ToGroupData(group);
+                return ToGroupData.Compile()(group);
             }
         }
 
         /// <summary>
         /// Converts Group entity into GroupData
         /// </summary>
-        /// <param name="group">Group for conversion</param>
-        /// <returns>Converted group</returns>
-        public static GroupData ToGroupData(Group group)
+        public static Expression<Func<Group, GroupData>> ToGroupData
         {
-            return new GroupData() { Id = group.Id, Name = group.Name };
-        }
+            get
+            {
+                return g => new GroupData()
+                {
+                    Id = g.Id,
+                    Name = g.Name,
+                    Currency = g.Currency,
+                    TotalTransactions = g.PaymentGroups.Count(),
+                    TotalSpending = g.PaymentGroups.Sum(pg => pg.Payments.Sum(p => (decimal?)p.Amount)) ?? 0
+
+                    // We need to cast to (decimal?) because the result of the expression is NULL when there are no groups
+                    // and null is not assignable in the property of decimal
+                };
+            }   
+        } 
 
         /// <summary>
         /// Converts User entity into UserPaymentData
@@ -133,7 +170,7 @@ namespace CheckBook.DataAccess.Services
             return new UserPaymentData()
             {
                 UserId = user.Id,
-                Name = string.Format("{0} {1}", user.FirstName, user.LastName),
+                Name = $"{user.FirstName} {user.LastName}",
                 Value = 0
             };
         }

@@ -6,7 +6,7 @@
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{A5EA0101-0A7E-4182-A28C-DD223A8C0DBD}</ProjectGuid>
-    <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
+    <ProjectTypeGuids>{94EE71E2-EE2A-480B-8704-AF46D2E58D94};{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>CheckBook.App</RootNamespace>
@@ -42,8 +42,8 @@
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="DotVVM.Framework, Version=0.8.6.13, Culture=neutral, PublicKeyToken=23f3607db32275da, processorArchitecture=MSIL">
-      <HintPath>..\packages\DotVVM.0.8.6.13-pre\lib\net451\DotVVM.Framework.dll</HintPath>
+    <Reference Include="DotVVM.Framework, Version=0.9.1.7, Culture=neutral, PublicKeyToken=23f3607db32275da, processorArchitecture=MSIL">
+      <HintPath>..\packages\DotVVM.0.9.1.7-pre\lib\net451\DotVVM.Framework.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
@@ -98,6 +98,10 @@
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="NIdenticon, Version=1.2.1.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\NIdenticon.1.2.1.0\lib\net35-client\NIdenticon.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Owin, Version=1.0.0.0, Culture=neutral, PublicKeyToken=f0ebd12fd5e55cc5, processorArchitecture=MSIL">
       <HintPath>..\packages\Owin.1.0\lib\net40\Owin.dll</HintPath>
       <Private>True</Private>
@@ -109,6 +113,7 @@
     </Reference>
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Reflection.Metadata, Version=1.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Reflection.Metadata.1.1.0\lib\dotnet5.2\System.Reflection.Metadata.dll</HintPath>
       <Private>True</Private>
@@ -124,15 +129,18 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DotvvmStartup.cs" />
     <Compile Include="Helpers\LoginHelper.cs" />
+    <Compile Include="IdenticonPresenter.cs" />
     <Compile Include="Models\UserIdentity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
-    <Compile Include="ViewModels\HeaderViewModel.cs" />
+    <Compile Include="ViewModels\AppViewModelBase.cs" />
     <Compile Include="ViewModels\HomeViewModel.cs" />
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\ManagerViewModel.cs" />
-    <Compile Include="ViewModels\PaymentViewModel.cs" />
+    <Compile Include="ViewModels\GroupViewModel.cs" />
+    <Compile Include="ViewModels\PaymentGroupViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -149,6 +157,7 @@
     <Content Include="Style\Default.min.css">
       <DependentUpon>Default.css</DependentUpon>
     </Content>
+    <Content Include="Style\fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Style\MsModernButtons\m-buttons.css" />
     <Content Include="Style\MsModernButtons\m-buttons.min.css" />
     <Content Include="Web.config" />
@@ -164,9 +173,14 @@
     <Content Include="Style\bootstrap\bootstrap.css.map" />
     <Content Include="Views\home.dothtml" />
     <Content Include="Views\settings.dothtml" />
-    <Content Include="Views\header.dotmaster" />
-    <Content Include="Views\payment.dothtml" />
+    <Content Include="Views\app.dotmaster" />
+    <Content Include="Views\paymentGroup.dothtml" />
     <Content Include="Views\manager.dothtml" />
+    <Content Include="Style\fonts\glyphicons-halflings-regular.eot" />
+    <Content Include="Style\fonts\glyphicons-halflings-regular.ttf" />
+    <Content Include="Style\fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="Style\fonts\glyphicons-halflings-regular.woff2" />
+    <Content Include="Views\group.dothtml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
@@ -206,6 +220,12 @@
           </CustomServerUrl>
           <SaveServerSettingsInUserFile>False</SaveServerSettingsInUserFile>
         </WebProjectProperties>
+      </FlavorProperties>
+      <FlavorProperties GUID="{94EE71E2-EE2A-480B-8704-AF46D2E58D94}" Configuration="Debug|Any CPU">
+        <DotvvmPropertyPageProjectFlavorCfg />
+      </FlavorProperties>
+      <FlavorProperties GUID="{94EE71E2-EE2A-480B-8704-AF46D2E58D94}" Configuration="Release|Any CPU">
+        <DotvvmPropertyPageProjectFlavorCfg />
       </FlavorProperties>
     </VisualStudio>
   </ProjectExtensions>

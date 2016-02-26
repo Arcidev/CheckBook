@@ -11,15 +11,10 @@ namespace CheckBook.DataAccess.Model
         
         public PaymentType Type { get; set; }
 
-        [ForeignKey(nameof(Payer))]
-        public int PayerId { get; set; }
+        public int UserId { get; set; }
 
-        public virtual User Payer { get; set; }
-
-        [ForeignKey(nameof(Debtor))]
-        public int DebtorId { get; set; }
-
-        public virtual User Debtor { get; set; }
+        [ForeignKey(nameof(UserId))]
+        public virtual User User { get; set; }
 
         public int PaymentGroupId { get; set; }
 

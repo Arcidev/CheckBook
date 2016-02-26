@@ -1,15 +1,7 @@
-﻿.page {
+﻿/* COMMON STYLES */
+.page {
   padding-top: 10px;
   width: 100%;
-}
-.login-form {
-  margin: 10% auto 0;
-  color: gray;
-  width: 450px;
-}
-.login-input {
-  float: right;
-  width: 180px;
 }
 .button-small {
   width: 40%;
@@ -25,13 +17,6 @@
   float: left;
   margin-left: 10px;
 }
-.login-button-left {
-  margin-left: 7%;
-}
-.login-button-right {
-  margin-right: 7%;
-  float: right;
-}
 .input-right {
   float: right;
 }
@@ -39,13 +24,57 @@
   margin-left: 30%;
 }
 .validation-box {
-  color: red;
-}
-.validation-textbox-error {
-  border: 1px red solid !important;
+  color: #a00000;
 }
 .status-box {
   color: blue;
+}
+h1 {
+  margin-bottom: 30px;
+}
+/* LOGIN FORM */
+.login-form {
+  margin: 10% auto 0;
+  color: gray;
+  width: 450px;
+}
+.login-input {
+  float: right;
+  width: 180px;
+}
+/* HOME PAGE */
+.tile-list .thumbnail {
+  display: inline-block;
+  width: 250px;
+  margin: 10px;
+  padding-top: 10px;
+}
+/* PAYMENT GROUP PAGE */
+.payment-group-form {
+  margin: 0 auto;
+  color: gray;
+  width: 850px;
+}
+.user-box {
+  display: inline-block;
+  margin: 10px;
+}
+.user-box .name {
+  display: inline-block;
+  width: 200px;
+}
+.user-box .control {
+  display: inline-block;
+  width: 200px;
+}
+.user-box img {
+  margin: 10px;
+  width: 60px;
+  height: 60px;
+}
+.user-box .form-control {
+  width: 80px;
+  display: inline-block;
 }
 .group-select {
   max-width: 400px;
@@ -167,6 +196,9 @@
 }
 .right {
   text-align: right;
+}
+.form-control.date {
+  width: 160px;
 }
 @media screen and (max-width: 460px) {
   .login-form {

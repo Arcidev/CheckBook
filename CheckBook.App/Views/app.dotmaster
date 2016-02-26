@@ -1,0 +1,32 @@
+﻿@viewModel CheckBook.App.ViewModels.AppViewModelBase, CheckBook.App
+
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" type="text/css" href="~/Style/MSModernButtons/m-buttons.css" />
+    <link rel="stylesheet" type="text/css" href="~/Style/Bootstrap/bootstrap.min.css" />
+    <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css" />
+</head>
+<body>
+    <div class="header">
+        <dot:RouteLink RouteName="home" Text="My Groups" 
+                       class="{value: 'header-item action-button' + (ActivePage == 'home' ? ' header-item-active' : '')}" />
+
+        <dot:RouteLink RouteName="settings" Text="My Profile" 
+                       class="{value: 'header-item action-button' + (ActivePage == 'settings' ? ' header-item-active' : '')}" />
+
+        <dot:RouteLink RouteName="manager" Text="Manager" 
+                       class="{value: 'header-item action-button' + (ActivePage == 'manager' ? ' header-item-active' : '')}" 
+                       Visible="{value: IsAdmin}" />
+
+        <dot:Button Click="{command: SignOut()}" Text="Sign Out" class="header-item header-item-active button-right action-button" />        
+    </div>
+
+    <dot:ContentPlaceHolder ID="PageContent">
+    </dot:ContentPlaceHolder>
+</body>
+</html>
+
+

@@ -1,4 +1,4 @@
-@viewModel CheckBook.ViewModels.LoginViewModel, CheckBook
+﻿@viewModel CheckBook.App.ViewModels.LoginViewModel, CheckBook.App
 
 <!DOCTYPE html>
 <html lang="en" xmlns="http://www.w3.org/1999/xhtml">
@@ -8,49 +8,48 @@
     <link rel="stylesheet" type="text/css" href="~/Style/MsModernButtons/m-buttons.min.css">
     <link rel="stylesheet" type="text/css" href="~/Style/Default.min.css">
 </head>
-<body ValidationMessage.InvalidCssClass="validation-textbox-error" ValidationMessage.SetToolTipText="true">
+<body ValidationMessage.InvalidCssClass="has-error" ValidationMessage.SetToolTipText="true">
+
     <div class="page">
-        <div class="login-form form-group">
-            <h1> Check Book</h1>
-            <div class="row">
-                <div class="col-xs-4">
-                    <dot:Literal Text="Email:" />
-                </div>
-                <div class="col-xs-8">
-                    <dot:TextBox class="form-control" ValidationMessage.ValidatedValue="{value: Email}" Text="{value: Email}" />
+
+        <form class="form-horizontal login-form">
+            <div class="form-group">
+                <h1><span class="glyphicon glyphicon-cutlery"></span> CheckBook</h1>
+            </div>
+
+            <div class="form-group">
+                <label class="col-xs-4 control-label">E-mail Address</label>
+                <div class="col-xs-8" ValidationMessage.ValidatedValue="{value: Email}">
+                    <dot:TextBox class="form-control" Text="{value: Email}" />
                 </div>
             </div>
-            <div class="row">
-                <div class="col-xs-4">
-                    <dot:Literal Text="Password:" />
-                </div>
-                <div class="col-xs-8">
-                    <dot:TextBox class="form-control" ValidationMessage.ValidatedValue="{value: Password}" Text="{value: Password}" Type="Password" />
+
+            <div class="form-group">
+                <label class="col-xs-4 control-label">Password</label>
+                <div class="col-xs-8" ValidationMessage.ValidatedValue="{value: Password}">
+                    <dot:TextBox class="form-control" Text="{value: Password}" Type="Password" />
                 </div>
             </div>
-            <div class="row">
+
+            <div class="form-group">
                 <div class="col-xs-7 validation-box">
                     {{value: ErrorMessage}}
                     <dot:ValidationSummary />
-
-                </div>
-                <div class="col-xs-5 right">
-                    <div style="display: inline-block">
-
-                        <dot:UpdateProgress>
-                            <img src="Style\default.svg">
-                        </dot:UpdateProgress>
-                    </div>
-                    <dot:Button Click="{command: Login()}" class="m-btn blue" ButtonTagName="button">
-
-                        Login
-
-
-                    </dot:Button>
-
                 </div>
             </div>
-        </div>
+
+            <div class="form-group">
+                <div class="col-xs-5 right">
+                    <div style="display: inline-block">
+                        <dot:UpdateProgress>
+                            <img src="~/Style/default.svg">
+                        </dot:UpdateProgress>
+                    </div>
+
+                    <dot:Button Click="{command: SignIn()}" class="btn btn-primary" ButtonTagName="button">Sign In</dot:Button>
+                </div>
+            </div>
+        </form>
     </div>
 </body>
 </html>

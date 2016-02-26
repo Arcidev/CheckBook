@@ -15,71 +15,59 @@ namespace CheckBook.DataAccess.Migrations
 
         protected override void Seed(DataAccess.Context.AppContext context)
         {
-            var prague = context.Groups.FirstOrDefault(x => x.Name == "Lunches - Riganti Office");
-            if (prague == null)
+            if (!context.Users.Any())
             {
-                prague = new Group { Name = "Riganti - Prague" };
+                // create sample groups
+                var prague = new Group { Name = "Lunches - Riganti Office", Currency = "CZK" };
                 context.Groups.Add(prague);
-            }
 
-            var brno = context.Groups.FirstOrDefault(x => x.Name == "Sport Activities");
-            if (brno == null)
-            {
-                brno = new Group { Name = "Riganti - Brno" };
+                var brno = new Group { Name = "Brno - Other Activities", Currency = "EUR" };
                 context.Groups.Add(brno);
-            }
 
-            if (!context.Users.Any(x => x.Email == "newman@test.com"))
-            {
-                var password = PasswordHelper.CreateHash("Pa$$w0rd");
-                var user = new User
+
+                // create sample users
+                var password1 = PasswordHelper.CreateHash("Pa$$w0rd");
+                var user1 = new User
                 {
                     FirstName = "John",
                     LastName = "Newman",
                     Email = "newman@test.com",
                     UserRole = UserRole.User,
-                    PasswordHash = password.PasswordHash,
-                    PasswordSalt = password.PasswordSalt
+                    PasswordHash = password1.PasswordHash,
+                    PasswordSalt = password1.PasswordSalt
                 };
-
-                context.Users.Add(user);
-                context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
-            }
-
-            if (!context.Users.Any(x => x.Email == "smith@test.com"))
-            {
-                var password = PasswordHelper.CreateHash("Pa$$w0rd");
-                var user = new User
+                context.Users.Add(user1);
+                context.UserGroups.Add(new UserGroup() { User = user1, Group = prague });
+            
+                var password2 = PasswordHelper.CreateHash("Pa$$w0rd");
+                var user2 = new User
                 {
                     FirstName = "John",
                     LastName = "Smith",
                     Email = "smith@test.com",
                     UserRole = UserRole.Admin,
-                    PasswordHash = password.PasswordHash,
-                    PasswordSalt = password.PasswordSalt
+                    PasswordHash = password2.PasswordHash,
+                    PasswordSalt = password2.PasswordSalt
                 };
 
-                context.Users.Add(user);
-                context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
-                context.UserGroups.Add(new UserGroup() { User = user, Group = brno });
-            }
-
-            if (!context.Users.Any(x => x.Email == "anderson@test.com"))
-            {
-                var password = PasswordHelper.CreateHash("Pa$$w0rd");
-                var user = new User
+                context.Users.Add(user2);
+                context.UserGroups.Add(new UserGroup() { User = user2, Group = prague });
+                context.UserGroups.Add(new UserGroup() { User = user2, Group = brno });
+            
+                var password3 = PasswordHelper.CreateHash("Pa$$w0rd");
+                var user3 = new User
                 {
                     FirstName = "David",
                     LastName = "Anderson",
                     Email = "anderson@test.com",
                     UserRole = UserRole.User,
-                    PasswordHash = password.PasswordHash,
-                    PasswordSalt = password.PasswordSalt
+                    PasswordHash = password3.PasswordHash,
+                    PasswordSalt = password3.PasswordSalt
                 };
 
-                context.Users.Add(user);
-                context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
-                context.UserGroups.Add(new UserGroup() { User = user, Group = brno });
+                context.Users.Add(user3);
+                context.UserGroups.Add(new UserGroup() { User = user3, Group = prague });
+                context.UserGroups.Add(new UserGroup() { User = user3, Group = brno });
             }
         }
     }

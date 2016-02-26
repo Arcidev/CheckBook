@@ -7,7 +7,7 @@ using CheckBook.DataAccess.Services;
 namespace CheckBook.App.ViewModels
 {
     [Authorize]
-	public class SettingsViewModel : HeaderViewModel
+	public class SettingsViewModel : AppViewModelBase
     {
         [Required]
         [StringLength(100)]
@@ -24,8 +24,7 @@ namespace CheckBook.App.ViewModels
         public string PasswordAgain { get; set; }
 
         public string Email { get; set; }
-
-        public SettingsViewModel() : base("Settings") { }
+        
 
         public override Task PreRender()
         {

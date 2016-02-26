@@ -9,8 +9,8 @@ using DotVVM.Framework.Runtime.Filters;
 
 namespace CheckBook.App.ViewModels
 {
-    [Authorize("Admin")]
-	public class ManagerViewModel : HeaderViewModel
+    [Authorize(nameof(UserRole.Admin))]
+	public class ManagerViewModel : AppViewModelBase
 	{
         public GridViewDataSet<UserInfoData> GroupUsers { get; private set; }
 
@@ -42,7 +42,7 @@ namespace CheckBook.App.ViewModels
 
         public bool HasAdminRole { get; set; }
 
-        public ManagerViewModel() : base("Manager")
+        public ManagerViewModel()
         {
             SelectedGroupId = -1;
             GroupUsers = new GridViewDataSet<UserInfoData>() { PageSize = 20 };

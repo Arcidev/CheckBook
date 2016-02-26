@@ -24,21 +24,9 @@ namespace CheckBook.DataAccess.Context
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             modelBuilder.Entity<Payment>()
-                        .HasRequired(p => p.Debtor)
-                        .WithMany()
-                        .HasForeignKey(p => p.DebtorId)
-                        .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Payment>()
-                        .HasRequired(p => p.Payer)
-                        .WithMany()
-                        .HasForeignKey(p => p.PayerId)
-                        .WillCascadeOnDelete(false);
-
-            modelBuilder.Entity<Payment>()
-                        .HasRequired(p => p.PaymentGroup)
-                        .WithMany(p => p.Payments)
-                        .HasForeignKey(p => p.PaymentGroupId)
+                        .HasRequired(p => p.User)
+                        .WithMany(u => u.Payments)
+                        .HasForeignKey(p => p.UserId)
                         .WillCascadeOnDelete(false);
         }
     }
