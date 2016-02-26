@@ -33,7 +33,7 @@ namespace DataAccess.Services
                 var group = db.Groups.Add(new Group() { Name = name });
 
                 foreach (var userId in userIds.Distinct())
-                    db.UsersGroups.Add(new UserGroups() { UserId = userId, Group = group });
+                    db.UserGroups.Add(new UserGroup() { UserId = userId, Group = group });
 
                 db.SaveChanges();
                 return ToGroupData(group);
@@ -49,7 +49,7 @@ namespace DataAccess.Services
         {
             using (var db = new AppContext())
             {
-                return db.UsersGroups.Where(x => x.GroupId == groupId).Select(x => x.UserId).ToList();
+                return db.UserGroups.Where(x => x.GroupId == groupId).Select(x => x.UserId).ToList();
             }
         }
 
@@ -62,7 +62,7 @@ namespace DataAccess.Services
         {
             using (var db = new AppContext())
             {
-                var groupUsers = db.UsersGroups.Where(x => x.GroupId == groupId).Select(x => x.User);
+                var groupUsers = db.UserGroups.Where(x => x.GroupId == groupId).Select(x => x.User);
                 return groupUsers.Select(ToUserPaymentData).ToList();
             }
         }
@@ -76,11 +76,11 @@ namespace DataAccess.Services
         {
             using (var db = new AppContext())
             {
-                var userGroup = db.UsersGroups.FirstOrDefault(x => x.GroupId == groupId);
+                var userGroup = db.UserGroups.FirstOrDefault(x => x.GroupId == groupId);
                 if (userGroup == null)
                     return;
 
-                db.UsersGroups.Remove(userGroup);
+                db.UserGroups.Remove(userGroup);
                 db.SaveChanges();
             }
         }
@@ -104,9 +104,9 @@ namespace DataAccess.Services
                     return null;
 
                 group.Name = name;
-                db.UsersGroups.RemoveRange(db.UsersGroups.Where(x => x.GroupId == groupId));
+                db.UserGroups.RemoveRange(db.UserGroups.Where(x => x.GroupId == groupId));
                 foreach (var userId in userIds.Distinct())
-                    db.UsersGroups.Add(new UserGroups() { UserId = userId, GroupId = group.Id });
+                    db.UserGroups.Add(new UserGroup() { UserId = userId, GroupId = group.Id });
 
                 db.SaveChanges();
                 return ToGroupData(group);

@@ -37,13 +37,13 @@ namespace DataAccess.Migrations
                     FirstName = "John",
                     LastName = "Newman",
                     Email = "newman@admin.com",
-                    UserRole = UserRoles.Admin,
+                    UserRole = UserRole.Admin,
                     PasswordHash = password.PasswordHash,
                     PasswordSalt = password.PasswordSalt
                 };
 
                 context.Users.Add(user);
-                context.UsersGroups.Add(new UserGroups() { User = user, Group = prague });
+                context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
             }
             if (!context.Users.Any(x => x.Email == "smith@admin.com"))
             {
@@ -52,13 +52,13 @@ namespace DataAccess.Migrations
                     FirstName = "John",
                     LastName = "Smith",
                     Email = "smith@admin.com",
-                    UserRole = UserRoles.Admin,
+                    UserRole = UserRole.Admin,
                     PasswordHash = password.PasswordHash,
                     PasswordSalt = password.PasswordSalt
                 };
 
                 context.Users.Add(user);
-                context.UsersGroups.Add(new UserGroups() { User = user, Group = brno });
+                context.UserGroups.Add(new UserGroup() { User = user, Group = brno });
             }
             if (!context.Users.Any(x => x.Email == "anderson@user.com"))
             {
@@ -67,13 +67,13 @@ namespace DataAccess.Migrations
                     FirstName = "David",
                     LastName = "Anderson",
                     Email = "anderson@user.com",
-                    UserRole = UserRoles.User,
+                    UserRole = UserRole.User,
                     PasswordHash = password.PasswordHash,
                     PasswordSalt = password.PasswordSalt
                 };
 
                 context.Users.Add(user);
-                context.UsersGroups.Add(new UserGroups() { User = user, Group = prague });
+                context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
             }
         }
     }

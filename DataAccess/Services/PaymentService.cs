@@ -38,9 +38,9 @@ namespace DataAccess.Services
                         {
                             PayerId = payerId,
                             DebtorId = debtor.UserId,
-                            Value = val,
+                            Amount = val,
                             Date = DateTime.Now,
-                            Type = PaymentHistoryType.Debt,
+                            Type = PaymentType.Debt,
                             PaymentGroup = paymentGroup
                         });
                     }
@@ -66,10 +66,10 @@ namespace DataAccess.Services
             using (var db = new AppContext())
             {
                 var debtors = db.Payments.Where(x => x.PayerId == userId && x.DebtorId != userId).GroupBy(x => x.DebtorId).ToList()
-                    .Select(x => new { Payment = x.First(), Value = x.Where(y => y.Type == PaymentHistoryType.Debt).Sum(y => y.Value) - x.Where(y => y.Type == PaymentHistoryType.Payment).Sum(y => y.Value) }).ToList();
+                    .Select(x => new { Payment = x.First(), Value = x.Where(y => y.Type == PaymentType.Debt).Sum(y => y.Amount) - x.Where(y => y.Type == PaymentType.Rounding).Sum(y => y.Amount) }).ToList();
 
                 var payers = db.Payments.Where(x => x.DebtorId == userId && x.PayerId != userId).GroupBy(x => x.PayerId).ToList()
-                    .Select(x => new { Payment = x.First(), Value = x.Where(y => y.Type == PaymentHistoryType.Debt).Sum(y => y.Value) - x.Where(y => y.Type == PaymentHistoryType.Payment).Sum(y => y.Value) }).ToList();
+                    .Select(x => new { Payment = x.First(), Value = x.Where(y => y.Type == PaymentType.Debt).Sum(y => y.Amount) - x.Where(y => y.Type == PaymentType.Rounding).Sum(y => y.Amount) }).ToList();
 
                 var debtorsSet = new List<UserPaymentData>();
                 var payersSet = new List<UserPaymentData>();
@@ -125,7 +125,7 @@ namespace DataAccess.Services
         /// </summary>
         /// <param name="payerId">Original payer</param>
         /// <param name="debtorId">The one who is paying back</param>
-        /// <param name="value">Value to pay</param>
+        /// <param name="value">Amount to pay</param>
         public static void PayDebt(int payerId, int debtorId, decimal value)
         {
             using (var db = new AppContext())
@@ -134,9 +134,9 @@ namespace DataAccess.Services
                 {
                     PayerId = payerId,
                     DebtorId = debtorId,
-                    Value = value,
+                    Amount = value,
                     Date = DateTime.Now,
-                    Type = PaymentHistoryType.Payment
+                    Type = PaymentType.Rounding
                 });
 
                 db.SaveChanges();
@@ -196,7 +196,7 @@ namespace DataAccess.Services
                     {
                         Id = x.Id,
                         Description = x.Description,
-                        Value = x.Payments.Sum(y => y.Value),
+                        Value = x.Payments.Sum(y => y.Amount),
                         PayerName = x.Payments.FirstOrDefault().Payer.FirstName + " " + x.Payments.FirstOrDefault().Payer.LastName
                     }).OrderBy(x => x.Id);
 

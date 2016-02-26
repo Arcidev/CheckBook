@@ -149,7 +149,7 @@ namespace CheckBook.ViewModels
                 User.Email = userInfo != null ? userInfo.Email : null;
                 Password = null;
                 PasswordAgain = null;
-                HasAdminRole = userInfo != null ? userInfo.UserRole == UserRoles.Admin : false;
+                HasAdminRole = userInfo != null ? userInfo.UserRole == UserRole.Admin : false;
             }
         }
 
@@ -162,7 +162,7 @@ namespace CheckBook.ViewModels
             }
 
             User.Password = Password;
-            User.UserRole = HasAdminRole ? UserRoles.Admin : UserRoles.User;
+            User.UserRole = HasAdminRole ? UserRole.Admin : UserRole.User;
             if (!User.HasValidData)
             {
                 ErrorMessage = "All fields must contain some value";

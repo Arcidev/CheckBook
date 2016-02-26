@@ -9,7 +9,7 @@ namespace DataAccess.Context
 
         public DbSet<Group> Groups { get; set; }
 
-        public DbSet<UserGroups> UsersGroups { get; set; }
+        public DbSet<UserGroup> UserGroups { get; set; }
 
         public DbSet<PaymentGroup> PaymentGroups { get; set; }
 

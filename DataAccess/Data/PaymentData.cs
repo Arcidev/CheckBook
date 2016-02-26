@@ -15,7 +15,7 @@ namespace DataAccess.Data
 
         public DateTime Date { get; set; }
 
-        public PaymentHistoryType Type { get; set; }
+        public PaymentType Type { get; set; }
 
         public int UserId { get; set; }
 
@@ -33,11 +33,11 @@ namespace DataAccess.Data
                     return string.Format("You have payed {0} CZK for Yourself", Value);
 
                 if (PayerId == UserId)
-                    return Type == PaymentHistoryType.Debt ?
+                    return Type == PaymentType.Debt ?
                         string.Format("You have payed {0} CZK for {1}", Value, Debtor.FullName) :
                         string.Format("{0} has payed You back {1} CZK", Debtor.FullName, Value);
 
-                return Type == PaymentHistoryType.Debt ?
+                return Type == PaymentType.Debt ?
                     string.Format("{0} has payed {1} CZK for You", Payer.FullName, Value) :
                     string.Format("You have payed back {0} CZK to {1}", Value, Payer.FullName);
             }

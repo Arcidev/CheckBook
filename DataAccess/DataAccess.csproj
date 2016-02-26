@@ -110,14 +110,14 @@
     <Compile Include="Data\UserData.cs" />
     <Compile Include="Data\UserPaymentData.cs" />
     <Compile Include="Enums\CreateUserResult.cs" />
-    <Compile Include="Enums\PaymentHistoryType.cs" />
-    <Compile Include="Enums\UserRoles.cs" />
+    <Compile Include="Enums\PaymentType.cs" />
+    <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\PaymentGroup.cs" />
     <Compile Include="Model\Payment.cs" />
     <Compile Include="Model\User.cs" />
-    <Compile Include="Model\UserGroups.cs" />
+    <Compile Include="Model\UserGroup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Security\PasswordData.cs" />
     <Compile Include="Security\PasswordHelper.cs" />
@@ -127,11 +127,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="dotvvm.json" />
     <None Include="packages.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="LICENSE.txt" />
   </ItemGroup>
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />

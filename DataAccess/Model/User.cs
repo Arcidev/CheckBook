@@ -3,6 +3,10 @@ using System.ComponentModel.DataAnnotations;
 
 namespace DataAccess.Model
 {
+
+    /// <summary>
+    /// A user who can login into the application.
+    /// </summary>
     public class User
     {
         [Key]
@@ -28,6 +32,6 @@ namespace DataAccess.Model
         [StringLength(100)]
         public string PasswordHash { get; set; }
 
-        public UserRoles UserRole { get; set; }
+        public UserRole UserRole { get; set; }
     }
 }
