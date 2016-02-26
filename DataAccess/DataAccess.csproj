@@ -112,6 +112,10 @@
     <Compile Include="Enums\CreateUserResult.cs" />
     <Compile Include="Enums\PaymentType.cs" />
     <Compile Include="Enums\UserRole.cs" />
+    <Compile Include="Migrations\201602261455210_InitialDatabaseSchema.cs" />
+    <Compile Include="Migrations\201602261455210_InitialDatabaseSchema.Designer.cs">
+      <DependentUpon>201602261455210_InitialDatabaseSchema.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Model\Group.cs" />
     <Compile Include="Model\PaymentGroup.cs" />
@@ -132,6 +136,11 @@
   <ItemGroup>
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
     <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.1.1.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201602261455210_InitialDatabaseSchema.resx">
+      <DependentUpon>201602261455210_InitialDatabaseSchema.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

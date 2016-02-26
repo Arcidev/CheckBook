@@ -23,6 +23,8 @@ namespace DataAccess.Model
 
         public virtual Group Group { get; set; }
 
+
+
         public virtual ICollection<Payment> Payments { get; private set; }
 
 

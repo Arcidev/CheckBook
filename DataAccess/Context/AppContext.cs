@@ -5,6 +5,12 @@ namespace DataAccess.Context
 {
     public class AppContext : DbContext
     {
+
+        public AppContext() : base("name=DB")
+        {
+            
+        }
+
         public DbSet<User> Users { get; set; }
 
         public DbSet<Group> Groups { get; set; }
@@ -30,7 +36,7 @@ namespace DataAccess.Context
                         .WillCascadeOnDelete(false);
 
             modelBuilder.Entity<Payment>()
-                        .HasOptional(p => p.PaymentGroup)
+                        .HasRequired(p => p.PaymentGroup)
                         .WithMany(p => p.Payments)
                         .HasForeignKey(p => p.PaymentGroupId)
                         .WillCascadeOnDelete(false);

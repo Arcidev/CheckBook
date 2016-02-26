@@ -26,7 +26,7 @@ namespace DataAccess.Services
 
             using (var db = new AppContext())
             {
-                var paymentGroup = new PaymentGroup() { Description = description };
+                var paymentGroup = new PaymentGroup() { Description = description, CreatedDate = DateTime.Now };
                 db.PaymentGroups.Add(paymentGroup);
 
                 foreach (var debtor in debtors)
@@ -39,7 +39,6 @@ namespace DataAccess.Services
                             PayerId = payerId,
                             DebtorId = debtor.UserId,
                             Amount = val,
-                            Date = DateTime.Now,
                             Type = PaymentType.Debt,
                             PaymentGroup = paymentGroup
                         });
@@ -135,7 +134,6 @@ namespace DataAccess.Services
                     PayerId = payerId,
                     DebtorId = debtorId,
                     Amount = value,
-                    Date = DateTime.Now,
                     Type = PaymentType.Rounding
                 });
 
@@ -152,15 +150,15 @@ namespace DataAccess.Services
         {
             using (var db = new AppContext())
             {
-                var paymentHistory = db.Payments.Where(x => x.DebtorId == userId || x.PayerId == userId).OrderByDescending(x => x.Date)
+                var paymentHistory = db.Payments.Where(x => x.DebtorId == userId || x.PayerId == userId).OrderByDescending(x => x.PaymentGroup.CreatedDate)
                     .Select(x => new PaymentData()
                     {
                         Id = x.Id,
                         PayerId = x.PayerId,
                         DebtorId = x.DebtorId,
                         UserId = userId,
-                        Value = x.Value,
-                        Date = x.Date,
+                        Value = x.Amount,
+                        Date = x.PaymentGroup.CreatedDate,
                         Type = x.Type,
                         Debtor = new UserInfoData()
                         {

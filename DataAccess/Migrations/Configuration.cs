@@ -10,63 +10,33 @@ namespace DataAccess.Migrations
     {
         public Configuration()
         {
-            AutomaticMigrationsEnabled = true;
-            ContextKey = "DataAccess.Context.AppContext";
+            AutomaticMigrationsEnabled = false;
         }
 
         protected override void Seed(DataAccess.Context.AppContext context)
         {
-            Group prague = context.Groups.FirstOrDefault(x => x.Name == "Riganti - Prague");
+            var prague = context.Groups.FirstOrDefault(x => x.Name == "Lunches - Riganti Office");
             if (prague == null)
             {
                 prague = new Group { Name = "Riganti - Prague" };
                 context.Groups.Add(prague);
             }
-            Group brno = context.Groups.FirstOrDefault(x => x.Name == "Riganti - Brno");
+
+            var brno = context.Groups.FirstOrDefault(x => x.Name == "Sport Activities");
             if (brno == null)
             {
                 brno = new Group { Name = "Riganti - Brno" };
                 context.Groups.Add(brno);
             }
 
-            var password = PasswordHelper.CreateHash("Pa$$w0rd");
-            if (!context.Users.Any(x => x.Email == "newman@admin.com"))
+            if (!context.Users.Any(x => x.Email == "newman@test.com"))
             {
+                var password = PasswordHelper.CreateHash("Pa$$w0rd");
                 var user = new User
                 {
                     FirstName = "John",
                     LastName = "Newman",
-                    Email = "newman@admin.com",
-                    UserRole = UserRole.Admin,
-                    PasswordHash = password.PasswordHash,
-                    PasswordSalt = password.PasswordSalt
-                };
-
-                context.Users.Add(user);
-                context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
-            }
-            if (!context.Users.Any(x => x.Email == "smith@admin.com"))
-            {
-                var user = new User
-                {
-                    FirstName = "John",
-                    LastName = "Smith",
-                    Email = "smith@admin.com",
-                    UserRole = UserRole.Admin,
-                    PasswordHash = password.PasswordHash,
-                    PasswordSalt = password.PasswordSalt
-                };
-
-                context.Users.Add(user);
-                context.UserGroups.Add(new UserGroup() { User = user, Group = brno });
-            }
-            if (!context.Users.Any(x => x.Email == "anderson@user.com"))
-            {
-                var user = new User
-                {
-                    FirstName = "David",
-                    LastName = "Anderson",
-                    Email = "anderson@user.com",
+                    Email = "newman@test.com",
                     UserRole = UserRole.User,
                     PasswordHash = password.PasswordHash,
                     PasswordSalt = password.PasswordSalt
@@ -74,6 +44,42 @@ namespace DataAccess.Migrations
 
                 context.Users.Add(user);
                 context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
+            }
+
+            if (!context.Users.Any(x => x.Email == "smith@test.com"))
+            {
+                var password = PasswordHelper.CreateHash("Pa$$w0rd");
+                var user = new User
+                {
+                    FirstName = "John",
+                    LastName = "Smith",
+                    Email = "smith@test.com",
+                    UserRole = UserRole.Admin,
+                    PasswordHash = password.PasswordHash,
+                    PasswordSalt = password.PasswordSalt
+                };
+
+                context.Users.Add(user);
+                context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
+                context.UserGroups.Add(new UserGroup() { User = user, Group = brno });
+            }
+
+            if (!context.Users.Any(x => x.Email == "anderson@test.com"))
+            {
+                var password = PasswordHelper.CreateHash("Pa$$w0rd");
+                var user = new User
+                {
+                    FirstName = "David",
+                    LastName = "Anderson",
+                    Email = "anderson@test.com",
+                    UserRole = UserRole.User,
+                    PasswordHash = password.PasswordHash,
+                    PasswordSalt = password.PasswordSalt
+                };
+
+                context.Users.Add(user);
+                context.UserGroups.Add(new UserGroup() { User = user, Group = prague });
+                context.UserGroups.Add(new UserGroup() { User = user, Group = brno });
             }
         }
     }
