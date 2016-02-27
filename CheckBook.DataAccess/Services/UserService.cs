@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using CheckBook.DataAccess.Context;
 using CheckBook.DataAccess.Data;
 using CheckBook.DataAccess.Enums;
 using CheckBook.DataAccess.Model;
 using CheckBook.DataAccess.Security;
+using DotVVM.Framework.Controls;
 
 namespace CheckBook.DataAccess.Services
 {
@@ -14,141 +16,148 @@ namespace CheckBook.DataAccess.Services
         /// <summary>
         /// Gets the user with specified e-mail address.
         /// </summary>
-        public static UserData GetUser(string email)
+        public static UserWithPasswordData GetUserWithPassword(string email)
         {
             using (var db = new AppContext())
             {
                 email = email.Trim().ToLower();
 
-                var user = db.Users.FirstOrDefault(x => x.Email == email);
-                if (user == null)
-                    return null;
-
-                return ToUserData(user);
+                return db.Users
+                    .Select(ToUserWithPasswordData)
+                    .FirstOrDefault(x => x.Email == email);
             }
         }
 
-        ///// <summary>
-        ///// Creates new user if not exist
-        ///// </summary>
-        ///// <param name="user"></param>
-        ///// <returns>Create result... Either success or duplicate user</returns>
-        //public static CreateUserResult CreateUser(UserData user)
-        //{
-        //    using (var db = new AppContext())
-        //    {
-        //        var email = user.Email.Trim().ToLower();
-        //        var dbUser = db.Users.FirstOrDefault(x => x.Email == email);
-        //        if (dbUser != null)
-        //            return CreateUserResult.UserAlreadyExists;
-
-        //        var passwordData = PasswordHelper.CreateHash(user.Password);
-
-        //        db.Users.Add(new User()
-        //        {
-        //            Email = email,
-        //            FirstName = user.FirstName,
-        //            LastName = user.LastName,
-        //            PasswordSalt = passwordData.PasswordSalt,
-        //            PasswordHash = passwordData.PasswordHash,
-        //            UserRole = user.UserRole
-        //        });
-
-        //        db.SaveChanges();
-        //        return CreateUserResult.Success;
-        //    }
-        //}
+        /// <summary>
+        /// Gets the user profile.
+        /// </summary>
+        public static UserInfoData GetUserInfo(int id)
+        {
+            using (var db = new AppContext())
+            {
+                return db.Users
+                    .Select(ToUserInfoData)
+                    .First(x => x.Id == id);
+            }
+        }
 
         /// <summary>
-        /// Updates the user data.
+        /// Gets the user profile.
         /// </summary>
-        public static void UpdateUserProfile(UserInfoData user, int userId)
+        public static void LoadUserInfos(GridViewDataSet<UserInfoData> dataSet)
+        {
+            using (var db = new AppContext())
+            {
+                var users = db.Users
+                    .Select(ToUserInfoData);
+
+                dataSet.LoadFromQueryable(users);
+            }
+        }
+
+        /// <summary>
+        /// Updates the user data (from the Settings page).
+        /// </summary>
+        public static void UpdateUserInfo(UserInfoData user, int userId)
         {
             using (var db = new AppContext())
             {
                 var entity = db.Users.Find(userId);
 
-                // update first and last name
-                entity.FirstName = user.FirstName;
-                entity.LastName = user.LastName;
-                entity.ImageUrl = user.ImageUrl;
-                
-                // update the password
-                if (!string.IsNullOrWhiteSpace(user.Password))
-                {
-                    var passwordData = PasswordHelper.CreateHash(user.Password);
-                    entity.PasswordSalt = passwordData.PasswordSalt;
-                    entity.PasswordHash = passwordData.PasswordHash;
-                }
-
-                // update the e-mail and check e-mail uniqueness
-                if (db.Users.Any(u => u.Id != userId && u.Email == user.Email))
-                {
-                    throw new Exception($"The user with e-mail address '{user.Email}' already exists!");
-                }
-                entity.Email = user.Email;
+                UpdateUserInfoCore(user, entity, db);
 
                 db.SaveChanges();
             }
         }
 
         /// <summary>
-        /// Gets basic user info of all users
+        /// Creates the or update user information (from the Manager page).
         /// </summary>
-        /// <returns>List of basic user info of all users</returns>
-        public static List<UserInfoData> GetUserInfoes()
+        public static void CreateOrUpdateUserInfo(UserInfoData user)
         {
             using (var db = new AppContext())
             {
-                return db.Users.Select(ToUserInfoData).ToList();
+                var entity = db.Users.Find(user.Id);
+                if (entity == null)
+                {
+                    if (string.IsNullOrWhiteSpace(user.Password))
+                    {
+                        throw new Exception("The Password is required!");
+                    }
+
+                    entity = new User();
+                    db.Users.Add(entity);
+                }
+
+                UpdateUserInfoCore(user, entity, db);
+                entity.UserRole = user.UserRole;
+
+                db.SaveChanges();
             }
         }
 
-        /// <summary>
-        /// Gets basic user info
-        /// </summary>
-        /// <param name="id"></param>
-        /// <returns>Basic user info</returns>
-        public static UserInfoData GetUserInfo(int id)
+        private static void UpdateUserInfoCore(UserInfoData user, User entity, AppContext db)
         {
-            using (var db = new AppContext())
+            // update first and last name
+            entity.FirstName = user.FirstName;
+            entity.LastName = user.LastName;
+            entity.ImageUrl = user.ImageUrl;
+
+            // update the password
+            if (!string.IsNullOrWhiteSpace(user.Password))
             {
-                return ToUserInfoData(db.Users.First(x => x.Id == id));
+                var passwordData = PasswordHelper.CreateHash(user.Password);
+                entity.PasswordSalt = passwordData.PasswordSalt;
+                entity.PasswordHash = passwordData.PasswordHash;
             }
+
+            // update the e-mail and check e-mail uniqueness
+            if (db.Users.Any(u => u.Id != user.Id && u.Email == user.Email))
+            {
+                throw new Exception($"The user with e-mail address '{user.Email}' already exists!");
+            }
+            entity.Email = user.Email;
         }
 
+
         /// <summary>
-        /// Converts User entity into UserData
+        /// Converts the User entity into the UserWithPasswordData object
         /// </summary>
-        /// <param name="user">User for conversion</param>
-        /// <returns>Converted user</returns>
-        public static UserData ToUserData(User user)
+        public static Expression<Func<User, UserWithPasswordData>> ToUserWithPasswordData
         {
-            return new UserData()
+            get
             {
-                Id = user.Id,
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName,
-                PasswordHash = user.PasswordHash,
-                PasswordSalt = user.PasswordSalt,
-                UserRole = user.UserRole
-            };
+                return u => new UserWithPasswordData()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    PasswordHash = u.PasswordHash,
+                    PasswordSalt = u.PasswordSalt,
+                    UserRole = u.UserRole
+                };
+            }
         }
 
         /// <summary>
         /// Converts User entity into UserInfoData
         /// </summary>
-        /// <param name="user">User for conversion</param>
-        /// <returns>Converted user</returns>
-        public static UserInfoData ToUserInfoData(User user)
+        public static Expression<Func<User, UserInfoData>> ToUserInfoData
         {
-            return new UserInfoData()
+            get
             {
-                Email = user.Email,
-                FirstName = user.FirstName,
-                LastName = user.LastName
-            };
+                return u => new UserInfoData()
+                {
+                    Id = u.Id,
+                    Email = u.Email,
+                    FirstName = u.FirstName,
+                    LastName = u.LastName,
+                    ImageUrl = u.ImageUrl,
+                    UserRole = u.UserRole
+                };
+            }
         }
+
     }
 }

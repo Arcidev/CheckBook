@@ -9,7 +9,7 @@ namespace CheckBook.App.Helpers
         public static ClaimsIdentity GetClaimsIdentity(string email, string password)
         {
             // try to find the user
-            var user = UserService.GetUser(email);
+            var user = UserService.GetUserWithPassword(email);
             if (user == null)
             {
                 return null;

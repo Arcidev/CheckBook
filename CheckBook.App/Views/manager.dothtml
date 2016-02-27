@@ -1,133 +1,107 @@
-﻿@viewModel CheckBook.ViewModels.ManagerViewModel, CheckBook
-@masterPage Views/header.dotmaster
+﻿@viewModel CheckBook.App.ViewModels.ManagerViewModel, CheckBook.App
+@masterPage Views/app.dotmaster
 
 <dot:Content ContentPlaceHolderID="PageContent">
-    <div Visible="{value: GroupPopupVisible}">
-        <div class="white-content">
-            <div class="form-group">
-                <dot:Literal Text="Name:" />
-                <dot:TextBox class="popup-input form-control" Text="{value: GroupName}" />
+    
+    <div class="page content">
+
+        <h1><span class="glyphicon glyphicon-cog"></span> Settings</h1>
+
+        <div class="row">
+            <div class="col-md-6">
+
+                <div class="pull-right header-row-button">
+                    <dot:LinkButton class="btn btn-primary" Click="{command: ShowUserPopup(null)}" Validate.Enabled="false">
+                        <span class="glyphicon glyphicon-plus"></span> Create User
+                    </dot:LinkButton>
+                </div>
+                <h2><span class="glyphicon glyphicon-user"></span> Users</h2>
+
+                <dot:GridView DataSource="{value: Users}" class="table table-striped">
+                    <Columns>
+                        <dot:GridViewTextColumn ValueBinding="{value: LastName}" HeaderText="Last Name" AllowSorting="true" />
+                        <dot:GridViewTextColumn ValueBinding="{value: FirstName}" HeaderText="First Name" AllowSorting="true" />
+                        <dot:GridViewTemplateColumn HeaderText="E-mail">
+                            <a href="{value: 'mailto:' + Email}" InnerText="{value: Email}"></a>
+                        </dot:GridViewTemplateColumn>
+                        <dot:GridViewTemplateColumn Width="30px">
+                            <dot:LinkButton Click="{command: _root.ShowUserPopup(Id)}" Validate.Enabled="false">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </dot:LinkButton>
+                        </dot:GridViewTemplateColumn>
+                    </Columns>
+                </dot:GridView>
+                
+                <dot:DataPager DataSet="{value: Users}" class="pagination" />
             </div>
-            <div class="form-group">
-                <dot:Repeater DataSource="{value: Users}">
-                    <ItemTemplate>
-                        <div class="checkbox">
-                            <dot:CheckBox Text="{value: FullName}" CheckedItems="{value: _parent.SelectedUsers}" CheckedValue="{value: Id}" />
-                        </div>                      
-                    </ItemTemplate>
-                </dot:Repeater>
+            <div class="col-md-6">
+
+                <div class="pull-right header-row-button">
+                    <dot:LinkButton class="btn btn-primary" Click="{command: ShowGroupPopup(null)}" Validate.Enabled="false">
+                        <span class="glyphicon glyphicon-plus"></span> Create Group
+                    </dot:LinkButton>
+                </div>
+                <h2><span class="glyphicon glyphicon-th"></span> Groups</h2>
+
+                <dot:GridView DataSource="{value: Groups}" class="table table-striped">
+                    <Columns>
+                        <dot:GridViewTextColumn ValueBinding="{value: Name}" HeaderText="Name" AllowSorting="true" />
+                        <dot:GridViewTemplateColumn Width="30px">
+                            <dot:LinkButton Click="{command: _root.ShowGroupPopup(Id)}" Validate.Enabled="false">
+                                <span class="glyphicon glyphicon-pencil"></span>
+                            </dot:LinkButton>
+                        </dot:GridViewTemplateColumn>
+                    </Columns>
+                </dot:GridView>
+
+                <dot:DataPager DataSet="{value: Groups}" class="pagination" />
+
             </div>
-            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
-                <dot:Literal Text="Error:" />
-                <br />
-                <dot:Literal Text="{value: ErrorMessage}" />
-            </div>
-            <div class="form-group">
-                <dot:Button Click="{command: ManageGroup()}" Text="{value: IsExistingGroup ? 'Update' : 'Create'}" class="m-btn red button-120 popup-button-left" />
-                <dot:Button Click="{command: ShowGroupPopup()}" Text="Close" class="m-btn button-120 popup-button-right"></dot:Button>
-            </div>
-        </div>
-        <div class="black-overlay"></div>
-    </div>
-    <div Visible="{value: UserPopupVisible}">
-        <div class="white-content">
-            <div class="form-group">
-                <dot:Literal Text="Name:" />
-                <dot:TextBox class="form-control" Text="{value: User.FirstName}" />
-            </div>
-            <div class="form-group">
-                <dot:Literal Text="Surname:" />
-                <dot:TextBox class="form-control" Text="{value: User.LastName}" />
-            </div>
-            <div class="form-group">
-                <dot:Literal Text="Email:" />
-                <dot:TextBox class="form-control" Text="{value: User.Email}" />
-            </div>
-            <div class="form-group">
-                <dot:Literal Text="Password:" />
-                <dot:TextBox Type="Password" class="form-control" Text="{value: Password}" />
-            </div>
-            <div class="form-group">
-                <dot:Literal Text="Password Again:" />
-                <dot:TextBox Type="Password" class="form-control" Text="{value: PasswordAgain}" />
-            </div>
-            <div class="form-group">
-                <dot:CheckBox class="checkbox" Text="Is Admin:" Checked="{value: HasAdminRole}" />
-            </div>
-            <div class="form-group validation-box" Visible="{value: ErrorMessage != null}">
-                <dot:Literal Text="Error:" />
-                <br />
-                <dot:Literal Text="{value: ErrorMessage}" />
-            </div>
-            <div class="form-group">
-                <dot:Button Click="{command: ManageUser()}" Text="{value: User.Id != 0 ? 'Update' : 'Create'}" class="m-btn black button-120 popup-button-left" />
-                <dot:Button Click="{command: ShowUserPopup()}" Text="Close" class="m-btn button-120 popup-button-right"></dot:Button>
-            </div>
-        </div>
-        <div class="black-overlay"></div>
-    </div>
-    <div class="page">
-        <div class="form-group block-grid">
-            <div class="form-group block-group">
-                <dot:Button Text="Create Group" class="m-btn black button-120 button-left" Click="{command: ShowGroupPopup()}" />
-                <dot:Button Text="Manage Group" class="m-btn black button-120 button-left" Click="{command: ManageGroupPopup()}" />
-            </div>
-            <br />
-            <dot:ComboBox class="form-control group-select" DataSource="{value: Groups}"
-                          SelectedValue="{value: SelectedGroupId}"
-                          ValueMember="Id"
-                          DisplayMember="Name"
-                          SelectionChanged="{command: OnGroupChanged()}" />
-            <dot:GridView class="table" DataSource="{value: GroupUsers}">
-                <Columns>
-                    <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />
-                    <dot:GridViewTextColumn ValueBinding="{value: FullName}" HeaderText="Name" Width="150px" />
-                    <dot:GridViewTemplateColumn HeaderText="Action" Width="60px">
-                        <ContentTemplate>
-                            <dot:Button Click="{command: _parent.RemoveUser(Id)}" Text="Remove" class="action-button" />
-                        </ContentTemplate>
-                    </dot:GridViewTemplateColumn>
-                </Columns>
-            </dot:GridView>
-            <dot:DataPager DataSet="{value: GroupUsers}" class="pagination" RenderLinkForCurrentPage="true">
-                <FirstPageTemplate>
-                    <button>First</button>
-                </FirstPageTemplate>
-                <LastPageTemplate>
-                    <button>Last</button>
-                </LastPageTemplate>
-                <NextPageTemplate>Next</NextPageTemplate>
-                <PreviousPageTemplate>Previous</PreviousPageTemplate>
-            </dot:DataPager>
-        </div>
-        <div class="form-group block-grid">
-            <div class="form-group block-group">
-                <dot:Button Text="Add User" class="m-btn black button-120 button-left" Click="{command: ShowUserPopup()}" />
-            </div>
-            <br />
-            <dot:Literal Text="Users:" />
-            <dot:GridView class="table" DataSource="{value: UserInfoes}">
-                <Columns>
-                    <dot:GridViewTextColumn ValueBinding="{value: Id}" HeaderText="Id" Width="40px" />
-                    <dot:GridViewTextColumn ValueBinding="{value: FullName}" HeaderText="Name" Width="150px" />
-                    <dot:GridViewTextColumn ValueBinding="{value: Email}" HeaderText="Email" Width="200px" />
-                    <dot:GridViewTemplateColumn HeaderText="Action" Width="60px">
-                        <ContentTemplate>
-                            <dot:Button Click="{command: _parent.ShowUserPopup(Id)}" Text="Manage" class="action-button" />
-                        </ContentTemplate>
-                    </dot:GridViewTemplateColumn>
-                </Columns>
-            </dot:GridView>
-            <dot:DataPager DataSet="{value: UserInfoes}" class="pagination" RenderLinkForCurrentPage="true">
-                <FirstPageTemplate>
-                    <button>First</button>
-                </FirstPageTemplate>
-                <LastPageTemplate>
-                    <button>Last</button>
-                </LastPageTemplate>
-                <NextPageTemplate>Next</NextPageTemplate>
-                <PreviousPageTemplate>Previous</PreviousPageTemplate>
-            </dot:DataPager>
         </div>
     </div>
+    
+    <!-- user detail popup -->
+    <div class="modal fade" tabindex="-1" role="dialog" data-id="user-detail" Validate.Target="{value: EditedUser}">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                    <h4 class="modal-title"><span class="glyphicon glyphicon-user"></span> User Details</h4>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-danger" Visible="{value: UserAlertText != null}">{{value: UserAlertText}}</div>
+
+                    <form class="settings-form form-horizontal" ValidationMessage.SetToolTipText="true" ValidationMessage.InvalidCssClass="has-error">
+                        <cc:UserDetailForm DataContext="{value: EditedUser}" HideOptionalPasswordNotice="{value: Id == 0}" />
+
+                        <div class="form-group">
+                            <label class="col-md-4 control-label">User Role</label>
+                            <div class="col-md-8">
+                                <label class="radio-inline">
+                                    <dot:RadioButton CheckedItem="{value: EditedUser.UserRole}" CheckedValue="{value: 0}" />
+                                    User
+                                </label>
+                                <label class="radio-inline">
+                                    <dot:RadioButton CheckedItem="{value: EditedUser.UserRole}" CheckedValue="{value: 1}" />
+                                    Admin
+                                </label>
+                            </div>
+                        </div>
+
+                        <div class="form-group validation-box">
+                            <dot:ValidationSummary IncludeErrorsFromChildren="true" />
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <dot:Button class="btn btn-primary" ButtonTagName="button" Click="{command: SaveUser()}">
+                        <span class="glyphicon glyphicon-floppy-disk"></span> Save Changes
+                    </dot:Button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <dot:RequiredResource Name="bootstrap" />
+    <dot:RequiredResource Name="autoHideAlert" />
 </dot:Content>

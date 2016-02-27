@@ -5,21 +5,22 @@ using System.Linq.Expressions;
 using CheckBook.DataAccess.Context;
 using CheckBook.DataAccess.Data;
 using CheckBook.DataAccess.Model;
+using DotVVM.Framework.Controls;
 
 namespace CheckBook.DataAccess.Services
 {
     public static class GroupService
     {
         /// <summary>
-        /// Gets all groups.
+        /// Loads all groups in the specified dataset.
         /// </summary>
-        public static List<GroupData> GetGroups()
+        public static void LoadGroups(GridViewDataSet<GroupData> dataSet)
         {
             using (var db = new AppContext())
             {
-                return db.Groups
-                    .OrderBy(x => x.Name)
-                    .Select(ToGroupData).ToList();
+                var groups = db.Groups
+                    .Select(ToGroupData);
+                dataSet.LoadFromQueryable(groups);
             }
         }
 

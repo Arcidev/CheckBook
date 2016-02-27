@@ -23,44 +23,7 @@
                 </div>
             </div>
 
-            <div class="form-group" ValidationMessage.ValidatedValue="{value: Data.Email}">
-                <label class="col-md-4 control-label">E-mail Address</label>
-                <div class="col-md-8">
-                    <dot:TextBox class="form-control" Text="{value: Data.Email}" />
-                </div>
-            </div>
-
-            <div class="form-group" ValidationMessage.ValidatedValue="{value: Data.FirstName}">
-                <label class="col-md-4 control-label">First Name</label>
-                <div class="col-md-8">
-                    <dot:TextBox class="form-control" Text="{value: Data.FirstName}" />
-                </div>
-            </div>
-            
-            <div class="form-group" ValidationMessage.ValidatedValue="{value: Data.LastName}">
-                <label class="col-md-4 control-label">Last Name</label>
-                <div class="col-md-8">
-                    <dot:TextBox class="form-control" Text="{value: Data.LastName}" />
-                </div>
-            </div>
-
-            <div class="form-group">
-                <span class="help-block">Leave the following fields empty if you don't want to change the password.</span>
-            </div>
-
-            <div class="form-group" ValidationMessage.ValidatedValue="{value: Data.Password}">
-                <label class="col-md-4 control-label">Password</label>
-                <div class="col-md-8">
-                    <dot:TextBox class="form-control" Text="{value: Data.Password}" Type="Password" />
-                </div>
-            </div>
-
-            <div class="form-group" ValidationMessage.ValidatedValue="{value: Data.PasswordAgain}">
-                <label class="col-md-4 control-label">Confirm Password</label>
-                <div class="col-md-8">
-                    <dot:TextBox class="form-control" Text="{value: Data.PasswordAgain}" Type="Password" />                    
-                </div>
-            </div>
+            <cc:UserDetailForm DataContext="{value: Data}" />
 
             <div class="form-group validation-box">
                 <dot:ValidationSummary IncludeErrorsFromChildren="true" />

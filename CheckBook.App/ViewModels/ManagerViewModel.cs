@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using DotVVM.Framework.Controls;
 using System.Threading.Tasks;
@@ -12,178 +13,64 @@ namespace CheckBook.App.ViewModels
     [Authorize(nameof(UserRole.Admin))]
 	public class ManagerViewModel : AppViewModelBase
 	{
-        public GridViewDataSet<UserInfoData> GroupUsers { get; private set; }
-
-        public GridViewDataSet<UserInfoData> UserInfoes { get; private set; }
-
-        public List<GroupData> Groups { get; set; }
-
-        public List<UserInfoData> Users { get; private set; }
-
-        public List<int> SelectedUsers { get; set; }
-
-        public UserData User { get; set; }
-
-        public string Password { get; set; }
-
-        public string PasswordAgain { get; set; }
-
-        public string GroupName { get; set; }
-
-        public string ErrorMessage { get; set; }
-
-        public int SelectedGroupId { get; set; }
-
-        public bool GroupPopupVisible { get; private set; }
-
-        public bool UserPopupVisible { get; private set; }
-
-        public bool IsExistingGroup { get; private set; }
-
-        public bool HasAdminRole { get; set; }
-
-        public ManagerViewModel()
+        public GridViewDataSet<UserInfoData> Users { get; set; } = new GridViewDataSet<UserInfoData>()
         {
-            SelectedGroupId = -1;
-            GroupUsers = new GridViewDataSet<UserInfoData>() { PageSize = 20 };
-            UserInfoes = new GridViewDataSet<UserInfoData>() { PageSize = 20 };
-            SelectedUsers = new List<int>();
-            User = new UserData();
-        }
+            SortExpression = nameof(UserInfoData.LastName),
+            SortDescending = false,
+            PageSize = 20
+        };
+
+        public GridViewDataSet<GroupData> Groups { get; set; } = new GridViewDataSet<GroupData>()
+        {
+            SortExpression = nameof(GroupData.Name),
+            SortDescending = false,
+            PageSize = 20
+        };
+        
+        public UserInfoData EditedUser { get; set; }
+
+        public string UserAlertText { get; set; }
+
 
         public override Task PreRender()
         {
-            Users = UserService.GetUserInfoes();
-            Groups = GroupService.GetGroups();
-            UserInfoes.LoadFromQueryable(Users.AsQueryable());
-
-            if (Groups.Any())
-            {
-                if (SelectedGroupId == -1)
-                    SelectedGroupId = Groups.First().Id;
-                OnGroupChanged();
-            }
+            UserService.LoadUserInfos(Users);
+            GroupService.LoadGroups(Groups);
 
             return base.PreRender();
         }
 
-        public void ShowGroupPopup()
+        public void ShowUserPopup(int? userId)
         {
-            ErrorMessage = "";
-            IsExistingGroup = false;
-            if (GroupName != null)
-                GroupName = null;
-            if (SelectedUsers.Any())
-                SelectedUsers.Clear();
-            GroupPopupVisible = !GroupPopupVisible;
-        }
-
-        public void ManageGroup()
-        {
-            if (string.IsNullOrWhiteSpace(GroupName))
+            if (userId == null)
             {
-                ErrorMessage = "Group name must contain some value";
-                return;
-            }
-
-            GroupData group = null;
-            if (IsExistingGroup)
-            {
-                group = GroupService.UpdateGroup(SelectedGroupId, GroupName, SelectedUsers);
-                var groupInGrid = Groups.FirstOrDefault(x => x.Id == SelectedGroupId);
-                if (group == null || groupInGrid == null)
-                {
-                    GroupPopupVisible = false;
-                    return;
-                }
-
-                Groups.Remove(groupInGrid);
+                EditedUser = new UserInfoData() { UserRole = UserRole.User };
             }
             else
             {
-                group = GroupService.CreateGroup(GroupName, SelectedUsers);
-                SelectedGroupId = group.Id;
+                EditedUser = UserService.GetUserInfo(userId.Value);
             }
 
-            Groups.Add(group);
-            Groups.OrderBy(x => x.Name);
-            OnGroupChanged();
-            GroupPopupVisible = false;
+            Context.ResourceManager.AddStartupScript("$('div[data-id=user-detail]').modal('show');");
         }
 
-        public void OnGroupChanged()
+        public void SaveUser()
         {
-            //GroupUsers.LoadFromQueryable(GetGroupUsers(SelectedGroupId));
+            try
+            {
+                UserService.CreateOrUpdateUserInfo(EditedUser);
+                Context.ResourceManager.AddStartupScript("$('div[data-id=user-detail]').modal('hide');");
+            }
+            catch (Exception ex)
+            {
+                UserAlertText = ex.Message;
+            }
         }
 
-        public void RemoveUser(int userId)
+        public void ShowGroupPopup(int? groupId)
         {
-            //GroupService.RemoveUserFromGroup(userId, SelectedGroupId);
-            //var user = GroupUsers.Items.FirstOrDefault(u => u.Id == userId);
-            //if (user != null)
-            //{
-            //    GroupUsers.Items.Remove(user);
-            //    GroupUsers.TotalItemsCount--;
-            //}
-        }
-
-        public void ManageGroupPopup()
-        {
-            //ErrorMessage = "";
-            //GroupName = Groups.First(x => x.Id == SelectedGroupId).Name;
-            //SelectedUsers = GroupUsers.Items.Select(x => x.Id).ToList();
-            //IsExistingGroup = true;
-            //GroupPopupVisible = true;
-        }
-
-        public void ShowUserPopup(int? userId = null)
-        {
-            //UserPopupVisible = !UserPopupVisible;
-            //if (UserPopupVisible)
-            //{
-            //    UserInfoData userInfo = userId != null ? Users.First(x => x.Id == userId) : null;
-            //    ErrorMessage = null;
-            //    User.Id = userInfo != null ? userInfo.Id : 0;
-            //    User.FirstName = userInfo != null ? userInfo.FirstName : null;
-            //    User.LastName = userInfo != null ? userInfo.LastName : null;
-            //    User.Email = userInfo != null ? userInfo.Email : null;
-            //    Password = null;
-            //    PasswordAgain = null;
-            //    HasAdminRole = userInfo != null ? userInfo.UserRole == UserRole.Admin : false;
-            //}
-        }
-
-        public void ManageUser()
-        {
-            //if (Password != PasswordAgain)
-            //{
-            //    ErrorMessage = "Password and Password Again must be the same and must contain some value";
-            //    return;
-            //}
-
-            //User.Password = Password;
-            //User.UserRole = HasAdminRole ? UserRole.Admin : UserRole.User;
-            //if (!User.HasValidData)
-            //{
-            //    ErrorMessage = "All fields must contain some value";
-            //    return;
-            //}
-
-            //if (User.Id != 0)
-            //    UserService.UpdateUserProfile(User, true);
-            //else if (UserService.CreateUser(User) != CreateUserResult.Success)
-            //{
-            //    ErrorMessage = "User with this email adress already exists";
-            //    return;
-            //}
             
-            //ShowUserPopup();
         }
 
-        //private IQueryable<UserInfoData> GetGroupUsers(int groupId)
-        //{
-        //    var userIds = GroupService.GetGroupUserIds(groupId);
-        //    return Users.Where(x => userIds.Contains(x.Id)).AsQueryable();
-        //}
     }
 }

@@ -59,7 +59,7 @@ namespace CheckBook.App.ViewModels
         {
             try
             {
-                UserService.UpdateUserProfile(Data, GetUserId());
+                UserService.UpdateUserInfo(Data, GetUserId());
                 AlertType = "success";
                 AlertText = "Your profile was updated.";
             }

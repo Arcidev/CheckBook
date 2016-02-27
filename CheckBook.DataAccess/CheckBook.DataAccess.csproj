@@ -110,7 +110,7 @@
     <Compile Include="Data\TransactionData.cs" />
     <Compile Include="Data\UserInfoData.cs" />
     <Compile Include="Context\AppContext.cs" />
-    <Compile Include="Data\UserData.cs" />
+    <Compile Include="Data\UserWithPasswordData.cs" />
     <Compile Include="Data\UserPaymentData.cs" />
     <Compile Include="Enums\CreateUserResult.cs" />
     <Compile Include="Enums\TransactionType.cs" />
