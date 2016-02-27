@@ -2,19 +2,8 @@
 @masterPage Views/app.dotmaster
 
 <dot:Content ContentPlaceHolderID="PageContent">
-    <script src="https://code.jquery.com/jquery-1.9.1.min.js"></script>
-    <script type="text/javascript">
-        var alertTimeout;
-        $(function() {
-            dotvvm.events.afterPostback.subscribe(function () {
-                if (alertTimeout) {
-                    window.clearTimeout(alertTimeout);
-                }
-                alertTimeout = window.setTimeout(function () {
-                    $(".alert").slideUp();
-                }, 5000);
-        })});
-    </script>
+
+    <dot:RequiredResource Name="autoHideAlert" />
 
     <div class="page content">
         <h1><span class="glyphicon glyphicon-user"></span> My Profile</h1>

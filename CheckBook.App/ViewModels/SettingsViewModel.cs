@@ -34,15 +34,21 @@ namespace CheckBook.App.ViewModels
             return base.PreRender();
         }
 
+        /// <summary>
+        /// Gets the file from the temporary storage, stores it in the Images folder and updates the Data.ImageUrl property. 
+        /// The changes will be stored in the database when the user saves the form.
+        /// </summary>
         public void ProcessFile()
         {
             if (AvatarFiles.Files.Any())
             {
+                // TODO: the image should be resized to some reasonable dimensions
+
                 // save the file in the Images folder and update the ImageUrl property
                 var storage = Context.Configuration.ServiceLocator.GetService<IUploadedFileStorage>();
                 var stream = storage.GetFile(AvatarFiles.Files[0].FileId);
                 Data.ImageUrl = FileStorageHelper.StoreFile(stream, AvatarFiles.Files[0].FileName);
-                
+
                 // delete temporary file and clear the upload control collection
                 storage.DeleteFile(AvatarFiles.Files[0].FileId);
                 AvatarFiles.Clear();

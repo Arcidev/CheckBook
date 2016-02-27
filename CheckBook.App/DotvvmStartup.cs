@@ -1,4 +1,5 @@
 using DotVVM.Framework.Configuration;
+using DotVVM.Framework.ResourceManagement;
 using DotVVM.Framework.Routing;
 
 namespace CheckBook.App
@@ -9,8 +10,9 @@ namespace CheckBook.App
         {
             RegisterRoutes(config);
             RegisterMarkupControls(config);
+            RegisterResources(config);
         }
-
+        
         private void RegisterRoutes(DotvvmConfiguration config)
         {
             // configure a default route
@@ -36,6 +38,20 @@ namespace CheckBook.App
                 TagPrefix = "cc",
                 TagName = "UserAvatar"
             });
+        }
+
+        private void RegisterResources(DotvvmConfiguration config)
+        {
+            // register custom script
+            config.Resources.Register("autoHideAlert", new ScriptResource()
+            {
+                Url = "/Scripts/autoHideAlert.js",
+                Dependencies = new [] { "jquery" }
+            });
+            
+            // Note that the 'jquery' resource is registered in DotVVM and points to official jQuery CDN.
+            // If you need to use different version, or you want to embed jQuery in your app, use this code:
+            // config.Resources.FindResource("jquery").Url = "your URL";
         }
     }
 }
