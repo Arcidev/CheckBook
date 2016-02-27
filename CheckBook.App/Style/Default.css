@@ -124,6 +124,11 @@ div.content {
   width: 80px;
   display: inline-block;
 }
+/* SETTINGS PAGE */
+.settings-form {
+  width: 600px;
+  margin-left: 20px;
+}
 .group-select {
   max-width: 400px;
   margin-bottom: 20px;
@@ -180,10 +185,6 @@ div.content {
 .popup-input {
   float: right;
   width: 250px;
-}
-.settings-form {
-  width: 300px;
-  margin-left: 20px;
 }
 /*overrides*/
 .pagination > .active > a {

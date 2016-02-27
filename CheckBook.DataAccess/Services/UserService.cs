@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using CheckBook.DataAccess.Context;
 using CheckBook.DataAccess.Data;
@@ -11,15 +12,14 @@ namespace CheckBook.DataAccess.Services
     public static class UserService
     {
         /// <summary>
-        /// Gets existing user by mail
+        /// Gets the user with specified e-mail address.
         /// </summary>
-        /// <param name="email"></param>
-        /// <returns>Existing user</returns>
         public static UserData GetUser(string email)
         {
             using (var db = new AppContext())
             {
                 email = email.Trim().ToLower();
+
                 var user = db.Users.FirstOrDefault(x => x.Email == email);
                 if (user == null)
                     return null;
@@ -28,61 +28,65 @@ namespace CheckBook.DataAccess.Services
             }
         }
 
+        ///// <summary>
+        ///// Creates new user if not exist
+        ///// </summary>
+        ///// <param name="user"></param>
+        ///// <returns>Create result... Either success or duplicate user</returns>
+        //public static CreateUserResult CreateUser(UserData user)
+        //{
+        //    using (var db = new AppContext())
+        //    {
+        //        var email = user.Email.Trim().ToLower();
+        //        var dbUser = db.Users.FirstOrDefault(x => x.Email == email);
+        //        if (dbUser != null)
+        //            return CreateUserResult.UserAlreadyExists;
+
+        //        var passwordData = PasswordHelper.CreateHash(user.Password);
+
+        //        db.Users.Add(new User()
+        //        {
+        //            Email = email,
+        //            FirstName = user.FirstName,
+        //            LastName = user.LastName,
+        //            PasswordSalt = passwordData.PasswordSalt,
+        //            PasswordHash = passwordData.PasswordHash,
+        //            UserRole = user.UserRole
+        //        });
+
+        //        db.SaveChanges();
+        //        return CreateUserResult.Success;
+        //    }
+        //}
+
         /// <summary>
-        /// Creates new user if not exist
+        /// Updates the user data.
         /// </summary>
-        /// <param name="user"></param>
-        /// <returns>Create result... Either success or duplicate user</returns>
-        public static CreateUserResult CreateUser(UserData user)
+        public static void UpdateUserProfile(UserInfoData user, int userId)
         {
             using (var db = new AppContext())
             {
-                var email = user.Email.Trim().ToLower();
-                var dbUser = db.Users.FirstOrDefault(x => x.Email == email);
-                if (dbUser != null)
-                    return CreateUserResult.UserAlreadyExists;
+                var entity = db.Users.Find(userId);
 
-                var passwordData = PasswordHelper.CreateHash(user.Password);
-
-                db.Users.Add(new User()
-                {
-                    Email = email,
-                    FirstName = user.FirstName,
-                    LastName = user.LastName,
-                    PasswordSalt = passwordData.PasswordSalt,
-                    PasswordHash = passwordData.PasswordHash,
-                    UserRole = user.UserRole
-                });
-
-                db.SaveChanges();
-                return CreateUserResult.Success;
-            }
-        }
-
-        /// <summary>
-        /// Updates existing user
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="managerUpdate">If true allows more option to update from user param</param>
-        public static void UpdateUser(UserData user, bool managerUpdate)
-        {
-            using (var db = new AppContext())
-            {
-                var userEntity = db.Users.First(x => x.Id == user.Id);
-                userEntity.FirstName = user.FirstName;
-                userEntity.LastName = user.LastName;
-                if (managerUpdate)
-                {
-                    userEntity.Email = user.Email;
-                    userEntity.UserRole = user.UserRole;
-                }
-
+                // update first and last name
+                entity.FirstName = user.FirstName;
+                entity.LastName = user.LastName;
+                entity.ImageUrl = user.ImageUrl;
+                
+                // update the password
                 if (!string.IsNullOrWhiteSpace(user.Password))
                 {
                     var passwordData = PasswordHelper.CreateHash(user.Password);
-                    userEntity.PasswordSalt = passwordData.PasswordSalt;
-                    userEntity.PasswordHash = passwordData.PasswordHash;
+                    entity.PasswordSalt = passwordData.PasswordSalt;
+                    entity.PasswordHash = passwordData.PasswordHash;
                 }
+
+                // update the e-mail and check e-mail uniqueness
+                if (db.Users.Any(u => u.Id != userId && u.Email == user.Email))
+                {
+                    throw new Exception($"The user with e-mail address '{user.Email}' already exists!");
+                }
+                entity.Email = user.Email;
 
                 db.SaveChanges();
             }
@@ -141,11 +145,9 @@ namespace CheckBook.DataAccess.Services
         {
             return new UserInfoData()
             {
-                Id = user.Id,
                 Email = user.Email,
                 FirstName = user.FirstName,
-                LastName = user.LastName,
-                UserRole = user.UserRole
+                LastName = user.LastName
             };
         }
     }

@@ -1,4 +1,6 @@
+using System;
 using System.Data.Entity;
+using System.IO;
 using System.Web.Hosting;
 using CheckBook.DataAccess.Context;
 using Microsoft.Owin;
@@ -6,6 +8,8 @@ using Microsoft.Owin.FileSystems;
 using Microsoft.Owin.StaticFiles;
 using Owin;
 using DotVVM.Framework;
+using DotVVM.Framework.Configuration;
+using DotVVM.Framework.Storage;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.AspNet.Identity;
 
@@ -29,12 +33,21 @@ namespace CheckBook.App
             // use DotVVM
             var applicationPhysicalPath = HostingEnvironment.ApplicationPhysicalPath;
             var dotvvmConfiguration = app.UseDotVVM<DotvvmStartup>(applicationPhysicalPath);
+            ConfigureDotvvmServices(dotvvmConfiguration);
+
 
             // use static files
             app.UseStaticFiles(new StaticFileOptions()
             {
                 FileSystem = new PhysicalFileSystem(applicationPhysicalPath)
             });
+        }
+
+        private void ConfigureDotvvmServices(DotvvmConfiguration config)
+        {
+            // add support for file uploads
+            var uploadPath = Path.Combine(config.ApplicationPhysicalPath, "App_Data\\UploadTemp");
+            config.ServiceLocator.RegisterSingleton<IUploadedFileStorage>(() => new FileSystemUploadedFileStorage(uploadPath, TimeSpan.FromMinutes(30)));
         }
     }
 }

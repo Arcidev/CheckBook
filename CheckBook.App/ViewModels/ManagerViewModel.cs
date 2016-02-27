@@ -113,77 +113,77 @@ namespace CheckBook.App.ViewModels
 
         public void OnGroupChanged()
         {
-            GroupUsers.LoadFromQueryable(GetGroupUsers(SelectedGroupId));
+            //GroupUsers.LoadFromQueryable(GetGroupUsers(SelectedGroupId));
         }
 
         public void RemoveUser(int userId)
         {
-            GroupService.RemoveUserFromGroup(userId, SelectedGroupId);
-            var user = GroupUsers.Items.FirstOrDefault(u => u.Id == userId);
-            if (user != null)
-            {
-                GroupUsers.Items.Remove(user);
-                GroupUsers.TotalItemsCount--;
-            }
+            //GroupService.RemoveUserFromGroup(userId, SelectedGroupId);
+            //var user = GroupUsers.Items.FirstOrDefault(u => u.Id == userId);
+            //if (user != null)
+            //{
+            //    GroupUsers.Items.Remove(user);
+            //    GroupUsers.TotalItemsCount--;
+            //}
         }
 
         public void ManageGroupPopup()
         {
-            ErrorMessage = "";
-            GroupName = Groups.First(x => x.Id == SelectedGroupId).Name;
-            SelectedUsers = GroupUsers.Items.Select(x => x.Id).ToList();
-            IsExistingGroup = true;
-            GroupPopupVisible = true;
+            //ErrorMessage = "";
+            //GroupName = Groups.First(x => x.Id == SelectedGroupId).Name;
+            //SelectedUsers = GroupUsers.Items.Select(x => x.Id).ToList();
+            //IsExistingGroup = true;
+            //GroupPopupVisible = true;
         }
 
         public void ShowUserPopup(int? userId = null)
         {
-            UserPopupVisible = !UserPopupVisible;
-            if (UserPopupVisible)
-            {
-                UserInfoData userInfo = userId != null ? Users.First(x => x.Id == userId) : null;
-                ErrorMessage = null;
-                User.Id = userInfo != null ? userInfo.Id : 0;
-                User.FirstName = userInfo != null ? userInfo.FirstName : null;
-                User.LastName = userInfo != null ? userInfo.LastName : null;
-                User.Email = userInfo != null ? userInfo.Email : null;
-                Password = null;
-                PasswordAgain = null;
-                HasAdminRole = userInfo != null ? userInfo.UserRole == UserRole.Admin : false;
-            }
+            //UserPopupVisible = !UserPopupVisible;
+            //if (UserPopupVisible)
+            //{
+            //    UserInfoData userInfo = userId != null ? Users.First(x => x.Id == userId) : null;
+            //    ErrorMessage = null;
+            //    User.Id = userInfo != null ? userInfo.Id : 0;
+            //    User.FirstName = userInfo != null ? userInfo.FirstName : null;
+            //    User.LastName = userInfo != null ? userInfo.LastName : null;
+            //    User.Email = userInfo != null ? userInfo.Email : null;
+            //    Password = null;
+            //    PasswordAgain = null;
+            //    HasAdminRole = userInfo != null ? userInfo.UserRole == UserRole.Admin : false;
+            //}
         }
 
         public void ManageUser()
         {
-            if (Password != PasswordAgain)
-            {
-                ErrorMessage = "Password and Password Again must be the same and must contain some value";
-                return;
-            }
+            //if (Password != PasswordAgain)
+            //{
+            //    ErrorMessage = "Password and Password Again must be the same and must contain some value";
+            //    return;
+            //}
 
-            User.Password = Password;
-            User.UserRole = HasAdminRole ? UserRole.Admin : UserRole.User;
-            if (!User.HasValidData)
-            {
-                ErrorMessage = "All fields must contain some value";
-                return;
-            }
+            //User.Password = Password;
+            //User.UserRole = HasAdminRole ? UserRole.Admin : UserRole.User;
+            //if (!User.HasValidData)
+            //{
+            //    ErrorMessage = "All fields must contain some value";
+            //    return;
+            //}
 
-            if (User.Id != 0)
-                UserService.UpdateUser(User, true);
-            else if (UserService.CreateUser(User) != CreateUserResult.Success)
-            {
-                ErrorMessage = "User with this email adress already exists";
-                return;
-            }
+            //if (User.Id != 0)
+            //    UserService.UpdateUserProfile(User, true);
+            //else if (UserService.CreateUser(User) != CreateUserResult.Success)
+            //{
+            //    ErrorMessage = "User with this email adress already exists";
+            //    return;
+            //}
             
-            ShowUserPopup();
+            //ShowUserPopup();
         }
 
-        private IQueryable<UserInfoData> GetGroupUsers(int groupId)
-        {
-            var userIds = GroupService.GetGroupUserIds(groupId);
-            return Users.Where(x => userIds.Contains(x.Id)).AsQueryable();
-        }
+        //private IQueryable<UserInfoData> GetGroupUsers(int groupId)
+        //{
+        //    var userIds = GroupService.GetGroupUserIds(groupId);
+        //    return Users.Where(x => userIds.Contains(x.Id)).AsQueryable();
+        //}
     }
 }

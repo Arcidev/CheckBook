@@ -22,7 +22,7 @@ namespace CheckBook.App.Helpers
             }
 
             // build the user identity
-            var claimsIdentity = new ClaimsIdentity(new UserIdentity(user.FullName));
+            var claimsIdentity = new ClaimsIdentity(new UserIdentity(user.FirstName + " " + user.LastName));
             claimsIdentity.AddClaim(new Claim(ClaimTypes.NameIdentifier, user.Id.ToString()));
             claimsIdentity.AddClaim(new Claim(ClaimTypes.Role, user.UserRole.ToString()));
             return claimsIdentity;

@@ -9,11 +9,11 @@ namespace CheckBook.DataAccess.Data
     public interface IAvatarData
     {
 
-        int UserId { get; set; }
+        int UserId { get; }
 
-        string Name { get; set; }
+        string Name { get; }
 
-        string ImageUrl { get; set; }
+        string ImageUrl { get; }
 
     }
 }

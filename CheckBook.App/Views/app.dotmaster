@@ -19,14 +19,12 @@
             <span class="glyphicon glyphicon-th"></span> My Groups
         </dot:RouteLink>
 
-        <dot:RouteLink RouteName="settings"
-                        class="{value: 'header-item ' + (ActivePage == 'settings' ? 'header-item-active' : '')}">
+        <dot:RouteLink RouteName="settings" class="{value: 'header-item ' + (ActivePage == 'settings' ? 'header-item-active' : '')}">
             <span class="glyphicon glyphicon-user"></span> My Profile
         </dot:RouteLink>
 
-        <dot:RouteLink RouteName="manager" Text="Manager"
-                        class="{value: 'header-item ' + (ActivePage == 'manager' ? 'header-item-active' : '')}"
-                        Visible="{value: IsAdmin}">
+        <dot:RouteLink RouteName="manager" Text="Manager" class="{value: 'header-item ' + (ActivePage == 'manager' ? 'header-item-active' : '')}"
+                       Visible="{value: IsAdmin}">
             <span class="glyphicon glyphicon-cog"></span> Settings
         </dot:RouteLink>
     </div>

@@ -13,9 +13,9 @@ namespace CheckBook.DataAccess.Data
         {
             get
             {
-                if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) ||
-                    string.IsNullOrWhiteSpace(Email) || (string.IsNullOrWhiteSpace(Password) && Id == 0))
-                    return false;
+                //if (string.IsNullOrWhiteSpace(FirstName) || string.IsNullOrWhiteSpace(LastName) ||
+                //    string.IsNullOrWhiteSpace(Email) || (string.IsNullOrWhiteSpace(Password) && Id == 0))
+                //    return false;
 
                 try
                 {
@@ -28,5 +28,6 @@ namespace CheckBook.DataAccess.Data
                 }
             }
         }
+
     }
 }
