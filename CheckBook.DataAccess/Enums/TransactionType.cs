@@ -1,7 +1,7 @@
 ﻿
 namespace CheckBook.DataAccess.Enums
 {
-    public enum PaymentType
+    public enum TransactionType
     {
         /// <summary>
         /// Somebody paid certain amount for somebody else

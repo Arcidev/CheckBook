@@ -13,7 +13,7 @@ namespace CheckBook.DataAccess.Migrations
         
         string IMigrationMetadata.Id
         {
-            get { return "201602262059295_InitialDatabaseSchema"; }
+            get { return "201602271557481_InitialDatabaseSchema"; }
         }
         
         string IMigrationMetadata.Source

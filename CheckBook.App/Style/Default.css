@@ -1,6 +1,6 @@
 ﻿/* COMMON STYLES */
 .page {
-  padding-top: 10px;
+  padding: 20px;
   width: 100%;
 }
 .button-small {
@@ -32,10 +32,40 @@
 h1 {
   margin-bottom: 30px;
 }
+div.content {
+  padding: 20px;
+}
+.header {
+  background-color: #2980b9;
+  height: 50px;
+  width: 100%;
+}
+.header h1 {
+  float: left;
+  margin: 0px 50px 0px 10px;
+  color: white;
+  line-height: 50px;
+  font-size: 24px;
+  opacity: 0.4;
+}
+.header-item {
+  display: inline-block;
+  line-height: 50px;
+  padding: 0px 20px;
+  height: 50px;
+  font-size: 14px;
+  color: white;
+}
+.header-item:hover {
+  text-decoration: none;
+  color: #e0e0e0;
+}
+.header-item-active {
+  background-color: #409ad5;
+}
 /* LOGIN FORM */
 .login-form {
   margin: 10% auto 0;
-  color: gray;
   width: 450px;
 }
 .login-input {
@@ -49,11 +79,29 @@ h1 {
   margin: 10px;
   padding-top: 10px;
 }
-/* PAYMENT GROUP PAGE */
+/* GROUP PAGE */
+.member-list {
+  margin-bottom: 20px;
+}
+.member-list .status-green {
+  color: #00aa00;
+}
+.member-list .status-red {
+  color: #aa0000;
+}
+.settlement-table {
+  width: 100%;
+}
+.header-row-button {
+  margin-top: 25px;
+}
+/* PAYMENT PAGE */
 .payment-group-form {
   margin: 0 auto;
-  color: gray;
   width: 850px;
+}
+.payment-group-form .payer-box h2 {
+  margin-top: 50px;
 }
 .user-box {
   display: inline-block;
@@ -123,20 +171,6 @@ h1 {
   float: left;
   min-width: 500px;
 }
-.action-button {
-  background-color: Transparent;
-  background-repeat: no-repeat;
-  border: none;
-  cursor: pointer;
-  overflow: hidden;
-  outline: none;
-  font-weight: 600;
-  padding-left: 0;
-  -moz-transition: color ease-in-out 0.5s;
-  -o-transition: color ease-in-out 0.5s;
-  -webkit-transition: color ease-in-out 0.5s;
-  transition: color ease-in-out 0.5s;
-}
 .popup-button-left {
   margin-left: 100px;
 }
@@ -146,21 +180,6 @@ h1 {
 .popup-input {
   float: right;
   width: 250px;
-}
-.header {
-  background-color: #2980b9;
-  color: white;
-  height: 50px;
-  width: 100%;
-}
-.header-item {
-  margin-left: 10px;
-  font-size: 14px;
-  height: 100%;
-  vertical-align: middle;
-}
-.header-item-active {
-  font-size: 20px;
 }
 .settings-form {
   width: 300px;

@@ -18,7 +18,7 @@ namespace CheckBook.DataAccess.Migrations
                 .PrimaryKey(t => t.Id);
             
             CreateTable(
-                "dbo.PaymentGroups",
+                "dbo.Payments",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
@@ -31,20 +31,20 @@ namespace CheckBook.DataAccess.Migrations
                 .Index(t => t.GroupId);
             
             CreateTable(
-                "dbo.Payments",
+                "dbo.Transactions",
                 c => new
                     {
                         Id = c.Int(nullable: false, identity: true),
                         Amount = c.Decimal(nullable: false, precision: 18, scale: 2),
                         Type = c.Int(nullable: false),
                         UserId = c.Int(nullable: false),
-                        PaymentGroupId = c.Int(nullable: false),
+                        PaymentId = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id)
-                .ForeignKey("dbo.PaymentGroups", t => t.PaymentGroupId, cascadeDelete: true)
+                .ForeignKey("dbo.Payments", t => t.PaymentId, cascadeDelete: true)
                 .ForeignKey("dbo.Users", t => t.UserId)
                 .Index(t => t.UserId)
-                .Index(t => t.PaymentGroupId);
+                .Index(t => t.PaymentId);
             
             CreateTable(
                 "dbo.Users",
@@ -56,6 +56,7 @@ namespace CheckBook.DataAccess.Migrations
                         Email = c.String(nullable: false, maxLength: 100),
                         PasswordSalt = c.String(nullable: false, maxLength: 100),
                         PasswordHash = c.String(nullable: false, maxLength: 100),
+                        ImageUrl = c.String(maxLength: 200),
                         UserRole = c.Int(nullable: false),
                     })
                 .PrimaryKey(t => t.Id);
@@ -78,20 +79,20 @@ namespace CheckBook.DataAccess.Migrations
         
         public override void Down()
         {
-            DropForeignKey("dbo.Payments", "UserId", "dbo.Users");
+            DropForeignKey("dbo.Transactions", "UserId", "dbo.Users");
             DropForeignKey("dbo.UserGroups", "UserId", "dbo.Users");
             DropForeignKey("dbo.UserGroups", "GroupId", "dbo.Groups");
-            DropForeignKey("dbo.Payments", "PaymentGroupId", "dbo.PaymentGroups");
-            DropForeignKey("dbo.PaymentGroups", "GroupId", "dbo.Groups");
+            DropForeignKey("dbo.Transactions", "PaymentId", "dbo.Payments");
+            DropForeignKey("dbo.Payments", "GroupId", "dbo.Groups");
             DropIndex("dbo.UserGroups", new[] { "GroupId" });
             DropIndex("dbo.UserGroups", new[] { "UserId" });
-            DropIndex("dbo.Payments", new[] { "PaymentGroupId" });
-            DropIndex("dbo.Payments", new[] { "UserId" });
-            DropIndex("dbo.PaymentGroups", new[] { "GroupId" });
+            DropIndex("dbo.Transactions", new[] { "PaymentId" });
+            DropIndex("dbo.Transactions", new[] { "UserId" });
+            DropIndex("dbo.Payments", new[] { "GroupId" });
             DropTable("dbo.UserGroups");
             DropTable("dbo.Users");
+            DropTable("dbo.Transactions");
             DropTable("dbo.Payments");
-            DropTable("dbo.PaymentGroups");
             DropTable("dbo.Groups");
         }
     }

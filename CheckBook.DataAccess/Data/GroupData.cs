@@ -13,7 +13,7 @@ namespace CheckBook.DataAccess.Data
 
         public decimal TotalSpending { get; set; }
 
-        public int TotalTransactions { get; set; }
+        public int TotalPayments { get; set; }
 
         public string ImageUrl => "/identicon/group-" + WebUtility.UrlEncode(Id.ToString());
     }

@@ -14,38 +14,39 @@ namespace CheckBook.DataAccess.Services
     {
         
         /// <summary>
-        /// Loads all payment groups in the specified group.
+        /// Loads all payments in the specified group.
         /// </summary>
-        public static void LoadPaymentGroups(int groupId, GridViewDataSet<PaymentGroupData> dataSet)
+        public static void LoadPayments(int groupId, GridViewDataSet<PaymentData> dataSet)
         {
             using (var db = new AppContext())
             {
-                var paymentGroups = db.PaymentGroups
+                var payments = db.Payments
                     .Where(pg => pg.GroupId == groupId)
-                    .Select(ToPaymentGroupData);
+                    .Select(ToPaymentData);
 
-                dataSet.LoadFromQueryable(paymentGroups);
+                // This handles sorting and paging for you. Just give the IQueryable<T> into the dataSet's LoadFromQueryable method
+                dataSet.LoadFromQueryable(payments);
             }
         }
 
         /// <summary>
-        /// Gets the payment group by ID.
+        /// Gets the payment by ID.
         /// </summary>
-        public static PaymentGroupData GetPaymentGroup(int paymentGroupId)
+        public static PaymentData GetPayment(int paymentId)
         {
             using (var db = new AppContext())
             {
-                return db.PaymentGroups
-                    .Where(pg => pg.Id == paymentGroupId)
-                    .Select(ToPaymentGroupData)
+                return db.Payments
+                    .Where(pg => pg.Id == paymentId)
+                    .Select(ToPaymentData)
                     .Single();
             }
         }
 
         /// <summary>
-        /// Gets a list of all users in the specified group with paid amounts from the specified payment group.
+        /// Gets a list of all users in the specified group with paid amounts from the specified payment.
         /// </summary>
-        public static List<PaymentData> GetPayers(int groupId, int paymentGroupId)
+        public static List<TransactionData> GetPayers(int groupId, int paymentId)
         {
             using (var db = new AppContext())
             {
@@ -54,14 +55,15 @@ namespace CheckBook.DataAccess.Services
                     .Select(u => new
                     {
                         User = u,
-                        Payment = u.Payments.FirstOrDefault(p => p.PaymentGroupId == paymentGroupId && p.Type == PaymentType.Payment && p.Amount >= 0)
+                        Payment = u.Transactions.FirstOrDefault(p => p.PaymentId == paymentId && p.Type == TransactionType.Payment && p.Amount >= 0)
                     })
-                    .Select(u => new PaymentData()
+                    .Select(u => new TransactionData()
                     {
                         Id = u.Payment.Id,
                         Name = u.User.FirstName + " " + u.User.LastName,
                         Amount = u.Payment.Amount,
-                        UserId = u.User.Id
+                        UserId = u.User.Id,
+                        ImageUrl = u.User.ImageUrl
                     })
                     .OrderBy(u => u.Name)
                     .ToList();
@@ -69,9 +71,9 @@ namespace CheckBook.DataAccess.Services
         }
 
         /// <summary>
-        /// Gets a list of all users in the specified group with debt amounts from the specified payment group.
+        /// Gets a list of all users in the specified group with debt amounts from the specified payment.
         /// </summary>
-        public static List<PaymentData> GetDebtors(int groupId, int paymentGroupId)
+        public static List<TransactionData> GetDebtors(int groupId, int paymentId)
         {
             using (var db = new AppContext())
             {
@@ -80,62 +82,74 @@ namespace CheckBook.DataAccess.Services
                     .Select(u => new
                     {
                         User = u,
-                        Payment = u.Payments.FirstOrDefault(p => p.PaymentGroupId == paymentGroupId && p.Type == PaymentType.Payment && p.Amount < 0)
+                        Payment = u.Transactions.FirstOrDefault(p => p.PaymentId == paymentId && p.Type == TransactionType.Payment && p.Amount < 0)
                     })
-                    .Select(u => new PaymentData()
+                    .Select(u => new TransactionData()
                     {
                         Id = u.Payment.Id,
                         Name = u.User.FirstName + " " + u.User.LastName,
                         Amount = -u.Payment.Amount,
-                        UserId = u.User.Id
+                        UserId = u.User.Id,
+                        ImageUrl = u.User.ImageUrl
                     })
                     .OrderBy(u => u.Name)
                     .ToList();
             }
         }
 
-        public static void SavePaymentGroup(PaymentGroupData data, List<PaymentData> payers, List<PaymentData> debtors)
+        /// <summary>
+        /// Saves the payment with all details (who paid how much for who)
+        /// </summary>
+        public static void SavePayment(int userId, PaymentData data, List<TransactionData> payers, List<TransactionData> debtors)
         {
             using (var db = new AppContext())
             {
-                // get or create the payment group
-                var paymentGroup = db.PaymentGroups.Find(data.Id);
-                if (paymentGroup == null)
+                // get or create the payment
+                var payment = db.Payments.Find(data.Id);
+                if (payment == null)
                 {
-                    paymentGroup = new PaymentGroup()
+                    payment = new Payment()
                     {
                         GroupId = data.GroupId
                     };
-                    db.PaymentGroups.Add(paymentGroup);
+                    db.Payments.Add(payment);
                 }
-                paymentGroup.CreatedDate = data.CreatedDate;
-                paymentGroup.Description = data.Description;
+                else
+                {
+                    // check permissions
+                    if (!IsPaymentEditable(userId, data.Id))
+                    {
+                        throw new UnauthorizedAccessException("You don't have permissions to modify the payment!");
+                    }
+                }
+                payment.CreatedDate = data.CreatedDate;
+                payment.Description = data.Description;
 
                 // delete all current payments
-                foreach (var payment in paymentGroup.Payments.ToList())
+                foreach (var transaction in payment.Transactions.ToList())
                 {
-                    db.Payments.Remove(payment);
+                    db.Transactions.Remove(transaction);
                 }
 
                 // generate new payments
                 var involvedUsers = new HashSet<int>();
                 foreach (var payer in payers.Where(p => p.Amount != null && p.Amount != 0))
                 {
-                    paymentGroup.Payments.Add(new Payment()
+                    payment.Transactions.Add(new Transaction()
                     {
                         Amount = payer.Amount.Value,
                         UserId = payer.UserId,
-                        Type = PaymentType.Payment
+                        Type = TransactionType.Payment
                     });
                     involvedUsers.Add(payer.UserId);
                 }
                 foreach (var debtor in debtors.Where(p => p.Amount != null && p.Amount != 0))
                 {
-                    paymentGroup.Payments.Add(new Payment()
+                    payment.Transactions.Add(new Transaction()
                     {
                         Amount = -debtor.Amount.Value,
                         UserId = debtor.UserId,
-                        Type = PaymentType.Payment
+                        Type = TransactionType.Payment
                     });
                     involvedUsers.Add(debtor.UserId);
                 }
@@ -146,11 +160,11 @@ namespace CheckBook.DataAccess.Services
                 {
                     foreach (var user in involvedUsers)
                     {
-                        paymentGroup.Payments.Add(new Payment()
+                        payment.Transactions.Add(new Transaction()
                         {
                             Amount = -difference / involvedUsers.Count,
                             UserId = user,
-                            Type = PaymentType.AutoGeneratedRounding
+                            Type = TransactionType.AutoGeneratedRounding
                         });
                     }
                 }
@@ -160,48 +174,57 @@ namespace CheckBook.DataAccess.Services
                     // no data was entered
                     throw new Exception("You have to fill the amount for at least two users!");
                 }
-
                 db.SaveChanges();
             }
         }
 
-        public static void DeletePaymentGroup(PaymentGroupData data, List<PaymentData> payers, List<PaymentData> debtors)
+        /// <summary>
+        /// Deletes the payment.
+        /// </summary>
+        public static void DeletePayment(int userId, PaymentData data, List<TransactionData> payers, List<TransactionData> debtors)
         {
             using (var db = new AppContext())
             {
-                // get or create the payment group
-                var paymentGroup = db.PaymentGroups.Find(data.Id);
-                db.PaymentGroups.Remove(paymentGroup);
+                // check permissions
+                if (!IsPaymentEditable(userId, data.Id))
+                {
+                    throw new UnauthorizedAccessException("You don't have permissions to delete the payment!");
+                }
+
+                // get the payment
+                var payment = db.Payments.Find(data.Id);
+                db.Payments.Remove(payment);
                 db.SaveChanges();
             }
         }
 
+        /// <summary>
+        /// Determines whether the user can edit the specified payment.
+        /// </summary>
+        public static bool IsPaymentEditable(int userId, int paymentId)
+        {
+            using (var db = new AppContext())
+            {
+                var user = db.Users.Find(userId);
+                return user.UserRole == UserRole.Admin 
+                       || db.Payments.Any(pg => pg.Id == paymentId && pg.Group.UserGroups.Any(ug => ug.UserId == userId));
+            }
+        }
 
-        private static Expression<Func<PaymentGroup, PaymentGroupData>> ToPaymentGroupData
+        private static Expression<Func<Payment, PaymentData>> ToPaymentData
         {
             get
             {
-                return pg => new PaymentGroupData()
+                return pg => new PaymentData()
                 {
                     Id = pg.Id,
                     Description = pg.Description,
-                    TotalAmount = pg.Payments.Where(p => p.Amount > 0).Sum(p => (decimal?)p.Amount) ?? 0,
+                    TotalAmount = pg.Transactions.Where(p => p.Amount > 0).Sum(p => (decimal?)p.Amount) ?? 0,
                     CreatedDate = pg.CreatedDate,
                     Currency = pg.Group.Currency,
                     GroupId = pg.GroupId
                 };
             }
         }
-
-        public static bool IsPaymentGroupEditable(int userId, int paymentGroupId)
-        {
-            using (var db = new AppContext())
-            {
-                var user = db.Users.Find(userId);
-                return user.UserRole == UserRole.Admin 
-                    || db.PaymentGroups.Any(pg => pg.Id == paymentGroupId && pg.Group.UserGroups.Any(ug => ug.UserId == userId));
-            }
-        }
-
     }
 }

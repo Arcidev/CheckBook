@@ -11,17 +11,24 @@
 </head>
 <body>
     <div class="header">
-        <dot:RouteLink RouteName="home" Text="My Groups" 
-                       class="{value: 'header-item action-button' + (ActivePage == 'home' ? ' header-item-active' : '')}" />
+        <dot:LinkButton Click="{command: SignOut()}" Text="Sign Out" class="header-item button-right" />  
 
-        <dot:RouteLink RouteName="settings" Text="My Profile" 
-                       class="{value: 'header-item action-button' + (ActivePage == 'settings' ? ' header-item-active' : '')}" />
+        <h1><span class="glyphicon glyphicon-cutlery"></span> CheckBook</h1>
 
-        <dot:RouteLink RouteName="manager" Text="Manager" 
-                       class="{value: 'header-item action-button' + (ActivePage == 'manager' ? ' header-item-active' : '')}" 
-                       Visible="{value: IsAdmin}" />
+        <dot:RouteLink RouteName="home" class="{value: 'header-item ' + (ActivePage == 'home' ? 'header-item-active' : '')}">
+            <span class="glyphicon glyphicon-th"></span> My Groups
+        </dot:RouteLink>
 
-        <dot:Button Click="{command: SignOut()}" Text="Sign Out" class="header-item header-item-active button-right action-button" />        
+        <dot:RouteLink RouteName="settings"
+                        class="{value: 'header-item ' + (ActivePage == 'settings' ? 'header-item-active' : '')}">
+            <span class="glyphicon glyphicon-user"></span> My Profile
+        </dot:RouteLink>
+
+        <dot:RouteLink RouteName="manager" Text="Manager"
+                        class="{value: 'header-item ' + (ActivePage == 'manager' ? 'header-item-active' : '')}"
+                        Visible="{value: IsAdmin}">
+            <span class="glyphicon glyphicon-cog"></span> Settings
+        </dot:RouteLink>
     </div>
 
     <dot:ContentPlaceHolder ID="PageContent">

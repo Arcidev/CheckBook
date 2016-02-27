@@ -140,7 +140,7 @@
     <Compile Include="ViewModels\LoginViewModel.cs" />
     <Compile Include="ViewModels\ManagerViewModel.cs" />
     <Compile Include="ViewModels\GroupViewModel.cs" />
-    <Compile Include="ViewModels\PaymentGroupViewModel.cs" />
+    <Compile Include="ViewModels\PaymentViewModel.cs" />
     <Compile Include="ViewModels\SettingsViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -174,13 +174,14 @@
     <Content Include="Views\home.dothtml" />
     <Content Include="Views\settings.dothtml" />
     <Content Include="Views\app.dotmaster" />
-    <Content Include="Views\paymentGroup.dothtml" />
+    <Content Include="Views\payment.dothtml" />
     <Content Include="Views\manager.dothtml" />
     <Content Include="Style\fonts\glyphicons-halflings-regular.eot" />
     <Content Include="Style\fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="Style\fonts\glyphicons-halflings-regular.woff" />
     <Content Include="Style\fonts\glyphicons-halflings-regular.woff2" />
     <Content Include="Views\group.dothtml" />
+    <Content Include="Controls\UserAvatar.dotcontrol" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>

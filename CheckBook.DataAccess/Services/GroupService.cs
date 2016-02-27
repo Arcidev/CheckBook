@@ -59,10 +59,10 @@ namespace CheckBook.DataAccess.Services
                 var group = db.Groups.Add(new Group() { Name = name });
 
                 foreach (var userId in userIds.Distinct())
-                    db.UserGroups.Add(new UserGroup() { UserId = userId, Group = group });
+                    db.UserGroups.Add(new UserGroup() { UserId = userId, Group = @group });
 
                 db.SaveChanges();
-                return ToGroupData.Compile()(group);
+                return ToGroupData.Compile()(@group);
             }
         }
 
@@ -126,19 +126,36 @@ namespace CheckBook.DataAccess.Services
             using (var db = new AppContext())
             {
                 var group = db.Groups.FirstOrDefault(x => x.Id == groupId);
-                if (group == null)
+                if (@group == null)
                     return null;
 
-                group.Name = name;
+                @group.Name = name;
                 db.UserGroups.RemoveRange(db.UserGroups.Where(x => x.GroupId == groupId));
                 foreach (var userId in userIds.Distinct())
-                    db.UserGroups.Add(new UserGroup() { UserId = userId, GroupId = group.Id });
+                    db.UserGroups.Add(new UserGroup() { UserId = userId, GroupId = @group.Id });
 
                 db.SaveChanges();
-                return ToGroupData.Compile()(group);
+                return ToGroupData.Compile()(@group);
             }
         }
 
+        /// <summary>
+        /// Gets a list of members in a group.
+        /// </summary>
+        public static List<GroupMemberData> GetGroupMembers(int groupId)
+        {
+            using (var db = new AppContext())
+            {
+                var toGroupMemberData = GetToGroupMemberData(groupId);
+
+                return db.Users
+                    .Where(u => u.UserGroups.Any(g => g.GroupId == groupId))
+                    .Select(toGroupMemberData)
+                    .OrderBy(u => u.Name)
+                    .ToList();
+            }
+        }
+        
         /// <summary>
         /// Converts Group entity into GroupData
         /// </summary>
@@ -151,14 +168,26 @@ namespace CheckBook.DataAccess.Services
                     Id = g.Id,
                     Name = g.Name,
                     Currency = g.Currency,
-                    TotalTransactions = g.PaymentGroups.Count(),
-                    TotalSpending = g.PaymentGroups.Sum(pg => pg.Payments.Sum(p => (decimal?)p.Amount)) ?? 0
-
+                    TotalPayments = g.Payments.Count(),
+                    TotalSpending = g.Payments.Sum(pg => pg.Transactions.Where(p => p.Amount > 0).Sum(p => (decimal?)p.Amount)) ?? 0
                     // We need to cast to (decimal?) because the result of the expression is NULL when there are no groups
                     // and null is not assignable in the property of decimal
                 };
             }   
-        } 
+        }
+
+        private static Expression<Func<User, GroupMemberData>> GetToGroupMemberData(int groupId)
+        {
+            return u => new GroupMemberData()
+            {
+                UserId = u.Id,
+                Name = u.FirstName + " " + u.LastName,
+                ImageUrl = u.ImageUrl,
+                Amount = u.Transactions.Where(t => t.Payment.GroupId == groupId).Sum(t => (decimal?)t.Amount) ?? 0
+                // We need to cast to (decimal?) because the result of the expression is NULL when there are no groups
+                // and null is not assignable in the property of decimal
+            };
+        }
 
         /// <summary>
         /// Converts User entity into UserPaymentData

@@ -19,14 +19,14 @@ namespace CheckBook.DataAccess.Model
         [StringLength(10)]
         public string Currency { get; set; }
 
-        public virtual ICollection<PaymentGroup> PaymentGroups { get; private set; }
+        public virtual ICollection<Payment> Payments { get; private set; }
 
         public virtual ICollection<UserGroup> UserGroups { get; private set; }
 
 
         public Group()
         {
-            PaymentGroups = new List<PaymentGroup>();
+            Payments = new List<Payment>();
             UserGroups = new List<UserGroup>();
         }
     }

@@ -34,17 +34,20 @@ namespace CheckBook.DataAccess.Model
         [StringLength(100)]
         public string PasswordHash { get; set; }
 
+        [StringLength(200)]
+        public string ImageUrl { get; set; }
+
         public UserRole UserRole { get; set; }
 
         public virtual ICollection<UserGroup> UserGroups { get; private set; }
 
-        public virtual ICollection<Payment> Payments { get; private set; }
+        public virtual ICollection<Transaction> Transactions { get; private set; }
         
 
         public User()
         {
             UserGroups = new List<UserGroup>();
-            Payments = new List<Payment>();
+            Transactions = new List<Transaction>();
         }
     }
 }

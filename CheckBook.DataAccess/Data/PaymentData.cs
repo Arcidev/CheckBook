@@ -1,19 +1,23 @@
-﻿using System;
-using CheckBook.DataAccess.Enums;
+﻿
+using System;
+using System.ComponentModel.DataAnnotations;
 
 namespace CheckBook.DataAccess.Data
 {
     public class PaymentData
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
 
-        public int UserId { get; set; }
+        [Required(ErrorMessage = "The Date field is required!")]
+        public DateTime CreatedDate { get; set; }
 
-        public string ImageUrl => "/identicon/user-" + UserId;
+        [Required(ErrorMessage = "The Description field is required!")]
+        public string Description { get; set; }
 
-        public string Name { get; set; }
+        public decimal TotalAmount { get; set; }
 
-        public decimal? Amount { get; set; }
-        
+        public string Currency { get; set; }
+
+        public int GroupId { get; set; }
     }
 }

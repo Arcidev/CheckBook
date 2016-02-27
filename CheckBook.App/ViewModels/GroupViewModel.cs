@@ -17,13 +17,19 @@ namespace CheckBook.App.ViewModels
 
         public int GroupId => Convert.ToInt32(Context.Parameters["Id"]);
 
-        public string GroupName { get; set; }
+        public string GroupName { get; private set; }
 
-        public GridViewDataSet<PaymentGroupData> PaymentGroups { get; set; } = new GridViewDataSet<PaymentGroupData>()
+        public string Currency { get; private set; }
+
+        public List<GroupMemberData> Members { get; private set; }
+
+        public List<SettlementData> Settlement { get; private set; }
+
+        public GridViewDataSet<PaymentData> Payments { get; set; } = new GridViewDataSet<PaymentData>()
         {
             PageSize = 40,
             SortDescending = true,
-            SortExpression = nameof(PaymentGroupData.CreatedDate)
+            SortExpression = nameof(PaymentData.CreatedDate)
         };
 
 
@@ -31,10 +37,18 @@ namespace CheckBook.App.ViewModels
 	    {
             // load group name
 	        var userId = GetUserId();
-	        GroupName = GroupService.GetGroup(GroupId, userId).Name;
+            var group = GroupService.GetGroup(GroupId, userId);
+            GroupName = group.Name;
+            Currency = group.Currency;
 
-            // load payment groups
-            PaymentService.LoadPaymentGroups(GroupId, PaymentGroups);
+            // load payments in current group
+            PaymentService.LoadPayments(GroupId, Payments);
+
+            // load members
+            Members = GroupService.GetGroupMembers(GroupId);
+
+            // generate settlements
+            Settlement = SettlementService.CalculateSettlement(Members).ToList();
 
 	        return base.PreRender();
 	    }

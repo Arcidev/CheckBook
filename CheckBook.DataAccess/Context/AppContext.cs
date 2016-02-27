@@ -17,15 +17,15 @@ namespace CheckBook.DataAccess.Context
 
         public DbSet<UserGroup> UserGroups { get; set; }
 
-        public DbSet<PaymentGroup> PaymentGroups { get; set; }
-
         public DbSet<Payment> Payments { get; set; }
+
+        public DbSet<Transaction> Transactions { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Payment>()
+            modelBuilder.Entity<Transaction>()
                         .HasRequired(p => p.User)
-                        .WithMany(u => u.Payments)
+                        .WithMany(u => u.Transactions)
                         .HasForeignKey(p => p.UserId)
                         .WillCascadeOnDelete(false);
         }
