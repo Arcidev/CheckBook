@@ -11,10 +11,8 @@ namespace CheckBook.DataAccess.Security
         private static readonly int SaltSize = 128 / 8;
 
         /// <summary>
-        /// Creates hash from password
+        /// Creates a hash from password
         /// </summary>
-        /// <param name="password"></param>
-        /// <returns>Password hash and salt</returns>
         public static PasswordData CreateHash(string password)
         {
             using (var deriveBytes = new Rfc2898DeriveBytes(password, SaltSize, PBKDF2IterCount))
@@ -33,10 +31,6 @@ namespace CheckBook.DataAccess.Security
         /// <summary>
         /// Verifies password with existing hash and salt
         /// </summary>
-        /// <param name="hashedPassword"></param>
-        /// <param name="salt"></param>
-        /// <param name="password"></param>
-        /// <returns>Result of the verification</returns>
         public static bool VerifyHashedPassword(string hashedPassword, string salt, string password)
         {
             byte[] hashedPasswordBytes = Convert.FromBase64String(hashedPassword);

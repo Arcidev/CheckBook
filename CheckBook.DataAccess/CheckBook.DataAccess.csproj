@@ -111,8 +111,6 @@
     <Compile Include="Data\UserInfoData.cs" />
     <Compile Include="Context\AppContext.cs" />
     <Compile Include="Data\UserWithPasswordData.cs" />
-    <Compile Include="Data\UserPaymentData.cs" />
-    <Compile Include="Enums\CreateUserResult.cs" />
     <Compile Include="Enums\TransactionType.cs" />
     <Compile Include="Enums\UserRole.cs" />
     <Compile Include="Migrations\201602271557481_InitialDatabaseSchema.cs" />

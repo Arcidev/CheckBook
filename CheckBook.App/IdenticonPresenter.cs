@@ -12,6 +12,10 @@ namespace CheckBook.App
 {
     public class IdenticonPresenter : IDotvvmPresenter
     {
+
+        /// <summary>
+        /// Generates the Identicon image and returns it to the client.
+        /// </summary>
         public Task ProcessRequest(DotvvmRequestContext context)
         {
             // generate the identicon

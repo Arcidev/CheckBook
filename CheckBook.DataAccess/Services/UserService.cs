@@ -4,7 +4,6 @@ using System.Linq;
 using System.Linq.Expressions;
 using CheckBook.DataAccess.Context;
 using CheckBook.DataAccess.Data;
-using CheckBook.DataAccess.Enums;
 using CheckBook.DataAccess.Model;
 using CheckBook.DataAccess.Security;
 using DotVVM.Framework.Controls;

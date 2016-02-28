@@ -31,7 +31,7 @@ namespace CheckBook.DataAccess.Data
 
         public int UserId => Id;
 
-        public string Name { get; set; }        // we'll keep this property empty so it won't be displayed
+        public string Name { get; set; }
 
         public string ImageUrl { get; set; }
     }

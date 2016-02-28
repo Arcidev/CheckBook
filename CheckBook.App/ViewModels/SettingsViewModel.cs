@@ -55,6 +55,9 @@ namespace CheckBook.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Saves the user profile.
+        /// </summary>
         public void Save()
         {
             try

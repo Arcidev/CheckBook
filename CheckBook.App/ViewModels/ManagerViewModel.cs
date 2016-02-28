@@ -52,6 +52,9 @@ namespace CheckBook.App.ViewModels
             return base.PreRender();
         }
 
+        /// <summary>
+        /// Shows the user detail popup.
+        /// </summary>
         public void ShowUserPopup(int? userId)
         {
             if (userId == null)
@@ -66,6 +69,9 @@ namespace CheckBook.App.ViewModels
             Context.ResourceManager.AddStartupScript("$('div[data-id=user-detail]').modal('show');");
         }
 
+        /// <summary>
+        /// Saves the changes in the user popup.
+        /// </summary>
         public void SaveUser()
         {
             try
@@ -79,6 +85,9 @@ namespace CheckBook.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Deletes the user.
+        /// </summary>
         public void DeleteUser()
         {
             try
@@ -92,6 +101,9 @@ namespace CheckBook.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Shows the group detail popup.
+        /// </summary>
         public void ShowGroupPopup(int? groupId)
         {
             if (groupId == null)
@@ -112,6 +124,9 @@ namespace CheckBook.App.ViewModels
             Context.ResourceManager.AddStartupScript("$('div[data-id=group-detail]').modal('show');");
         }
 
+        /// <summary>
+        /// Searches for the user from the group detail search box.
+        /// </summary>
         public void GroupSearch()
         {
             var currentGroupUsers = new HashSet<int>(GroupUsers.Select(u => u.UserId));
@@ -121,6 +136,9 @@ namespace CheckBook.App.ViewModels
                 .ToList();
         }
 
+        /// <summary>
+        /// Adds the user to currently edited group.
+        /// </summary>
         public void GroupAddUser(UserInfoData user)
         {
             if (!GroupUsers.Any(u => u.UserId == user.Id))
@@ -130,12 +148,18 @@ namespace CheckBook.App.ViewModels
             GroupSearch();
         }
 
+        /// <summary>
+        /// Removes the user from currently edited group.
+        /// </summary>
         public void GroupRemoveUser(UserInfoData user)
         {
             GroupUsers.Remove(user);
             GroupSearch();
         }
 
+        /// <summary>
+        /// Saves the changes made to the currently edited group.
+        /// </summary>
         public void SaveGroup()
         {
             try
@@ -149,6 +173,9 @@ namespace CheckBook.App.ViewModels
             }
         }
 
+        /// <summary>
+        /// Deletes the currently edited group.
+        /// </summary>
         public void DeleteGroup()
         {
             try

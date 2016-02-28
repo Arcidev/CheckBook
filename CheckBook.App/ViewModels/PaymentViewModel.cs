@@ -40,6 +40,9 @@ namespace CheckBook.App.ViewModels
             return base.Load();
         }
 
+        /// <summary>
+        /// Loads the data in the form
+        /// </summary>
         private void CreateOrLoadData()
         {
             // get group
@@ -74,11 +77,17 @@ namespace CheckBook.App.ViewModels
             Recalculate();
         }
 
+        /// <summary>
+        /// Recalculates the remaining amount.
+        /// </summary>
         public void Recalculate()
         {
             AmountDifference = (Payers.Where(p => p.Amount != null).Sum(p => p.Amount) ?? 0) - (Debtors.Where(p => p.Amount != null).Sum(p => p.Amount) ?? 0);
         }
 
+        /// <summary>
+        /// Saves the payment.
+        /// </summary>
         public void Save()
         {
             try
@@ -95,6 +104,9 @@ namespace CheckBook.App.ViewModels
             GoBack();
         }
 
+        /// <summary>
+        /// Deletes the current payment.
+        /// </summary>
         public void Delete()
         {
             try
@@ -111,6 +123,9 @@ namespace CheckBook.App.ViewModels
             GoBack();
         }
 
+        /// <summary>
+        /// Redirects back to the group page.
+        /// </summary>
         public void GoBack()
         {
             Context.Redirect("group", new { Id = Data.GroupId });
