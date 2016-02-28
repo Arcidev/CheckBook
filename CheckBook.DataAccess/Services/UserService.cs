@@ -56,6 +56,42 @@ namespace CheckBook.DataAccess.Services
         }
 
         /// <summary>
+        /// Searches for the users.
+        /// </summary>
+        public static List<UserInfoData> SearchUsers(string searchText)
+        {
+            using (var db = new AppContext())
+            {
+                IQueryable<User> users = db.Users;
+                if (!string.IsNullOrWhiteSpace(searchText))
+                {
+                    users = users.Where(u => (u.FirstName + " " + u.LastName + " " + u.Email).Contains(searchText));
+                }
+
+                return users
+                    .OrderBy(u => u.LastName)
+                    .Select(ToUserInfoData)
+                    .Take(8)
+                    .ToList();
+            }
+        }
+
+        /// <summary>
+        /// Gets the users in the specified group.
+        /// </summary>
+        public static List<UserInfoData> GetGroupUsers(int groupId)
+        {
+            using (var db = new AppContext())
+            {
+                return db.Users
+                    .Where(u => u.UserGroups.Any(g => g.GroupId == groupId))
+                    .OrderBy(u => u.LastName)
+                    .Select(ToUserInfoData)
+                    .ToList();
+            }
+        }
+
+        /// <summary>
         /// Updates the user data (from the Settings page).
         /// </summary>
         public static void UpdateUserInfo(UserInfoData user, int userId)
@@ -121,6 +157,24 @@ namespace CheckBook.DataAccess.Services
 
 
         /// <summary>
+        /// Deletes the user.
+        /// </summary>
+        public static void DeleteUser(int id)
+        {
+            using (var db = new AppContext())
+            {
+                var user = db.Users.Find(id);
+                if (user.Transactions.Any())
+                {
+                    throw new Exception("The user cannot be removed because he is involved in one or more transactions!");
+                }
+
+                db.Users.Remove(user);
+                db.SaveChanges();
+            }
+        }
+
+        /// <summary>
         /// Converts the User entity into the UserWithPasswordData object
         /// </summary>
         public static Expression<Func<User, UserWithPasswordData>> ToUserWithPasswordData
@@ -154,10 +208,10 @@ namespace CheckBook.DataAccess.Services
                     FirstName = u.FirstName,
                     LastName = u.LastName,
                     ImageUrl = u.ImageUrl,
-                    UserRole = u.UserRole
+                    UserRole = u.UserRole,
+                    Name = u.FirstName + " " + u.LastName
                 };
             }
         }
-
     }
 }

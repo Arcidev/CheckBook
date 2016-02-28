@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Linq.Expressions;
 using CheckBook.DataAccess.Context;
@@ -39,104 +40,80 @@ namespace CheckBook.DataAccess.Services
         }
 
         /// <summary>
-        /// Gets the group by ID.
+        /// Gets the group by ID with permission check.
         /// </summary>
         public static GroupData GetGroup(int groupId, int userId)
         {
             return GetGroupsByUser(userId).Single(g => g.Id == groupId);
         }
 
-
         /// <summary>
-        /// Creates new group
+        /// Gets the group by ID with permission check.
         /// </summary>
-        /// <param name="name">Group name</param>
-        /// <param name="userIds">Users</param>
-        /// <returns>Newly created group</returns>
-        public static GroupData CreateGroup(string name, List<int> userIds)
+        public static GroupData GetGroup(int groupId)
         {
             using (var db = new AppContext())
             {
-                var group = db.Groups.Add(new Group() { Name = name });
-
-                foreach (var userId in userIds.Distinct())
-                    db.UserGroups.Add(new UserGroup() { UserId = userId, Group = @group });
-
-                db.SaveChanges();
-                return ToGroupData.Compile()(@group);
+                return db.Groups
+                    .Select(ToGroupData)
+                    .Single(g => g.Id == groupId);
             }
         }
 
         /// <summary>
-        /// Gets group users id
+        /// Creates or updates a specified group.
         /// </summary>
-        /// <param name="groupId"></param>
-        /// <returns>List of ids of group users</returns>
-        public static List<int> GetGroupUserIds(int groupId)
+        public static void CreateOrUpdateGroup(GroupData group, List<UserInfoData> groupUsers)
         {
             using (var db = new AppContext())
             {
-                return db.UserGroups.Where(x => x.GroupId == groupId).Select(x => x.UserId).ToList();
-            }
-        }
+                // get or create the group
+                var entity = db.Groups.Include(u => u.UserGroups).SingleOrDefault(g => g.Id == group.Id);
+                if (entity == null)
+                {
+                    entity = new Group();
+                    db.Groups.Add(entity);
+                }
 
-        /// <summary>
-        /// Gets group users packed in UserPaymentData class
-        /// </summary>
-        /// <param name="groupId"></param>
-        /// <returns>List of group users</returns>
-        public static List<UserPaymentData> GetGroupUsersForPayment(int groupId)
-        {
-            using (var db = new AppContext())
-            {
-                var groupUsers = db.UserGroups.Where(x => x.GroupId == groupId).Select(x => x.User);
-                return groupUsers.Select(ToUserPaymentData).ToList();
-            }
-        }
+                // update group properties
+                entity.Currency = group.Currency;
+                entity.Name = group.Name;
 
-        /// <summary>
-        /// Removes user from group
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="groupId"></param>
-        public static void RemoveUserFromGroup(int userId, int groupId)
-        {
-            using (var db = new AppContext())
-            {
-                var userGroup = db.UserGroups.FirstOrDefault(x => x.GroupId == groupId);
-                if (userGroup == null)
-                    return;
+                // add users who are not in the group and should be there
+                var usersToAdd = groupUsers.Where(u => !entity.UserGroups.Any(ug => ug.UserId == u.Id)).ToList();
+                foreach (var user in usersToAdd)
+                {
+                    entity.UserGroups.Add(new UserGroup() { UserId = user.Id });
+                }
 
-                db.UserGroups.Remove(userGroup);
+                // remove users who are in the group and should not be there
+                var usersToRemove = entity.UserGroups.Where(ug => !groupUsers.Any(u => u.Id == ug.UserId)).ToList();
+                foreach (var user in usersToRemove)
+                {
+                    // if the user has non-zero balance, he cannot be removed
+                    var balance = user.User.Transactions.Where(t => t.Payment.GroupId == group.Id).Sum(t => (decimal?) t.Amount) ?? 0;
+                    if (balance != 0)
+                    {
+                        throw new Exception($"Cannot remove the user {user.User.FirstName} {user.User.LastName} from the group because he has non-zero balance. You have to settle first!");
+                    }
+
+                    db.UserGroups.Remove(user);
+                }
+
                 db.SaveChanges();
             }
         }
 
         /// <summary>
-        /// Updates existing group
+        /// Deletes the group.
         /// </summary>
-        /// <param name="groupId"></param>
-        /// <param name="name">New group name</param>
-        /// <param name="userIds">New users for group</param>
-        /// <returns></returns>
-        public static GroupData UpdateGroup(int groupId, string name, List<int> userIds)
+        public static void DeleteGroup(int id)
         {
-            if (name == null)
-                name = "";
-
             using (var db = new AppContext())
             {
-                var group = db.Groups.FirstOrDefault(x => x.Id == groupId);
-                if (@group == null)
-                    return null;
-
-                @group.Name = name;
-                db.UserGroups.RemoveRange(db.UserGroups.Where(x => x.GroupId == groupId));
-                foreach (var userId in userIds.Distinct())
-                    db.UserGroups.Add(new UserGroup() { UserId = userId, GroupId = @group.Id });
-
+                var group = db.Groups.Find(id);
+                db.Groups.Remove(group);
                 db.SaveChanges();
-                return ToGroupData.Compile()(@group);
             }
         }
 
@@ -156,7 +133,7 @@ namespace CheckBook.DataAccess.Services
                     .ToList();
             }
         }
-        
+
         /// <summary>
         /// Converts Group entity into GroupData
         /// </summary>
@@ -187,21 +164,6 @@ namespace CheckBook.DataAccess.Services
                 Amount = u.Transactions.Where(t => t.Payment.GroupId == groupId).Sum(t => (decimal?)t.Amount) ?? 0
                 // We need to cast to (decimal?) because the result of the expression is NULL when there are no groups
                 // and null is not assignable in the property of decimal
-            };
-        }
-
-        /// <summary>
-        /// Converts User entity into UserPaymentData
-        /// </summary>
-        /// <param name="user">User for conversion</param>
-        /// <returns>Converted user</returns>
-        public static UserPaymentData ToUserPaymentData(User user)
-        {
-            return new UserPaymentData()
-            {
-                UserId = user.Id,
-                Name = $"{user.FirstName} {user.LastName}",
-                Value = 0
             };
         }
     }
