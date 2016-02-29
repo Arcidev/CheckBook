@@ -186,6 +186,7 @@
     <Content Include="Views\group.dothtml" />
     <Content Include="Controls\UserAvatar.dotcontrol" />
     <Content Include="Controls\UserDetailForm.dotcontrol" />
+    <None Include="Properties\PublishProfiles\Production.pubxml" />
     <None Include="Web.Debug.config">
       <DependentUpon>Web.config</DependentUpon>
     </None>
